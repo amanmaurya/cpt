@@ -87,7 +87,7 @@ router.post('/addtempandcat', function(req, res, next) {
         sql: 'call usp_addtempandcat_nr(?,?,?,?,?,?,?,?,?)',
         values: [req.body.flg, req.body.id1, req.body.name, req.body.desc, code1, rtime, rpid, ctgroup, vertid]
     }
-    console.log(query)
+    //console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -332,7 +332,7 @@ router.post('/addattrMerchant', function(req, res, next) {
         sql: 'call inr_attributeformerchant(?,?,?)',
         values: [req.body.merchantid1, req.body.attername, req.body.attrvalue]
     }
-    console.log(query)
+    //console.log(query)
     mysql(query, function(err, result) {
 
         if (err) {
@@ -749,6 +749,7 @@ router.post('/editandinsert_attribute', function(req, res, next) {
         sql: 'call usp_insertandupdateattribute_nr(?,?,?,?,?,?)',
         values: [req.body.catid, req.body.attrid, req.body.valset, req.body.isattr, req.body.flag, req.body.validflag]
     }
+    // console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -1069,7 +1070,7 @@ router.post('/renderattr', function(req, res, next) {
         sql: 'call usp_getattrtreenodedata_rs(?)',
         values: [req.body.id1]
     }
-    console.log(query)
+   //console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);

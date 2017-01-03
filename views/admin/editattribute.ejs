@@ -32,6 +32,7 @@ function addremove(id,call1){
       url: url,
       method: 'POST',
       success: function(data) {
+        // console.log(data)
         if(call1!=0){
        alert_modal("Attribute mapped successfully");
         }
@@ -338,10 +339,9 @@ function mpisattr(id)
 {
     var a=0;
     var flag=$('#mpisattrh'+id).val();
-    
-     if (confirm('Do you want to proceed ? ' ))
-    {
-      if(flag==1){
+      $('#myModalalert').modal({ backdrop: 'static', keyboard: false })
+        .one('click', '#delete', function (e) {
+           if(flag==1){
        
        $('.mditsisat'+id).each(function() {
         //console.log(this.id)
@@ -354,7 +354,7 @@ function mpisattr(id)
         }
        })
        if(a!=0){
-               alert_modal("Is Attribute updated successfully",'success');
+               alert_modal("Attribute updated successfully",'success');
              }
    }else if(flag==0){
     
@@ -368,23 +368,24 @@ function mpisattr(id)
         }
        })
           if(a!=0){
-               alert_modal("Is Attribute updated successfully",'success');
+               alert_modal(" Attribute updated successfully",'success');
              }
    }
-    }else{
-      $('#mpisattr').val(0) 
-       
-    }
+
+        }).one('click', '#cancel1', function (e) {
+          $('#mpisattr').val(0) 
+        });
+
 }
 function mpeditvalidation(id)
 {
-  //alert_modal(id);
+  // alert_modal(id);
   var a=0;
     var flag=$('#mpvalidationh'+id).val();
-  
-     if (confirm('Do you want to proceed ? ' ))
-    {
-      if(flag==1){
+      $('#myModalalert').modal({ backdrop: 'static', keyboard: false })
+        .one('click', '#delete', function (e) {
+        
+               if(flag==1){
        $('.mpvalidation'+id).each(function() {
         if($(this).val()!=1){
            $(this).val(1)
@@ -394,7 +395,7 @@ function mpeditvalidation(id)
         }
        })
        if(a!=0){
-               alert_modal("Is Attribute updated successfully",'success');
+               alert_modal(" Attribute updated successfully",'success');
              }
    }else if(flag==0){
           $('.mpvalidation'+id).each(function() {
@@ -406,13 +407,13 @@ function mpeditvalidation(id)
         }
        })
           if(a!=0){
-               alert_modal("Is Attribute updated successfully",'success');
+               alert_modal(" Attribute updated successfully",'success');
              }
    }
-    }else{
-      $('#mpvalidationh'+id).val(0) 
-       
-    }
+        }).one('click', '#cancel1', function (e) {
+            $('#mpvalidationh'+id).val(0) 
+        });
+   
 }
 function alleditvalueset(id)
 {
@@ -420,11 +421,9 @@ function alleditvalueset(id)
   //mpvlset
   var a=0;
     var flag=$('#mpvlseth'+id).val();
-    
-     if (confirm('Do you want to proceed ? ' ))
-    {
-      
-       $('.mpvlset'+id).each(function() {
+        $('#myModalalert').modal({ backdrop: 'static', keyboard: false })
+        .one('click', '#delete', function (e) {
+              $('.mpvlset'+id).each(function() {
         if($(this).val()!=flag){
            $(this).val(flag)
          editvalset(this.id,0);
@@ -435,11 +434,12 @@ function alleditvalueset(id)
        if(a!=0){
                alert_modal("Valueset updated successfully",'success');
              }
-  
-    }else{
-      $('#mpvlseth'+id).val(0) 
-       
-    }
+
+        }).one('click', '#cancel1', function (e) {
+           $('#mpvlseth'+id).val(0) 
+        });
+
+
 }
 
 </script>
