@@ -25,6 +25,7 @@
     "multer": "^0.1.8",
     "mysql": "^2.7.0",
     "nodemailer": "^1.3.4",
+    "readdir": "0.0.13",
     "reformed": "^0.1.1",
     "serve-favicon": "~2.2.1"
   }
