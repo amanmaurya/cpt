@@ -19,10 +19,10 @@
 
             });
 
-            setTimeout(function () {
-                if (localStorage['lovlabel'] != undefined)
-                    selectatt(localStorage['lovlabel'])
-            }, 100);
+            // setTimeout(function () {
+            //     if (localStorage['lovlabel'] != undefined)
+            //         selectatt(localStorage['lovlabel'])
+            // }, 1000);
         });
 
         function getexistvalueset() {
@@ -47,6 +47,8 @@
                                     .text(data[i].Name));
                         }
                     }
+                    if (localStorage['lovlabel'] != undefined)
+                    selectatt(localStorage['lovlabel'])
                 },
                 dataType: 'JSON',
             });
@@ -194,14 +196,19 @@
             var count1 = 0;
             var actvalue = ($('#lov').val()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
             var value = (($('#lov').val()).toLowerCase()).trim();
-
+            // console.log('asdcas',actvalue)
+            // console.log('asdcas11',value)
             if (actvalue == '') {
                 alert_modal("Please Enter Values !", 'danger');
                 return false;
             }
             //var uniqueNames=actvalue.split(',');
             var actvalue1 = []; //actvalue.replace(",", "|");
-            actvalue1.push(actvalue.replace(/,/g, "|"));
+            var a11=actvalue.replace(/\|/g, "$")
+            actvalue1.push(a11.replace(/,/g, "|").split('$'));
+            actvalue1=actvalue1[0]
+            // console.log('actvalue1a',actvalue.replace(/,/g, "|"))
+            // console.log('actvalue1',actvalue1)
             /*$.each(uniqueNames, function(i, el){
     if($.inArray(el, actvalue1) == -1) actvalue1.push(el);
 	});*/
@@ -209,8 +216,10 @@
             var value12 = (($('#lov').val()).toLowerCase()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
             //var valuetem=value12.split(',');
             var value = [];
-            value.push(value12.replace(/,/g, "|"));
-            //console.log("dsadsadasdasd",value.length);
+            var a123=  value12.replace(/\|/g, "$");
+            value.push(a123.replace(/,/g, "|").split('$'));
+            value=value[0]
+            // console.log("dsadsadasdasd",value);
             /*$.each(valuetem, function(i, el){
     if($.inArray(el, value) == -1) value.push(el);
 	});*/
@@ -222,6 +231,7 @@
                     $(".existlbl").each(function () {
                         var existvalue = ($(this).text()).toLowerCase();
                         count1++;
+                        // console.log('aaaaaaaaaaaaaaa',existvalue ,value[k])
                         if (existvalue == value[k]) {
                             var lid = $(this).attr("id");
                             var orid = lid.replace('l', '');
@@ -837,7 +847,7 @@
                                 <div class="col-md-9" style="padding-left:0px;">
                                     <div class="col-lg-12" style="padding-left:6px;">
                                         <label style="font-weight:normal">Add Dropdown value</label>
-                                        <input type="text" class="col-md-10" style="width:119%; height:36px; margin-top:2px;margin-bottom:10px;" maxlength="30" placeholder="Enter Dropdown Value" id="lov" />
+                                        <input type="text" class="col-md-10" style="width:119%; height:36px; margin-top:2px;margin-bottom:10px;" placeholder="Enter Dropdown Value" id="lov" />
                                     </div>
                                 </div>
                                 <div class="col-md-3" style="margin-top:28px;padding-left:0px;padding-right:15px;">
