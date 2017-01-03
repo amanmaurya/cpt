@@ -421,6 +421,8 @@ function getattr(){
                 	.attr("value",data[i].ID)
                 	.text(data[i].Name));
 			}
+			if(localStorage['attributelable']!=undefined)
+		selectatt(localStorage['attributelable'])
 		},
 		dataType : 'JSON',
 	});
@@ -478,7 +480,7 @@ function getattrinfo(id){
 		url: url,
 		method: 'POST',
 		success: function(data) {
-			console.log("data",data);
+			// console.log("data",data);
 			data1=data[0];
 				$('#attrid').val(data1[0].ID);
 			$('#edittxtdesc').val(data1[0].Description);

@@ -101,53 +101,57 @@ else if(atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length)
 
 function DeleteMerchant(id){
 	var msg=""
-	if(confirm("Do you want to InActive this user.")){
-		msg="User InActive successfully";
-	}
-	else{
-		return false;
-	}
-	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin  + '/admin/deleteUser';
+
+
+
+	  $('#myModalalert').modal({ backdrop: 'static', keyboard: false })
+        .one('click', '#delete', function (e) {
+	        	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin  + '/admin/deleteUser';
 		$.ajax({
 			data:{"ID":id,'flag':0},
 			url: url,
 			method: 'POST',
 			success: function(data) {
 				console.log(data);
-				if(data.length != 0){
-					alert_modal(msg,,'warning');
-					window.location.reload();
+				if(data== 'success'){
+					alert_modal('User deactivated','warning');
+					window.location.href = "/admin/user";
 					//$("#formmerchant").submit();
 				}
 			},
 			dataType: 'JSON',
 		});
+        })
+
+
+
 
 }
 function DeleteMerchantPer(id)
 {
-var msg=""
-	if(confirm("Do you want to delete this user.")){
-		msg="User deleted successfully";
-	}
-	else{
-		return false;
-	}
-	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin  + '/admin/deleteUser';
+
+
+		  $('#myModalalert').modal({ backdrop: 'static', keyboard: false })
+        .one('click', '#delete', function (e) {
+	     var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin  + '/admin/deleteUser';
 		$.ajax({
 			data:{"ID":id,'flag':1},
 			url: url,
 			method: 'POST',
 			success: function(data) {
 				console.log(data);
-				if(data.length != 0){
-					alert_modal(msg,'warning');
-					window.location.reload();
+				if(data== 'success'){
+					alert_modal('User deleted','warning');
+					window.location.href = "/admin/user";
 					//$("#formmerchant").submit();
 				}
 			},
 			dataType: 'JSON',
 		});
+        })
+
+
+	
 }
 function showinactivetbl()
 {

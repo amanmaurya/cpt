@@ -143,8 +143,9 @@
         function EditMerchant(id) {
             ///yconsole.log("merchant data row ",linedata[id].ID);
             //var listname=id.split('&');
+            console.log(merchantcode)
             $("#lblId").val(linedata[id].ID);
-            $("#merchantcode").val(linedata[id].MerchantId);
+            $("#merchantcode").val(linedata[id].MerchantCode);
             $("#merchanttime").val(linedata[id].DispatchTime); //linedata[id].length
             var leng = $("#tblMerchant thead tr ").children("th").length - 3;
             for (var i = 0; i < leng; i++) {
