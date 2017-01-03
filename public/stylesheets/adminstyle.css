@@ -1,0 +1,573 @@
+#listContainer{
+    margin-top:15px;
+  }
+
+  #expList ul, li {
+    list-style: none;
+    margin:0;
+    padding:0;
+    cursor: pointer;
+  }
+  #expList  ul li ul{
+    border-left: 1px dashed black;
+ 
+    margin: 0 0 0 10px;
+  /*overflow: hidden;*/
+    
+  /*overflow: hidden;*/
+   
+}
+#expList ul li ul li ul li ul li{
+    position: relative;
+}
+
+  #expList p {
+    margin:0;
+    display:block;
+  }
+  #expList p:hover {
+    background-color:#121212;
+  }
+  #expList li {
+    line-height:140%;
+    text-indent:0px;
+    background-position: 1px 8px;
+    padding-left: 20px;
+    background-repeat: no-repeat;
+  }
+
+  /* Collapsed state for list element */
+  #expList .collapsed {
+    background-image: url(/images/toggle-small-expand.png);
+
+    
+  }
+/* Expanded state for list element
+/* NOTE: This class must be located UNDER the collapsed one */
+#expList .expanded {
+  background-image: url(/images/toggle-small.png);
+
+}
+
+
+/* LIST #8 */
+#listContainer {  }
+#listContainer ul { list-style:none; }
+#listContainer ul li { font-family:Georgia,serif,Times; font-size:18px; }
+/*#listContainer ul li a { display:block; width:300px; height:28px; background-color:#333; border-left:5px solid #222; border-right:5px solid #222; padding-left:10px;
+text-decoration:none; color:#bfe1f1; }
+#listContainer ul li a:hover {  -moz-transform:rotate(-5deg); -moz-box-shadow:10px 10px 20px #000000;
+-webkit-transform:rotate(-5deg); -webkit-box-shadow:10px 10px 20px #000000;
+transform:rotate(-5deg); box-shadow:10px 10px 20px #000000; }*/
+.panel{
+  background-color: lightgrey;
+  /*background-color: lightgrey; lightslategrey;*/
+}
+.btn
+{
+  margin-left: 10px;
+  font-size:12px;
+  margin-top:3px!important; 
+  padding: 0px 12px;
+}
+
+  #admin-panel-list {
+    padding-left:0px;
+    list-style: none;
+     border-top-left-radius:10px;
+    color: white;
+    width:18%;
+    border-left:0px solid #314A67;
+
+    background-color:#F4F4F6;
+    color:#7E7E7E;padding-left:0px; font-family: myFirstFont;
+    
+  }
+
+  #admin-panel-list li {
+     /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#b5bdc8+0,828c95+82 */
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a7cfdf+0,4f6a89+98 */
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a7cfdf+0,4f6a89+52,4f6a89+52,4f6a89+92,4f6a89+92 */
+/*background: #a7cfdf; /* Old browsers 
+background: -moz-linear-gradient(top,  #a7cfdf 0%, #4f6a89 52%, #4f6a89 52%, #4f6a89 92%, #4f6a89 92%); /* FF3.6+ */
+/*background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a7cfdf), color-stop(52%,#4f6a89), color-stop(52%,#4f6a89), color-stop(92%,#4f6a89), color-stop(92%,#4f6a89)); /* Chrome,Safari4+ */
+/*background: -webkit-linear-gradient(top,  #a7cfdf 0%,#4f6a89 52%,#4f6a89 52%,#4f6a89 92%,#4f6a89 92%); /* Chrome10+,Safari5.1+ */
+/*background: -o-linear-gradient(top,  #a7cfdf 0%,#4f6a89 52%,#4f6a89 52%,#4f6a89 92%,#4f6a89 92%); /* Opera 11.10+ */
+/*background: -ms-linear-gradient(top,  #a7cfdf 0%,#4f6a89 52%,#4f6a89 52%,#4f6a89 92%,#4f6a89 92%); /* IE10+ */
+/*background: linear-gradient(to bottom,  #a7cfdf 0%,#4f6a89 52%,#4f6a89 52%,#4f6a89 92%,#4f6a89 92%); /* W3C */
+/*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7cfdf', endColorstr='#4f6a89',GradientType=0 ); /* IE6-9 */
+
+ /* Old browsers */
+background: #F4F4F6;
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    line-height: 29px;
+    width:100%;
+    color:white;
+   
+
+  
+  }
+
+  #admin-panel-list li a {
+    display: block;
+    padding: 9px 9px;
+    color: #7E7E7E;
+    text-decoration: none;
+    width:100%;
+    border-top:1px solid #e7e7e7;
+     border-bottom:1px solid #e7e7e7;
+  
+  }
+
+  .activetab
+  {
+    background-color: #3BBDEB !important;
+    text-decoration: none;
+    width:100%;     
+ 
+  }
+
+    .activetab a
+  {
+   
+    color:white !important;
+   
+ 
+  }
+
+  #admin-panel-list li a:hover {
+    background: #3BBDEB;
+    text-decoration: none;
+    color:white;
+    width:100%;
+  
+      }
+
+  #admin-panel-list li #admin-panel-list.dropdown {
+    min-width: 125px; /* Set width of the dropdown */
+    background: #9BA0A6;
+    display: none;
+    position: absolute;
+    z-index: 999;
+    left: 0;
+    width:100%
+  }
+
+  #admin-panel-list li:hover #admin-panel-list.dropdown {
+    display: block; /* Display the dropdown */
+  }
+
+  #admin-panel-list li #admin-panel-list.dropdown li {
+    display: block;
+  }
+  #adg {
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+
+    #addmerchant {
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+
+   #addmerchantattr {
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+
+   #editmerchantattr {
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+  
+  #adg1{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+  #adg2{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+  }
+  #adg3{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+  }
+   #adg4{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+  }
+   #adg5{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+  #adg6{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+
+  }
+  #catogories{
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    background-color: #313131;
+    overflow: auto;
+  }
+  img#close {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+  }
+  img#close1 {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+  }
+   img#close2 {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+  }
+
+  img#close3 {
+    position: absolute;
+    right: -11px;
+    top: -14px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+  }
+
+  #popupContact {
+    position: absolute;
+    left: 50%;
+    top: 17%;
+    margin-left: -202px;
+    font-family: 'Raleway',sans-serif;
+  }
+
+  #popupattr{
+    position: absolute;
+    left: 50%;
+    top: 17%;
+    margin-left: -202px;
+    font-family: 'Raleway',sans-serif; 
+  }
+   #popupattr1{
+    position: absolute;
+    left: 50%;
+    top: 17%;
+    margin-left: -202px;
+    font-family: 'Raleway',sans-serif; 
+  }
+#form3{
+ max-width: 400px;
+    min-width: 400px;
+    
+    border: 2px solid gray;
+    border-radius: 10px;
+    font-family: raleway;
+    background-color: #f4f4f6;
+}
+#form4{
+ max-width: 550px;
+    min-width: 550px;
+    
+    border: 2px solid gray;
+    border-radius: 10px;
+    font-family: raleway;
+    background-color: #f4f4f6;
+}
+
+  #form2 {
+    max-width: 400px;
+    min-width: 400px;
+    
+    border: 2px solid gray;
+    border-radius: 10px;
+    font-family: raleway;
+    background-color: #f4f4f6;
+  }
+
+  p {
+    margin-top: 30px;
+  }
+
+  h2 {
+    background-color:#119FE8;
+    padding: 20px 35px;
+    margin: -10px -50px;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+  }
+
+  hr {
+    margin: 10px -50px;
+    border: 0;
+    border-top: 1px solid #ccc;
+  }
+
+  input[type=text] {
+width: 95%;
+margin-bottom: 10px;
+font-size: 16px;
+font-family: raleway;
+border: 1px solid rgb(204, 204, 204);
+margin-top: 10px;
+box-shadow: 0px 0px 0px !important;
+border-radius: 5px;
+padding: 5px;
+  }
+
+    input[type=email] {
+    width: 95%;
+ 
+    margin-top: 30px;
+    margin-bottom:30px;
+    border: 1px solid #ccc;
+   
+    font-size: 16px;
+    font-family: raleway;
+  }
+
+  #name {
+    background-image: url(../images/name.jpg);
+    background-repeat: no-repeat;
+    background-position: 5px 7px;
+  }
+
+  #email {
+    background-image: url(../images/email.png);
+    background-repeat: no-repeat;
+    background-position: 5px 7px;
+  }
+
+  textarea {
+    background-image: url(../images/msg.png);
+    background-repeat: no-repeat;
+    background-position: 5px 7px;
+    width: 82%;
+    height: 95px;
+    padding: 10px;
+    resize: none;
+    margin-top: 30px;
+    border: 1px solid #ccc;
+    padding-left: 40px;
+    font-size: 16px;
+    font-family: raleway;
+    margin-bottom: 30px;
+  }
+
+  #submit {
+    text-decoration: none;
+    width: 50%;
+    text-align: center;
+    display: block;
+    background-color: #658696;
+    color: #fff;
+    border: 1px solid white;
+    padding: 10px 0;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  span {
+    font-weight: 700;
+  }
+
+  .btn
+  {
+    margin-left: 10px;
+    font-size:12px;
+    margin-top:3px!important; 
+    padding: 0px 12px;
+    margin-right:5px;
+    width:80px;
+  }
+
+  .panel-success {
+    border-color: #d6e9c6;
+    border-width: 0px;
+  }
+
+  .checkbox1
+  {
+    margin-left: 20px;
+  }
+  .inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+.navbar-brand{
+      float: left;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 18px;
+    line-height: 20px;
+   /* margin-top: -8px;
+    margin-left: -4px;*/
+}
+
+.admin-panel
+{
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a7cfdf+0,23538a+100;Blue+3d+%238 */
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#b5bdc8+0,828c95+82 */
+/*background: #5988A2; /* Old browsers */
+/*background: #122231;*/
+    background: #fff;
+    margin-left: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    margin-top: 10px;
+    height: 531px;
+    color: white;
+    margin-left: 21px;
+    /*border-top-left-radius:10px;
+    border:1px solid #e7e7e7;*/
+    width:3.2% !important;
+}
+.admin-panel-head{
+  height:40px;background-color:#fff;padding:7px;color:#7E7E7E;
+}
+.image-size
+{
+  height:30px;width:50px;
+}
+.content-here
+{
+    /* background-color: #FDFDFD;*/
+    margin-top: 0px;
+   /* border: 1px solid #e7e7e7;*/
+    margin-right: 10px;
+    width: 86% ;
+    float: right;
+    border-top-right-radius: 10px;
+    margin-right: 24px;
+    padding-left:15px;
+    height:561px;
+    margin-top:0px;
+
+
+}
+.f{
+      height: 25px;
+    padding-top: 2px;
+}
+button,input[type=button], input[type=reset], input[type=submit] :focus{
+border:1px solid #e7e7e7;
+}
+.element1{
+  font-family: Times New Roman;
+  color:#04225D;
+  font-size:26px;
+}
+
+
+}

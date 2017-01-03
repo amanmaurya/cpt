@@ -1,0 +1,347 @@
+
+<% include ./sidemenu %>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/Bootstrap/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="/Bootstrap/bootstrap-multiselect.css" type="text/css"/>
+<script>
+var categoryid = [];
+$(document).ready(function () {
+	addAttribute();
+	setTimeout(function(){ $('#ddltemplate').multiselect({
+            includeSelectAllOption: true
+        });},1000);
+      $("#txtid").val(0);
+  $('#tblGroup').DataTable();
+  $("#ligroup").addClass('activetab');
+});
+	  function div_show() {
+           $("#txtid").val(0);
+           categoryid = [];
+           $('#chkcategory').html("");
+    document.getElementById('adg').style.display = "block";
+  }
+	//Function to Hide Popup
+function div_hide() {
+  document.getElementById('adg').style.display = "none";
+   $("#name").val('');
+   $("#ddltemplate").val('');
+   $("#form2")[0].reset();
+   $('.multiselect-selected-text').text('None selected');
+}
+
+	function EditMerchant(id)
+	{
+
+		addAttribute();
+		categoryid = [];
+    var listname=id.split('&');
+    var value=$('#tblGroup #'+listname[0]).text();
+    $("#txtid").val(listname[0]);
+    $("#merchantcode").val(listname[1]);
+    $("#merchanttime").val(listname[2]);
+    $("#name").val(value);
+    $('#chkcategory').html("");
+		document.getElementById('adg').style.display = "block";
+	}
+
+  function DeleteMerchant(id)
+  {
+    var msg="";
+    var values=id.split("&");
+    if(values[1]==1){
+      if(confirm("Do you want to delete this group.")){
+        msg="group deleted successfully";
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      if(confirm("Do you want to activate this group.")){
+        msg="group activated successfully";
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin  + '/admin/changestatusgroup';
+    $.ajax({
+      data:{"ID":values[0],"Status":values[1]},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+        console.log(data);
+        if(data.length != 0){
+          alert_modal(msg);
+
+window.location.reload();
+          //$("#formmerchant").submit();
+        }
+      },
+      dataType: 'JSON',
+    });
+
+  }
+
+  function addAttribute(){
+	$('#txtattribute').val("");
+	$('#chkcategory').html("");
+	$("#lblcategory").html("");
+	$("#listContainer").hide();
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin   + '/admin' +'/get_template';
+	$.ajax({
+		url: url,
+		method: 'POST',
+		success: function(data) {
+			if(data.length != 0){ 
+				$('#ddltemplate').html('');
+				for(var i =0;i<data.length;i++){           
+					$('#ddltemplate')
+					.append($("<option></option>")
+					.attr("value",data[i].ID)              
+					.text(data[i].Name));          
+				}
+			}
+		},
+		dataType: 'JSON',
+	});
+}
+
+function getCategory(){
+	var count=0;
+	$('#chkcategory').html("");
+	//$("#divattribute").addClass('hide');  
+	$("#lblcategory").html("");
+	if($("#ddltemplate").val()==null){
+        
+    }
+    else{
+    	var templid=$("#ddltemplate").val().toString();
+    	console.log(templid);
+    	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/get_categotybygroup';
+		$.ajax({
+			data:{"data": templid,'gid' : $('#txtid').val()},
+			url: url,
+			method: 'POST',
+			success: function(data) {
+				if(data.length != 0){ 
+					$('#chkcategory').html('');
+					var endvalue=0;
+					var template=data[0];
+					var categories=data[1];
+					console.log(data);  
+					$("#lblcategory").html("Select Category :"); 
+					$("#divat").removeClass('hide');
+					//$("#divattribute").removeClass('hide');   
+					$('#chkcategory')
+					.append($("<input type='checkbox' style='font-family:myfirstfont;font-size:13px'  onchange='CheckAll(this.id);' id='selectall'><label></label>")
+					.attr("value","0")              
+					.text("Select All"));
+					$('#chkcategory')
+					.append("<br>");
+					for(var j =0 ; j< template.length;j++){
+						$('#chkcategory').append("<div class='col-md-12'><label>"+template[j].Name+"</label></div>")
+						for(var i =endvalue;i<categories.length && categories[i].fk_TemplateId == template[j].ID;i++){
+							endvalue++;
+							count=count+1;
+							if(categories[i].flag == 0){
+								$('#chkcategory')
+								.append($("<div class='col-md-6'><input type='checkbox' class='existcatehory checkbox1' style='font-family:myfirstfont;font-size:14px' onchange='checkstroe(this.id)'  value='"+categories[i].ID+"'  id='"+categories[i].ID+"' name='check'><label style='padding-left:5px;font-family:myfirstfont;font-size:14px;'>"+categories[i].categoryName+"</label></div>"));
+								}
+								else{
+									$('#chkcategory')
+								.append($("<div class='col-md-6'><input type='checkbox' class='existcatehory checkbox1' style='font-family:myfirstfont;font-size:14px' onchange='checkstroe(this.id)'  value='"+categories[i].ID+"'  id='"+categories[i].ID+"' name='check' checked><label style='padding-left:5px;font-family:myfirstfont;font-size:14px;'>"+categories[i].categoryName+"</label></div>"));
+								}   
+							if(count == 2){
+								$('#chkcategory')
+								.append("<br>");
+								count=0;
+							}          
+						}
+					}
+				}
+				if(categoryid.length > 0){
+					for(var l=0;l<categoryid.length;l++){
+						$(".existcatehory").each(function () {
+							var value = $(this).val();
+							if(value == categoryid[l]){
+								$(this).prop('checked', true); 
+							}
+						});
+					}
+				}
+			},
+			dataType: 'JSON',
+		});
+    }
+}
+
+function CheckAll(id){
+	if ( $('#'+id+':checked').val()==0 ){ 
+		$('.checkbox1').prop('checked', true);
+		$('.checkbox1').each(function(){
+			var id=$(this).attr("id");
+			var index = categoryid.indexOf($('#'+id).val());
+			if(index == -1){
+				categoryid.push($('#'+id).val())
+			}
+		});
+
+	} else {
+		categoryid=[];
+		$('.checkbox1').prop('checked', false);
+	}   
+}
+
+function checkstroe(id){
+	if($('#'+id).is(':checked')){
+		categoryid.push($('#'+id).val());
+	}
+	else{
+		var index = categoryid.indexOf($('#'+id).val());
+		if(index > -1){
+			 categoryid.splice(index, 1);
+		}
+	}
+	console.log(categoryid);
+}
+
+function validation(){
+	var nm=($('#name').val()).trim();
+	if(nm == ''){
+		alert_modal('Name should not be blank');
+		return false;
+	}
+	else{
+		return true;
+	}
+}
+
+</script>
+<style>
+table {
+	text-align:center;
+}
+.multiselect{
+	width:300px !important;
+	height:35px !important;
+}
+</style>
+
+
+
+<div class="content-here "  >
+
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+	 <input type="button" value="Add Group" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 35px;
+    width: 100px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="div_show()" />
+   
+    <div style="height:600px;overflow:auto;">
+	<table id="tblGroup" class="table table-hover table-bordered" >
+		<thead>
+			<tr> 
+		 <th style="text-align:center;background-color:#F4F8F9"> Group Names</th> 
+     <th style="text-align:center;background-color:#F4F8F9"> Action</th> 
+			</tr>
+		</thead>
+		<tbody>
+
+		  <% if(Groupdata !=null) {%>
+      <% for(var i=0;i<Groupdata.length;i++){ %>
+      <tr >  
+        <td id='<%=Groupdata[i].ID%>'><%=Groupdata[i].CategoryGroup%></td>  
+        <td><span title="Edit" style="cursor: pointer;" class="glyphicon glyphicon-pencil" onclick="EditMerchant(this.id)" id=<%=Groupdata[i].ID+"&"+Groupdata[i].ID +"&"+Groupdata[i].CategoryGroup%>> Edit&nbsp;</span> 
+
+          <% if(Groupdata[i].isActive ==1) {%>
+          <span title="Edit" style="cursor: pointer;" class="glyphicon glyphicon-trash" onclick="DeleteMerchant(this.id)" id=<%=Groupdata[i].ID+"&"+Groupdata[i].isActive%>> Delete &nbsp; </span>
+          <%} else {%>
+          <span title="Edit" style="cursor: pointer;"  class="glyphicon glyphicon-edit" onclick="DeleteMerchant(this.id)" id=<%=Groupdata[i].ID+"&"+Groupdata[i].isActive%>> Activate  &nbsp;</span>
+          <%}%>
+        </td>
+      
+      </tr>
+      <%}%>
+      <%}%>
+		</tbody>
+	</table> 
+
+</div>
+		
+</div>
+<style type="text/css">
+	.btn-group>.btn:first-child {
+    margin-left: -31px !important;
+    width: 339px !important;
+}
+</style>
+<div id="adg">
+  <!-- Popup Div Starts Here -->
+  <div id="popupContact" >
+
+    <!-- Contact Us Form -->
+    <form  id="form2" method="post" action="/admin/addgroup" style="padding: 15px;height:500px;max-width:500px" onsubmit="return validation();">
+     
+      <img id="close1" class="img-circle" src="../images/download.png" onclick="div_hide()" />
+      <center> <h3 >Add/Edit Group</h3></center>
+      <hr style="    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #D8D2D2;
+    margin-left: 0px;
+    margin-right: 1px;">
+    <label> Group Name:</label>
+      <input id="name" name="groupname" placeholder="Enter Group Name" type="text" width="100%" required/>
+      <br/>
+      <label>Templates :</label>
+      <div class="row" style="padding-left: 47px;padding-right: 42px;padding-top:0px;margin-top:-4px;">
+						<select class="form-control " name="ddltemplate" id="ddltemplate"  style=" width: 93.5%;margin-left: 30px;"  multiple="multiple">	
+						</select>
+						<button type="button" class="btn btn-success" onclick="getCategory();" style="width: 75px;height: 32px;background-color: #F4F4F6;color: #7E7E7E;border:1px solid lightgrey;">Get</button>
+					</div>
+						
+ <input class="hide" id="txtid" name="txtid" placeholder="Enter Group Name" value="0" type="text" width="95%" required/>
+ <div id="divat" class="row" style="width: 96%;
+    margin-left: 0px;
+    height: 170px;
+    overflow: auto;
+    border: 1px solid lightgrey;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 10px;">          
+						<label id="lblcategory" style="margin-top:8px;font-weight:normal;"></label>
+						<div id="chkcategory"></div>             
+					</div>
+      <center>
+        <input type="submit" class="btn btn-success" value="Submit" style="width: 150px;
+    height: 40px;
+    margin-bottom: 10px;
+    background-color: #D0D1D3;
+    color: #7e7e7e;
+    border: 1px solid #e7e7e7;
+    margin-top:10px !important;">
+      </center>
+
+    </form>
+  </div>
+  <!-- Popup Div Ends Here -->
+</div> 
+<% include ../footer %>
+

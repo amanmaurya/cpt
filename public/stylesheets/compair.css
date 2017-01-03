@@ -1,0 +1,119 @@
+table
+{
+  white-space: :nowrap !important;
+}
+.textStatus1
+{
+  width:370px !important;
+}
+.qcmain{
+  border: 1px solid #e7e7e7;
+  background-color: #f4f4f6;
+    margin-left: 10px;
+    margin-right: 205px;
+    width: 1275px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.activeetab{
+  border: 1px solid #e7e7e7;
+    background-color: #27B7EA;
+    width: 150px;
+    height: 30px;
+    text-align: center;
+    color: white;
+    padding-top: 7px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    float:left;
+}
+.tab {
+    border: 1px solid #e7e7e7;
+    background-color: #ECECEE;
+    width: 150px;
+    height: 30px;
+    text-align: center;
+    color: #27B7EA;
+    padding-top: 7px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    float: left;
+}
+.exbutton{
+      color: #7e7e7e;
+    height: 35px;
+    width: 150px;
+    background-color: #f4f4f6;
+    border: 1px solid #7e7e7e;
+    border-radius: 3px;
+    margin-left: -15px;
+}
+.ah{
+    background-color: #27B7EA;
+    color: white;
+    padding-top: 5px;
+    border: #7e7e7e;
+    height: 30px;
+    border-top-left-radius: 10px;
+    width: 100px;
+    border-top-right-radius: 10px;
+    top: 30px;
+    margin-right: 165px;
+    z-index: 1000;
+    float: right;
+    transform: rotate(-90deg);
+    margin-top: -384px;
+
+}
+.ahh{
+  background-color: #27B7EA;
+    color: white;
+    padding-top: 5px;
+    border: #e7e7e7;
+    height: 30px;
+    border-top-left-radius: 10px;
+    width: 100px;
+    border-top-right-radius: 10px;
+    top: 30px;
+    margin-right: -34px;
+    z-index: 1000;
+    float: right;
+    transform: rotate(-90deg);
+    margin-top: -384px;
+}
+.ah1{
+     width: 200px;
+    height: 200px;
+    background-color: white;
+    border: 1px solid #e7e7e7;
+    margin-top: -420px;
+    z-index: 1000;
+    float: right;
+    margin-right: 0px;
+}
+.ahh1{
+  width:200px;height:200px;background-color:white;border:1px solid #e7e7e7;margin-top:-429px;z-index:1000;float:right;margin-right:-200px;
+}
+.body{
+  overflow: hidden;
+}
+#pici:hover{
+    background-color: #27B7EA;
+    color:white;
+}
+button#pici:focus{
+    background-color: #27B7EA;
+    color:white;
+     padding-top: 5px;
+    border: #e7e7e7;
+    height: 30px;
+    border-top-left-radius: 10px;
+    width: 100px;
+    border-top-right-radius: 10px;
+}
+.exbutton:hover{
+
+    background-color: #27B7EA;
+    color:white;
+    border:#e7e7e7;
+}

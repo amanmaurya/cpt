@@ -1,0 +1,234 @@
+body {
+  background: #fff;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: #191970;
+}
+
+a {
+  color: #00B7FF;
+}
+
+#login-form, #forgot-password-form {
+  margin: 10% 40% 10% 40%;
+}
+
+#upload-template {
+  
+  
+  margin-left:2%;
+  width:96% !important;
+  padding:15px;
+  padding-left:20%;
+  padding-right: 20%;
+  border-radius:10px;
+  margin-top:0%;
+}
+.uptop{
+  margin-top:10px;
+  margin-bottom:10px;
+}
+#filters {
+  overflow: scroll;
+  position:relative;
+  margin-bottom:10px;
+}
+
+.small-dropdowns {
+  width: 184px !important;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.map-form {
+ width: 96%;
+    margin: auto;
+    border: 1px solid #e7e7e7;
+    border-radius: 5px;
+    height: 100%;
+    background-color: white;
+    margin-top: 35px;
+}
+
+.map-column-button {
+  width: 15%;
+  margin: auto;
+}
+
+.map-column-button button{
+  background: #009688;
+  color: white;
+  border-radius: 3px;
+}
+
+.head {
+ border-bottom: 1px solid #e7e7e7;
+    background-color: #f4f4f6;
+}
+
+.first-half {
+ 
+}
+
+.first-half, .second-half {
+  padding: 10px;
+}
+
+.headers {
+  color: #21356B;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.column-row {
+  margin-top: 3px;
+  padding-bottom: 32px;
+  color: #191970;
+  font-weight: bold;
+  font-size: 12px;
+  
+}
+
+.column-row:first-child {
+  margin-top: -6px;
+}
+
+.column-row:last-child {
+  border-bottom: 0px;
+}
+
+.excel-heading {
+ 
+}
+
+.excel-column {
+  margin-top: 8px;
+  
+}
+
+.false-value-category-header {
+  font-weight: bold;
+  font-size: 1.4em;
+}
+
+.attribute-checkbox {
+  line-height: 1.7;
+}
+
+.attribute-checkbox input[type=checkbox] {
+  margin: 10px 10px 0px 0px;
+}
+
+#attribute-column-select-heading {
+     font-size: 21px;
+    width: 20%;
+    margin: auto;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+#divMainHeader {
+  margin-top: 10px;
+  position: absolute;
+  height: 470px;
+  width: 1260px;
+  margin-left: 10px;
+}
+.textStatus
+{
+  width:250px !important;
+}
+
+#error-page {
+  text-align: center;
+  padding-top: 10%;
+  color: #333;  
+  width: 40%;
+  margin: auto;
+}
+
+#error-main-section {
+  font-size: 36px;
+}
+
+#error-message-section {
+  padding-top: 3%;
+  padding-bottom: 3%;
+}
+
+#go-back button {
+  background-color: #333;
+  border: 1px solid #eee;
+}
+
+.no-js #loader { 
+  display: none;  
+}
+.js #loader { 
+  display: block; position: absolute; left: 100px; top: 0; 
+}
+.se-pre-con {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: url(/images/preloader.gif) center no-repeat #fff;
+}
+
+.hidden-attrs {
+  line-height: 0.8em;
+  display: none;
+  height: 1.6em;
+}
+
+.show-attrs {
+  display: inline-block;
+}
+
+.navbar {
+  height: 30px !important;
+}
+
+#export-csv, #search-replace {
+  margin-top: 15px;
+  margin-left: 10px
+}
+
+#no-wrong-values-modal {
+  margin-top:10%;
+}
+.navbar-brand{
+  padding: 5px 15px;
+}
+
+.wtHolder{
+  overflow-x:hidden !important;
+}
+.ht_clone_left .wtHolder{
+
+  overflow:hidden !important;
+}
+.element1{
+  font-family: Times New Roman;
+  color:#00a2ef;
+  font-size:26px;
+}
+
+#processedSheet {
+  padding-right: 10px;
+}
+
+#excelSheet {
+  padding-left: 10px;
+}
+
+#qc-compare {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#qc-compare1{
+  margin-top: 10px;
+  margin-bottom: 20px;
+}

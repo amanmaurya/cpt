@@ -1,0 +1,1244 @@
+
+<% include ./sidemenu %>
+<style>
+.activetabs{
+	background-color: #4E3BEB ! important;
+}
+</style>
+<script type="text/javascript">
+var addflag=0;
+	$(document).ready(function () {
+
+	var msg = <%=msg%>
+	
+	if (msg == 1){
+		alert_modal("Attribute Added Successfully",'success');
+		// setTimeout(function() {
+  //                   $.notify({
+
+  //                       // options
+  //                       message: 'Attribute Added Successfully'
+  //                   }, {
+  //                       // settings
+  //                       type: 'success'
+  //                   });
+  //               }, 1000);
+	}
+	
+	
+});
+</script>
+
+<script>
+var categoryid = [];
+var exprcollect=[];
+
+$(document).ready(function(){
+	
+	$('#chkvalidation').on('change', function(){
+		//console.log('hi');
+   $('#ddlvalidation').val(this.checked ? 1 : 0);
+});
+
+$('#chkifAttribute').on('change', function(){
+   $('#ddlifAttribute').val(this.checked ? 1 : 0);
+});
+	getattr();
+	$('#liattribute').addClass('activetab');
+$("#divat").addClass('hide');
+	addAttribute();
+	getexistvalueset1();
+	setTimeout(function(){var tempid=<%=tempid%>
+			//console.log(tempid);
+			$('#ddltemplate').val(tempid);
+			getCategory();},500)
+	setTimeout(function(){ $('#ddltemplate').multiselect({
+            includeSelectAllOption: true
+        });},2000)
+	setTimeout(function(){
+	getexistvalueset2();
+	getexistvalueset21();
+},3000);
+
+	setTimeout(function(){
+		if(localStorage['attributelable']!=undefined)
+		selectatt(localStorage['attributelable'])
+},100);
+
+});
+function addAttribute(){
+	$('#txtattribute').val("");
+	$('#chkcategory').html("");
+	$("#lblcategory").html("");
+	$("#listContainer").hide();
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin   + '/admin' +'/get_template';
+	$.ajax({
+		url: url,
+		method: 'POST',
+		success: function(data) {
+			if(data.length != 0){  
+				for(var i =0;i<data.length;i++){           
+					$('#ddltemplate')
+					.append($("<option></option>")
+					.attr("value",data[i].ID)              
+					.text(data[i].Name));          
+				}
+			}
+		},
+		dataType: 'JSON',
+	});
+}
+function getexistvalueset1()
+{
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/existgetvaluset';
+	$.ajax({
+		url: url,
+		method: 'get',
+		success: function(data) {
+			if(data.length != 0){
+				$('#vlset').html('');
+				$('#valusetg').html('');
+				//$("#txtvalues").removeClass('hide');
+				$('#valusetg')
+                	.append($("<option></option>")
+                	.attr("value",'0')
+                	.text("Select Dropdown"));
+				for(var i =0 ;i<data.length;i++){
+					//$('#vlset').append("<div><label class='vset'>"+data[i].Name+"</label></div>");
+					$('#vlset').append("<div class='divlset1'id='divlset1"+data[i].ID+"' ><label style='display:grid;font-weight:normal;cursor: pointer;overflow: hidden;text-overflow: ellipsis;max-width:176px;width:176px' class='lblset1' id="+data[i].ID+'e'+" onclick='getdropdownvalues(this.id);' class='vset'>"+data[i].Name+"</label><span style='float: right;cursor: pointer;' class='glyphicon glyphicon-transfer spanSign' onclick='selectatt1("+data[i].ID+");'></span></div>");
+					$('#valusetg')
+                	.append($("<option></option>")
+                	.attr("value",data[i].ID)
+                	.text(data[i].Name));
+				}
+			}
+		},
+		dataType: 'JSON',
+	});
+}
+
+
+function getexistvalueset2()
+{
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/existgetvaluset1';
+	$.ajax({
+		url: url,
+		method: 'get',
+		success: function(data) {
+
+			var data1=data[0];
+			var data2=data[1];
+				$('#vlset').html('');
+				$('#valusetg').html('');
+				//$("#txtvalues").removeClass('hide');
+				$('#valusetg')
+                	.append($("<option></option>")
+                	.attr("value",'0')
+                	.text("Select Dropdown"));
+			if(data1.length != 0){
+			
+				for(var i =0 ;i<data1.length;i++){
+					//$('#vlset').append("<div><label class='vset'>"+data1[i].Name+"</label></div>");
+					$('#vlset').append("<div class='divlset1'id='divlset1"+data1[i].ID+"' ><label style='display:grid;font-weight:normal;cursor: pointer;overflow: hidden;text-overflow: ellipsis;max-width:176px;width:176px' class='lblset1' id="+data1[i].ID+'e'+" onclick='getdropdownvalues(this.id);' class='vset'>"+data1[i].Name+"</label><span style='float: right;cursor: pointer;' class='glyphicon glyphicon-transfer spanSign' onclick='selectatt1("+data1[i].ID+");'></span></div>");
+					$('#valusetg')
+                	.append($("<option></option>")
+                	.attr("value",data1[i].ID)
+                	.text(data1[i].Name));
+				}
+			}
+			setTimeout(function(){$("#valusetg").val(data2[0].Maximum);GetAllvalues('valusetg');},1000);
+		},
+		dataType: 'JSON',
+	});
+}
+
+function getexistvalueset21()
+{
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/existgetvaluset1';
+	$.ajax({
+		url: url,
+		method: 'get',
+		success: function(data) {
+
+			var data1=data[0];
+			var data2=data[1];
+				$('#vlset').html('');
+				$('#valusetg1').html('');
+				//$("#txtvalues").removeClass('hide');
+				$('#valusetg1')
+                	.append($("<option></option>")
+                	.attr("value",'0')
+                	.text("Select Dropdown"));
+			if(data1.length != 0){
+			
+				for(var i =0 ;i<data1.length;i++){
+					//$('#vlset').append("<div><label class='vset'>"+data1[i].Name+"</label></div>");
+					$('#vlset').append("<div class='divlset1'id='divlset1"+data1[i].ID+"' ><label style='display:grid;font-weight:normal;cursor: pointer;overflow: hidden;text-overflow: ellipsis;max-width:176px;width:176px' class='lblset1' id="+data1[i].ID+'e'+" onclick='getdropdownvalues(this.id);' class='vset'>"+data1[i].Name+"</label><span style='float: right;cursor: pointer;' class='glyphicon glyphicon-transfer spanSign' onclick='selectatt1("+data1[i].ID+");'></span></div>");
+					$('#valusetg1')
+                	.append($("<option></option>")
+                	.attr("value",data1[i].ID)
+                	.text(data1[i].Name));
+				}
+			}
+			setTimeout(function(){$("#valusetg1").val(data2[0].Maximum);GetAllvalues('valusetg1');},1000);
+		},
+		dataType: 'JSON',
+	});
+}
+
+var a;
+function GetAllvalues(id){
+$('#txtvalues').val('');
+	//$("#txtvalues").addClass('hide');	
+var values=$("#valusetg").val();
+	if(values>0){
+		var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/GetAllvalues';
+		$.ajax({
+			data : {"data" : values },
+			url: url,
+			method: 'post',
+			success: function(data) {
+				a=data;
+				if(data.length != 0){
+					$('#txtvalues').html('');
+					if($('#valusetg').val()>0){
+					$("#txtvalues").removeClass('hide');
+				}
+
+					var valuesList='';
+					for(var i =0 ;i<data.length;i++){
+						if(i!=data.length-1)
+							valuesList+=data[i].ListValue+',';
+						else{
+							valuesList+=data[i].ListValue;
+						}
+					}
+					$('#txtvalues').val(valuesList);
+				}
+			},
+			dataType: 'JSON',
+		});
+	}
+}
+
+function GetAllvalues1(id){
+	$('#txtvalues1').val('');
+	//$("#txtvalues").addClass('hide');valusetg1	
+var values=$("#valusetg1").val();
+
+	if(values>0){
+		var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/GetAllvalues';
+		$.ajax({
+			data : {"data" : values },
+			url: url,
+			method: 'post',
+			success: function(data) {
+				a=data;
+				if(data.length != 0){
+					$('#txtvalues1').html('');
+					if($('#valusetg1').val()>0){
+					$("#txtvalues1").removeClass('hide');
+				}
+
+					var valuesList='';
+					for(var i =0 ;i<data.length;i++){
+						if(i!=data.length-1)
+							valuesList+=data[i].ListValue+',';
+						else{
+							valuesList+=data[i].ListValue;
+						}
+					}
+					$('#txtvalues1').val(valuesList);
+				}
+			},
+			dataType: 'JSON',
+		});
+	}
+}
+
+function getCategory(){
+	var count=0;
+	var catid=<%=catid%>
+	$('#chkcategory').html("");
+	//$("#divattribute").addClass('hide');  
+	$("#lblcategory").html("");
+	if($("#ddltemplate").val()==null){
+        
+    }
+    else{
+    	$('#renders').val(catid);
+    	var templid=$("#ddltemplate").val().toString();
+    	//console.log(templid);
+    	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/get_categoty';
+		$.ajax({
+			data:{"data": templid},
+			url: url,
+			method: 'POST',
+			success: function(data) {
+				//alert_modal("jai mata di");
+				if(data.length != 0){ 
+					$('#chkcategory').html('');
+					var endvalue=0;
+					var template=data[0];
+					var categories=data[1];
+					//console.log(data);  
+					$("#lblcategory").html("Select Category :"); 
+					$("#divat").removeClass('hide');
+					//$("#divattribute").removeClass('hide');   
+					$('#chkcategory')
+					.append($("<input type='checkbox' style='font-family:myfirstfont;font-size:13px'  onchange='CheckAll(this.id);' id='selectall'><label></label>")
+					.attr("value","0")              
+					.text("Select All"));
+					$('#chkcategory')
+					.append("<br>");
+					for(var j =0 ; j< template.length;j++){
+						$('#chkcategory').append("<div class='col-md-12'><label>"+template[j].Name+"</label></div>")
+						for(var i =endvalue;i<categories.length && categories[i].fk_TemplateId == template[j].ID;i++){
+							endvalue++;
+							count=count+1;
+							if(catid == categories[i].ID){
+								$('#chkcategory')
+								.append($("<div class='col-md-6'><input type='checkbox' class='existcatehory checkbox1' style='font-family:myfirstfont;font-size:14px' onchange='checkstroe(this.id)'  value='"+categories[i].ID+"' id='"+categories[i].ID+"' name='check' checked><label style='padding-left:5px;font-family:myfirstfont;font-size:14px;'>"+categories[i].categoryName+"</label></div>"));
+							} else {
+								$('#chkcategory')
+								.append($("<div class='col-md-6'><input type='checkbox' class='existcatehory checkbox1' style='font-family:myfirstfont;font-size:14px' onchange='checkstroe(this.id)'  value='"+categories[i].ID+"'  id='"+categories[i].ID+"' name='check'><label style='padding-left:5px;font-family:myfirstfont;font-size:14px;'>"+categories[i].categoryName+"</label></div>"));
+							}      
+							if(count == 2){
+								$('#chkcategory')
+								.append("<br>");
+								count=0;
+							}          
+						}
+					}
+				}
+				if(categoryid.length > 0){
+					for(var l=0;l<categoryid.length;l++){
+						$(".existcatehory").each(function () {
+							var value = $(this).val();
+							if(value == categoryid[l]){
+								$(this).prop('checked', true); 
+							}
+						});
+					}
+				}
+			},
+			dataType: 'JSON',
+		});
+    }
+
+}
+function validateform(){
+	var count =0;
+	var flag = false;
+	if($("#ddltemplate").val()<=0){
+		alert_modal("Template is required",'danger');
+		// $.notify({
+
+  //                       // options
+  //                       message: 'Template is required'
+  //                   }, {
+  //                       // settings
+  //                       type: 'danger'
+  //                   });
+		return false;
+	}
+	if($("#txtattribute").val().trim()==""){
+		alert_modal("Attribute is required",'danger');
+		// $.notify({
+  //                       message: 'Attribute is required'
+  //                   }, {
+  //                       type: 'danger'
+  //                   });
+		return false;
+	}
+	var selected = [];
+	$('input:checked').each(function() {
+		selected.push($(this).attr('value'));
+	});
+	if(selected.length>0){
+		flag = true;
+	}
+	else{
+		alert_modal("Please select category",'danger');
+		// $.notify({
+  //                       message: 'Please select category'
+  //                   }, {
+  //                       type: 'danger'
+  //                   });
+		return false;
+	}
+	$('.checkbox1').each(function(){
+		if($(this).is(':checked')){
+			count=1;
+			return false;
+		}
+	});
+	if(count == 0){
+		flag = false;
+	}
+	if(flag == false){
+		// alert_modal('Please Select The Category');
+		$.notify({
+                        message: 'Please select category'
+                    }, {
+                        type: 'danger'
+                    });
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+function CheckAll(id){
+	if ( $('#'+id+':checked').val()==0 ){ 
+		$('.checkbox1').prop('checked', true);
+		$('.checkbox1').each(function(){
+			var id=$(this).attr("id");
+			var index = categoryid.indexOf($('#'+id).val());
+			if(index == -1){
+				categoryid.push($('#'+id).val())
+			}
+		});
+
+	} else {
+		categoryid=[];
+		$('.checkbox1').prop('checked', false);
+	}   
+}
+function getattr(){
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/get_attribut';
+	$.ajax({
+		url: url,
+		method: 'POST',
+		success: function(data) {
+			$('#attributgroup').html('');
+			for(var i =0 ;i<data.length;i++){
+				//var a12=data[i].Name;
+				$('#attrset').append("<div class='divattcl' onclick='selectatt("+data[i].ID+");' id='div"+data[i].ID+ "' style='padding-left:15px;cursor: pointer;'  ><label   style='font-weight:normal;cursor: pointer' id="+data[i].ID+" class='aset' >"+data[i].Name+"</label></div>");
+				$('#attributgroup')
+                	.append($("<option></option>")
+                	.attr("value",data[i].ID)
+                	.text(data[i].Name));
+			}
+		},
+		dataType : 'JSON',
+	});
+}
+
+function check1(){	
+	var actval=$("#attr").val().trim();
+	var val=($("#attr").val().toLowerCase()).trim();
+	var flag=0;
+	if(val != ''){
+		$(".aset").each(function () {
+			var vtext =($(this).text()).toLowerCase();
+			var attid=$(this).attr('id');
+			if(vtext == val){
+				$('#editattr').val(actval);
+				$('#attributgroup').val(attid);
+				getattrinfo('attributgroup');
+				flag=1;
+			}
+
+		});
+		if(flag == 1){
+			addflag=0;
+			$('#attrset').removeClass('hide');
+			$("#editattribute").removeClass('hide');
+			$("#addattribute").addClass('hide');
+		}
+		if(flag == 0){
+			addflag=1;
+			$('#txtattribute').val(actval);
+			$('#attr').val(actval);
+			$('#attrset').removeClass('hide');
+			$("#editattribute").addClass('hide');
+			$("#addattribute").removeClass('hide');
+		}
+		
+	}
+	else
+	{
+		// alert_modal("Attribute Name is required.");
+		$.notify({
+                        message: 'Attribute Name is required.'
+                    }, {
+                        type: 'danger'
+                    });
+	}
+	$(".multiselect span").text('Select Template');
+}
+
+function getattrinfo(id){
+		$('#attrid').val('');
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/get_attrinfo';
+	$.ajax({
+		data:{"id": $('#'+id).val()},
+		url: url,
+		method: 'POST',
+		success: function(data) {
+			console.log("data",data);
+			data1=data[0];
+				$('#attrid').val(data1[0].ID);
+			$('#edittxtdesc').val(data1[0].Description);
+			$('#edittxtdatatype').val((data1[0].Datatype).toLowerCase());
+			$('#edittxtlength').val(data1[0].Length);
+			$('#edittxtprecison').val(data1[0].DataPrecision);
+			$('#editscale').val(data1[0].Scale);
+           if((data1[0].Datatype).toLowerCase()=='dropdown' || (data1[0].Datatype).toLowerCase() == 'number'){
+           	$('#numblength').addClass('hide');
+           }
+           else
+           {
+             $('#numblength').removeClass('hide');           	
+           }
+			setTimeout(function(){
+               editshowdropdown();
+
+              },100);
+				setTimeout(function(){
+			 $("#valusetg1").val(data[1][0].fk_ValueSetId);
+			 GetAllvalues1(1);
+			  },1000);
+		},
+		dataType : 'JSON',
+	});
+}
+
+var t="";
+function filterAttribute1()
+{
+	var filter=$("#filter1").val().trim();
+	var lnks = document.getElementById('attrset').querySelectorAll('.aset');
+	for(var i = 0, len = lnks.length; i < len; i++) {
+t=lnks[0];
+
+//if(lnks[i].textContent!=filter && filter !="")
+if(lnks[i].textContent.toLowerCase().indexOf(filter.toLowerCase()) > -1)
+		lnks[i].style.display="inline";
+	else
+		lnks[i].style.display="none";
+	}
+}
+
+function showtab(){
+	$('#attributetab').removeClass('activetabs');
+	$('#lovtab').addClass('activetabs');
+	$('#divAddAttribute').addClass('hide');
+	$('#divAddvlov').removeClass('hide');
+	$('#lovtab').removeClass('hide');
+	$("#diveditt").addClass('hide');
+	$("#divaddd").addClass('hide');
+	$('#entervalueset').val('');
+}
+
+function showattrtab(){
+	$('#divAddAttribute').removeClass('hide');
+	$('#divAddvlov').addClass('hide');
+	$('#attributetab').addClass('activetabs');
+	$('#lovtab').removeClass('activetabs');
+}
+
+function showlovtab(){
+	$('#divAddAttribute').addClass('hide');
+	$('#divAddvlov').removeClass('hide');
+	$('#attributetab').removeClass('activetabs');
+	$('#lovtab').addClass('activetabs');
+}
+
+function closetab(){
+	//console.log('hi');
+	$('#divAddvlov').addClass('hide');
+      $('#divAddAttribute').removeClass('hide');
+	
+	
+	
+}
+
+function edittab(){
+	var valset=$("#valusetg").val();
+	var valset1=$("#valusetg1").val();
+	$('#attributetab').removeClass('activetabs');
+	$('#lovtab').addClass('activetabs');
+	//console.log(valset);entervalueset1,lovtab11
+
+	if((valset == 0)&&(addflag==1)){
+		// alert_modal("Please Select The Dropdown");
+			$.notify({
+                        message: 'Please Select The Dropdown'
+                    }, {
+                        type: 'danger'
+                    });
+	}
+	else if((valset1 == 0)&&(addflag==0)){
+		// alert_modal("Please Select The Dropdown");
+		$.notify({
+                        message: 'Please Select The Dropdown'
+                    }, {
+                        type: 'danger'
+                    });
+	}
+	else{
+
+		$('#divAddAttribute').addClass('hide');
+		$('#divAddvlov').removeClass('hide');
+		$('#lovtab').removeClass('hide');
+		$("#diveditt").addClass('hide');
+		$("#divaddd").addClass('hide');
+		if(addflag==1){
+		$('#entervalueset').val($("#valusetg option:selected").text());
+		$('#entervalueset1').val($("#valusetg option:selected").text());
+	    }
+		else{
+		$('#entervalueset1').val($("#valusetg1 option:selected").text());
+		$('#entervalueset').val($("#valusetg1 option:selected").text());	
+		}
+		check();
+	}
+}
+
+function showdropdown(){
+	 $("#valusetg").val(0);
+	 $('#txtvalues').val('');
+	var datatyp=$('#txtdatatype').val();
+	if (datatyp == 'number' || datatyp == 'dropdown')
+	{
+         $('#lengthforvarchar').addClass('hide');
+	}
+	else
+	{
+	      $('#lengthforvarchar').removeClass('hide');	
+	}
+	if(datatyp == 'dropdown'){
+		$('#dropdown').removeClass('hide');
+		$('#dropdownvalues').removeClass('hide')
+        
+	}
+	else{
+		$('#dropdown').addClass('hide');
+		$('#dropdownvalues').addClass('hide');
+        
+	}
+}
+
+function editshowdropdown(){
+
+	$('#valusetg1').val(0);
+	$('#txtvalues1').val('');
+	var datatyp=$('#edittxtdatatype').val();
+	if(datatyp == 'dropdown'){
+		$('#numblength').addClass('hide');
+		if(addflag==1){
+		
+		$('#dropdownvaluesedit').removeClass('hide');
+	}
+	else
+	{		
+	$('#dropdownedit').removeClass('hide');
+	$('#dropdownvaluesedit').removeClass('hide');	
+	}
+	}
+	else{
+		$('#dropdownedit').addClass('hide');
+		$('#dropdownvaluesedit').addClass('hide')
+	}
+	if(datatyp == 'dropdown'|| datatyp == 'number'){
+		$('#numblength').addClass('hide');
+	}
+	else
+	{
+	   $('#numblength').removeClass('hide');	
+	}
+}
+
+function checkstroe(id){
+	if($('#'+id).is(':checked')){
+		categoryid.push($('#'+id).val());
+	}
+	else{
+		var index = categoryid.indexOf($('#'+id).val());
+		if(index > -1){
+			 categoryid.splice(index, 1);
+		}
+	}
+	//console.log(categoryid);
+}
+
+function movetomappingpage(){
+	$('#vaste').html('');
+	var id=$('#attributgroup').val();
+	var newLink = $("<a />", {
+    		id   : "eatt",
+    		name : "link",
+    		href : "/admin/editattribute?id="+id,
+    		text : "Hello"
+		});
+		$("#vaste").append(newLink);
+		$('#eatt').get(0).click();
+}
+
+function showmodal()
+{
+	$("#myModal").modal('show');
+}
+
+function addexpression(){
+	var already=2;
+	var expr1=$('#expr').val();
+	var exp=(($('#expr').val()).toLowerCase()).trim();
+	if(exp != ''){
+		$(".newexprlbl").each(function () {
+			var existvalue = ($(this).text()).toLowerCase();
+			if(existvalue == exp){
+				already=1;
+				return false;
+			}
+			else{
+				already=2;
+			}
+		});
+		if(already == 2){
+			exprcollect.push(expr1);
+			$('#express').append($("<div><input type='checkbox' class='newexpr' value='"+expr1+"' id='"+expr1+"'   checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+expr1+'l'+"' style='padding-left:5px;font-weight:normal'>"+expr1+"</label></div>"));
+			$('#exprcollection').val(exprcollect);
+		}
+	}
+	$('#expr').val('');
+}
+
+function deleteexp(id){
+	var index = exprcollect.indexOf(id);
+	if(index > -1){
+		exprcollect.splice(index,1);
+		var lbl=id+'l';
+		$('#'+id).remove();
+		$('#'+lbl).remove();
+		$('#exprcollection').val(exprcollect);
+	}
+}
+
+function update1()
+{//
+	//alert_modal($('#attributgroup').val
+	//validateform()
+	var _data = $('#editform').serializeArray();
+	var o = {};
+	_data.forEach(function(x, i) {
+		o[x.name] = x.value;
+	})
+
+var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/update_attribute';
+	$.ajax({
+	url:url,
+	method: 'post',
+	data: o,
+	success: function() {
+		//alert_modal(data);
+				// alert_modal('Attribute Save Successfully');
+				$.notify({
+                        message: 'Attribute Save Successfully'
+                    }, {
+                        type: 'success'
+                    });
+				setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
+				
+		},
+		dataType : 'JSON',
+});
+
+}
+function delAtt(){
+	if (confirm('Do you want to proceed? ' )) {
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/del_attribute';
+	$.ajax({
+	url:url,
+	method: 'post',
+	data:{ 'attrid':$('#attrid').val()},
+	success: function(data) {
+		//alert_modal(data);
+			/*if(flag==0){
+					alert_modal('This Attribute have Mapping please remove them and try again');
+			}else{
+				alert_modal('Attribute Save Successfully');
+				window.location.reload();
+			}*/
+			console.log("data----",data);
+			if(data[0][0].count!=0)	
+				{   var mappedcategories='';
+                     for (var i=0;i<data[1].length;i++) {
+                         mappedcategories=mappedcategories+data[1][i].categoryName+',';
+                     }
+                     $.notify({
+                        message: "You are mapped to "+mappedcategories+".Please remove these mapping first then delete attribute. "
+                    }, {
+                        type: 'danger'
+                    });
+                    // alert_modal("You are mapped to "+mappedcategories+".Please remove these mapping first then delete attribute. "); 
+				}else
+				{
+					if(data[1][0].del>0){
+						// alert_modal("Attribute Deleted Successfully");
+					// window.location.reload();
+					$.notify({
+                        message: 'Attribute Deleted Successfully'
+                    }, {
+                        type: 'success'
+                    });
+				setTimeout(function() {
+                    window.location.reload();
+                }, 1000);
+				}else{
+					$.notify({
+                        message: 'you Can not delete this attribute'
+                    }, {
+                        type: 'danger'
+                    });
+					// alert_modal('you Can not delete this attribute' )
+					
+				}
+				}
+		},
+		dataType : 'JSON',
+});
+}
+}
+
+</script>
+<script type="text/javascript">
+//function to select from att list;;;;;;
+	function selectatt(value){
+	//alert_modal(value);S
+	localStorage['attributelable']=value
+	addflag=0;
+	$('.divattcl').removeClass('activetab');
+	$('#div'+value).addClass('activetab');
+	var a=$('#'+value).text();
+	//alert_modal(a)
+	$('#attr').val(a);
+	check1();
+
+}
+/*-----------------------manu code------------------------------*/
+
+	function selectatt1(value){
+	//alert_modal("i ma in selectatt---1"+value);
+	$('.divlset1').removeClass('activetab');
+	$('#divlset1'+value).addClass('activetab');
+	var a=$('#'+value+'e').text();
+	//alert_modal(a)
+	$('#entervalueset1').val(a);
+	$('#entervalueset').val(a);
+	check2();
+}
+
+function check2(){
+	var actval=($('#entervalueset').val()).trim();
+	var vlovset=($('#entervalueset').val()).toLowerCase();
+	var flag = 0;
+	if(vlovset != ''){
+		$(".vset").each(function () {
+			var vtext =($(this).text()).toLowerCase();
+			if(vtext == vlovset){
+	var idname=$(this).attr("id");
+	var realid=idname.replace('e','');
+	$("#valusetgroup").val(realid);
+			getlovlist("valusetgroup");
+				flag=1;
+			}
+		});
+		if(flag == 1){
+			$('#new').html('');
+			$('#existing').html('');
+			//$('#entervalueset1').val(actval);
+			$("#diveditt").removeClass('hide');
+			$("#divaddd").addClass('hide');
+		}
+		if(flag == 0){
+			$('#enew').html('');
+			$('#eexisting').html('');
+			$("#diveditt").addClass('hide');
+			$("#divaddd").removeClass('hide');
+			$("#set").val(actval);
+		}
+	}
+}
+
+function getlovlist(id){
+	getlovbuid($('#'+id).val());
+}
+
+function getlovbuid(id1)
+{
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getlovlistbyid';
+	$.ajax({
+		data : {"id": id1 },
+		url: url,
+		method: 'post',
+		success: function(data) {
+			var present = data[0];
+			var absent = data[1];
+			$('#enew').html('');
+			$('#eexisting').html('');
+			$('#elovtext').val('');
+			var len=present.length+absent.length+1000;
+			if(present.length != 0){
+				$('#editdesclov').val(present[0].Description);
+				$('#entervalueset1').val(present[0].Name);
+				for(var i = 0 ;i < present.length;i++){
+					$('#new').append($("<div><input type='checkbox' class='enewcheck' value='"+present[i].ID+"'  name='existcheck' id='"+len+"' checked onchange='eremovenew(this.id)'><label class='enewlbl' style='padding-left:5px;' id='"+len+'l'+"'>"+present[i].ListValue+"</label></div>"));
+					len++;
+				}
+			}
+		},
+		dataType: 'JSON',
+	});
+}
+
+
+
+</script>
+<style>
+
+.ulbutton{
+	width: 150px;
+    height: 30px;
+    background-color: #3BBDEB;
+    border: 1px solid Lightgrey;
+    color: white;
+    margin-top: 10px;
+    padding-left: 45px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding-top: 5px;
+    float:left;
+}
+.multiselect{
+	width:300px !important;
+	height:35px !important;
+}
+</style>
+<div class="content-here col-md-11" style="margin-top: 15px">
+</script>
+<link href="../stylesheets/adminstyle.css" rel="stylesheet">
+<div class="col-lg-9" style="height: 40px;padding-left: 0px;" id="attrtab" >
+<div class="ulbutton center" id="attributetab" onclick="showattrtab();">
+Attribute
+</div>
+<div class="ulbutton center hide" style="padding-left:25px;" id="lovtab" onclick="showlovtab();">
+Add Dropdown<span id="close" class=" " id="lovtab11" style="padding-left:10px;font-size:10px;" onclick="closetab();"></span>
+</div>
+
+</div>
+<div class="col-lg-3">
+</div>
+	<div id="divAddAttribute"  class="row" >
+		<div class="col-md-9 " style="margin-top:1px;">
+			<div class="col-md-10" style="padding-left:0%">
+				<input type="text" class="form-control" style="width:97%;margin-left: 0px;" placeholder="Enter the Attribute" id="attr" maxlength="50" required/>
+			</div>
+			<div class="col-md-2">
+				<input type="button"  style="width:80px;height:30px;color:#7e7e7e;background-color:#F4F4F6;border:1px solid lightgrey;border-radius:5px;    margin-top: 11px;margin-left: -23px;padding-top:3px;" value="Add" onclick="check1();">
+			</div>
+			<div class="hide" id="editattribute">
+			<form id="editform">
+				<div id="divattribute" class="row" >
+					<div class="row">
+						<div class="col-md-12">
+							<select class="hide form-control" style="width:95%;height:36px;margin-top:10px;margin-bottom:10px;" placeholder="Enter Value Name" id="attributgroup" onchange="getattrinfo(this.id);">	
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12" >
+							<div class="col-md-3" style="padding-left:37px">
+						 	 	<label style="line-height:42px;font-weight:normal;">Attribute :</label>
+							</div>
+							<div class="col-md-9" style="padding-left: 27px;padding-right: 0px;">
+							<input type="text"   class="hide"></input>
+								<input type="text" class="form-control" style="width: 100%;margin-top: 5px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;    height: 34px;margin-left: -56px;" maxlength="50" id='editattr' name="editattr" required>
+								
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12" >
+							<div class="col-md-3" style="padding-left:37px">
+						 	 	<label style="line-height:42px;font-weight:normal;">Description :</label>
+							</div>
+							<div class="col-md-9" style="padding-left: 27px;padding-right: 0px;">
+							<input type="text"  name="attrid" id="attrid" class="hide"></input>
+								<textarea class="form-control" style="width: 100%;margin-top: 5px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;    height: 50px;
+    							margin-left: -56px;"  id="edittxtdesc" name="edittxtdesc" row="3" maxlength="50"></textarea>
+							</div>
+						</div>
+					</div>
+				<!-- 	<div class="row">
+						<div class="col-md-6" >
+							<div class="col-md-5" style="padding-left: 37px;">
+						 	 	<label style="line-height:42px;font-weight:normal;">Data Type :</label>
+							</div>
+							<div class="col-md-6" style="padding-left:55px;">
+								<select class="form-control" style="width: 220px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;margin-left: -41px;padding-left: 15px;"  id="edittxtdatatype" onchange="editshowdropdown()" name="txtdatatype" >
+									<option value="varchar">Varchar</option>
+									<option value="number">Number</option>
+									//<option value="dropdown">Dropdown</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6" id="numblength">
+							<div class="col-md-5">
+						 		<label style="line-height:42px;font-weight:normal;">Length :</label>
+							</div>
+							<div class="col-md-6" style="padding-left: 70px;">
+								<input type="number" class="form-control" style="width: 200px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;margin-left: -73px;"  oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" min = "1" max = "99999"  id="edittxtlength" name="txtlength" pattern="\d+" min="0"maxlength="6">
+							</div>
+						</div>
+					</div> -->
+                     
+                    <!-- /*	<div class="row hide" id="dropdownedit">
+						<div class="col-md-12" >
+							<div class="col-md-2" style="padding-top:0px">
+						 	 	<label style="margin-left: 18px;line-height: 42px;font-weight:normal;">Dropdown</label>
+							</div>
+							<div class="col-md-6" style="padding-left: 20px">
+								<select onchange="GetAllvalues1(this.id);" class="form-control" id="valusetg1" name="valuesetgroup"  style="margin-top: 5px;height: 30px;border-radius: 5px;margin-bottom: 0px;border: 1px solid lightgrey;margin-left:19px;
+                              	font-size: 12px;font-family: raleway;background-color: #fff;">
+								</select>
+							</div>
+							<div class="col-md-4" style="padding-left:42px;padding-top:4px;">
+							<button type="button" class="btn btn-default btn-sm" onclick="showtab();" style="width: 75px;height: 28px;background-color: #F4F4F6;color: #7E7E7E;border:1px solid lightgrey;"> 
+          						<span class="glyphicon glyphicon-plus" style="color:green;"></span> Add 
+        					</button>
+         					<button type="button" class="btn btn-default btn-sm" onclick="edittab();" style="width: 75px;height: 28px;background-color: #F4F4F6;color: #7E7E7E;border:1px solid lightgrey;">
+          						<span class="glyphicon glyphicon-pencil" style="color:blue;"></span> Edit 
+        					</button>
+							</div>
+						</div>
+						
+					</div>
+						<div class="row hide" style="padding-left: 21px;padding-right: 90px;padding-top:0px;margin-top:-4px;" id="dropdownvaluesedit">
+							<textarea  readonly="readonly" class="form-control" style="margin-top: 0px;
+    						margin-left: 25px;margin-bottom:15px;
+    						width: 100%;" placeholder="Select valueset to see LOV" class="form-control hide" rows="1" id="txtvalues1" name="txtvalues"></textarea>
+						</div>*/ -->
+
+
+					<div class="row">
+						<div class="col-md-6 hide" >
+							<div class="col-md-6" style="padding-left:37px;">
+						 	 	<label style="line-height:31px;font-weight:normal;">Data Precison :</label>
+							</div>
+							<div class="col-md-6" style="padding-left:31px;">
+								 <input type="text" class="form-control" style="width: 220px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;margin-left: -53px;"  id="edittxtprecison" name="txtprecison">
+							</div>
+						</div>
+						<div class="col-md-6 hide">
+							<div class="col-md-5 hide">
+						 		<label style="line-height:42px;font-weight:normal;"> Scale :</label>
+							</div>
+							<div class="col-md-6">
+								<input type="text" class="form-control" style="width: 200px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;margin-left: -73px;" id="editscale" name="scale">
+							</div>
+						</div>
+					</div>
+					<div class="row" style="padding-top:20px;padding-right:60px;">
+							<input type="Button" class="btn btn-success" style="width: 18%;
+    						background-color:#F4F4F6;color:#7e7e7e;
+    						height: 35px;margin-top:10px;border:1px solid lightgrey;float:right" value="Edit Attribute Mapping" onclick="movetomappingpage();">
+							<input type="button" class="btn btn-success" style="width: 18%;
+    						background-color:#F4F4F6;color:#7e7e7e;
+    						height: 35px;margin-top:10px;border:1px solid lightgrey;float:right" value="Save Attribute" onclick="update1();">
+    						<input type="button" class="btn btn-success" style="width: 18%;
+    						background-color:#F4F4F6;color:#7e7e7e;
+    						height: 35px;margin-top:10px;border:1px solid lightgrey;float:right" value="Delete Attribute" onclick="delAtt();">
+    					
+    				</div>
+				</div>
+			</form>
+		</div>
+		<div class="hide" id="addattribute">
+			<form method="post" action="/admin/save_attribute" onsubmit="return validateform()">
+				<div id="divattribute" class="row" >
+					<div class="row">
+						
+						<div class="col-md-12">
+							<div class="col-md-3" style="padding-left:33px;">
+						 		<label  style="line-height:42px;font-weight:normal;"> Attribute :</label>
+							</div>
+							<div class="col-md-9">
+								<input type="text" class="form-control" style=" width: 100%;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;margin-left: -39px;"   id="txtattribute" maxlength="50" name="txtattribute" required>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="col-md-3" style="padding-left:33px;">
+						 		<label  style="line-height:42px;font-weight:normal;"> Description :</label>
+							</div>
+							<div class="col-md-9">
+								<textarea class="form-control" style="width: 100%;margin-top: 5px;height: 50px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;
+                                font-size: 12px;font-family: raleway;margin-left: -39px;"  id="txtdesc" name="txtdesc" maxlength="50" ></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6" >
+							<div class="col-md-5">
+						 	 	<label style="margin-left: 18px;line-height: 42px;font-weight:normal;">Data Type :</label>
+							</div>
+							<div class="col-md-7" style="padding-left:19px;">
+								<select class="form-control" style="width: 200px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;"  id="txtdatatype" name="txtdatatype" onchange="showdropdown();">
+									<option value="varchar" selected>Varchar</option>
+									<option value="number">Number</option>
+									<option value="dropdown">Dropdown</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6" id="lengthforvarchar">
+							<div class="col-md-5" style="padding-left:0px;">
+						 		<label style="line-height:42px;font-weight:normal;">Length :</label>
+							</div>
+							<div class="col-md-7" style="padding-left: 55px">
+								<input type="text" class="form-control"  oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength = "10" min = "1" max = "99999" style="width: 200px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;    margin-left: -56px;"   id="txtlength" name="txtlength" pattern="\d*" maxlength="6">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 hide" >
+							<div class="col-md-6">
+						 	 	<label style="margin-left: 18px;line-height: 42px;font-weight:normal;">Data Precison :</label>
+							</div>
+							<div class="col-md-6" style="padding-left:0px;">
+								 <input type="text" class="form-control" style="width: 200px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;margin-left:-17px;"  id="txtprecison" name="txtprecison">
+							</div>
+						</div>
+						<div class="col-md-6 hide">
+							<div class="col-md-5" style="padding-left:0px;">
+						 		<label style="line-height:42px;font-weight:normal;"> Scale :</label>
+							</div>
+							<div class="col-md-7">
+								<input type="text" class="form-control" style="width: 200px;margin-top: 5px;height: 35px;border-radius: 5px;margin-bottom: 0px;border: 1px solid #ccc;font-size: 12px;font-family: raleway;    margin-left: -56px;" cid="scale" name="scale">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<!-- <div class="col-md-6" >
+							<div class="col-md-5">
+						 	 	<label style="margin-left: 18px;line-height: 42px;font-weight:normal;"> Is Required:</label>
+							</div>
+							<div class="col-md-1" style="margin-top:10px">
+							<input type="checkbox" name="chkvalidation" id="chkvalidation">	
+											<input type="text" class="hide" name="ddlvalidation" id="ddlvalidation" value="0" >	
+												<input type="text" class="hide" name="ddlifAttribute" id="ddlifAttribute" value="0" >								 
+							</div>
+						</div> -->
+						<!--div class="col-md-6">
+							<div class="col-md-5" style="padding-left:0px;">
+						 		<label style="line-height:42px;font-weight:normal;"> Is Attribute :</label>
+							</div>
+							<div class="col-md-1" style="margin-top:10px;margin-left:-64px;">
+							<input type="checkbox" name="chkifAttribute" id="chkifAttribute">
+							</div>
+						</div-->
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<input type="button" value="Add Validation" class="grayButtonPMS" style="    background-color: #F4F4F6;color: #7E7E7E;height: 36px;width: 150px;border-radius: 5px;border: 1px solid #e7e7e7;margin-top: 5px;margin-left:33px;" onclick="showmodal()" />
+							<input type="text" id='exprcollection' class="hide" name='exprcollection'>
+						</div>
+					</div>
+					<div id="myModal" class="modal fade" role="dialog">
+  						<div class="modal-dialog">
+    						<div class="modal-content">
+      							<div class="modal-header" style="background-color:#3BBDEB;">
+        							<button type="button" class="close" data-dismiss="modal">&times;</button>
+       								<center> <h4 class="modal-title" style="color:white">Validation</h4></center>
+     							 </div>
+      							 <div class="modal-body">
+      							 	<div class="row">
+      							 		<div class="col-md-10">
+      							 			<input type="text" id="expr" class="form-control" placeholder="Enter The Expression" style="margin-left:5px;" maxlength="200">
+      							 		</div>
+      							 		<div class="col-md-2" style="margin-top:8px;">
+      							 			<input type="button" class="btn btn-success" style="width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border-radius:5px;margin-right:50px;margin-left:-28px;" value="Add" onclick="addexpression();">
+      							 		</div>
+      							 	</div>
+      							 	<div class="row">
+      							 		<div class="col-md-12" id="express" style="border:1px solid lightgray;height:300px;border-radius:5px;overflow-y:scroll;">
+      							 		</div>
+      							 		<div class="col-md-12" id="express" style="margin-top:5px;">
+                          					<input type="button" class="btn btn-success" style="width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border-radius:5px;margin-right:3px;margin-left:-28px;float:right;" value="Submit" data-dismiss="modal" data-dismiss="modal">
+                        				</div>
+      							 	</div>
+      							 </div>
+      							<div class="modal-footer" style="border-top: 0px solid #e5e5e5;">
+      							</div>
+    						</div>
+ 						 </div>
+					</div>
+					<div class="row hide" id="dropdown">
+						<div class="col-md-12" >
+							<div class="col-md-2" style="padding-top:0px">
+						 	 	<label style="margin-left: 18px;line-height: 42px;font-weight:normal;">Dropdown</label>
+							</div>
+							<div class="col-md-6" style="padding-left: 20px;">
+								<select onchange="GetAllvalues(this.id);" class="form-control" id="valusetg" name="valuesetgroup"  style="margin-top: 5px;height: 30px;border-radius: 5px;margin-bottom: 0px;border: 1px solid lightgrey;margin-left:19px;
+                              	font-size: 12px;font-family: raleway;background-color: #fff;">
+								</select>
+							</div>
+							<div class="col-md-4" style="padding-left:47px;padding-top:4px;">
+							<button type="button" class="btn btn-default btn-sm" onclick="showtab();" style="width: 75px;height: 28px;background-color: #F4F4F6;color: #7E7E7E;border:1px solid lightgrey;"> 
+          						<span class="glyphicon glyphicon-plus" style="color:green;"></span> Add 
+        					</button>
+         					<button type="button" class="btn btn-default btn-sm" onclick="edittab();" style="width: 75px;height: 28px;background-color: #F4F4F6;color: #7E7E7E;border:1px solid lightgrey;">
+          						<span class="glyphicon glyphicon-pencil" style="color:blue;"></span> Edit 
+        					</button>
+							</div>
+						</div>
+						
+					</div>
+						<div class="row hide" style="padding-left: 21px;padding-right: 90px;padding-top:0px;margin-top:-4px;" id="dropdownvalues">
+							<textarea  readonly="readonly" class="form-control" style="margin-top: 0px;
+    						margin-left: 25px;margin-bottom:15px;
+    						width: 100%;" placeholder="Select valueset to see LOV" class="form-control hide" rows="1" id="txtvalues" name="txtvalues"></textarea>
+						</div>
+					<div class="row" style="padding-left: 47px;padding-right: 42px;padding-top:0px;margin-top:-4px;">
+						<select class="form-control " name="ddltemplate" id="ddltemplate"  style=" width: 93.5%;margin-left: 30px;overflow:auto;height:100px;"  multiple="multiple">	
+						</select>
+						<button type="button" class="btn btn-success" onclick="getCategory();" style="width: 75px;height: 37px;background-color: #F4F4F6;color: #7E7E7E;border:1px solid lightgrey;">Get</button>
+					</div>
+					<div class="row" style="padding-left: 29px;padding-right: 71px;padding-top:0px">
+					<div id="divat" class="row" style="width:100%;margin-left: 15px;height:170px;overflow:auto;border:1px solid lightgrey;margin-top:10px;border-radius:5px;padding:10px">          
+						<label id="lblcategory" style="margin-top:8px;font-weight:normal;"></label>
+						<div id="chkcategory"></div>             
+					</div>
+					</div>
+					<div class="col-md-12" style="padding-top:10px;padding-right:45px;">
+					
+							<input type="submit" class="btn btn-success" style="width: 106px;
+    						background-color:#F4F4F6;color:#7e7e7e;float:right;
+    						height: 37px;margin-top:10px;border:1px solid lightgrey;" value="Add Attribute">
+    				
+    				</div>
+    				<input type="text" name="renders" id="renders" class="hide">
+				</div>
+			</form>
+			</div>
+		</div>
+		<div class="col-md-3 "  >
+		<input type="search" id="filter1" style="width:100%;" class="form-control" placeholder="Search" onkeyup="filterAttribute1();">
+			<div style="width: 100%;margin-top: 10px;height: 30px;padding-left: 15px;padding-top: 4px;
+            color: white;background-color:#f4f4f6;color:#7e7e7e;border: 2px solid lightgrey;border-bottom:0px;">	Existing Attributes
+			</div>	
+			<div id="attrset" style="height: 480px;overflow-y: scroll;border: 2px solid lightgrey;">
+			</div>
+		</div>
+		<div class="hide" id="vaste">
+		</div>
+	</div>
+	<div class="row hide" id="divAddvlov">
+		<% include ./add_valuset1%>
+	</div>
+</div>
+<% include ../footer %>

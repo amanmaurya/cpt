@@ -1,0 +1,331 @@
+<% include ./sidemenu %>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+ 
+
+function addremove(id){
+  var flag ;
+  var selectid=id+'s';
+  var valid=id+'v';
+  var isattr=id+'a'
+  var attrid=$('#attributid').val();
+  if($('#'+id).is(':checked')){
+    flag=0;
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attributevalid';
+    $.ajax({
+      data:{'catid':$('#'+id).val(),'attrid':attrid,'valset':$('#'+selectid).val(),'isattr':$('#'+isattr).val(),'flag':flag,'validflag':$('#'+valid).val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+       alert_modal("Attribute mapped successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+  else{
+    flag=1;
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+    $.ajax({
+      data:{'catid':$('#'+id).val(),'attrid':attrid,'valset':$('#'+selectid).val(),'isattr':$('#'+isattr).val(),'flag':flag,'validflag':$('#'+valid).val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+        alert_modal("Attribute mapping deleted successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function editsisattr(id){
+  var catid=id.replace('a','');
+  var selectid=catid+'s';
+  var validflag=catid+'v';
+  var attrid=$('#attributid').val();
+  var flag=2;
+  if($('#'+catid).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+    $.ajax({
+      data:{'catid':$('#'+catid).val(),'attrid':attrid,'valset':$('#'+selectid).val(),'isattr':$('#'+id).val(),'flag':flag,'validflag':$('#'+validflag).val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+       alert_modal("Is Attribute updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function editvalset(id){
+  var catid=id.replace('s','');
+  var isattr=catid+'a';
+  var validflag=catid+'v';
+  var attrid=$('#attributid').val();
+  var flag=3;
+  if($('#'+catid).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+    $.ajax({
+      data:{'catid':$('#'+catid).val(),'attrid':attrid,'valset':$('#'+id).val(),'isattr':$('#'+isattr).val(),'flag':flag,'validflag':$('#'+validflag).val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+        alert_modal("Valueset updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function editvalidation(id){
+  var catid=id.replace('v','');
+  var isattr=catid+'a';
+  var selectid=catid+'s';
+  var attrid=$('#attributid').val();
+  var flag=4;
+  if($('#'+catid).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+    $.ajax({
+      data:{'catid':$('#'+catid).val(),'attrid':attrid,'valset':$('#'+selectid).val(),'isattr':$('#'+isattr).val(),'flag':flag,'validflag':$('#'+id).val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+        alert_modal("Validation updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function showmodal(id)
+{
+  var checkid=id.replace('y','');
+  var attrid=$('#attributid').val();
+  if($('#'+checkid).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getExpression';
+    $.ajax({
+      data:{'catid':$('#'+checkid).val(),'attrid':attrid},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+         $('#express').html('');
+        if(data.length != 0){
+          for(var i=0;i<data.length;i++){
+            $('#express').append($("<div><input type='checkbox' class='newexpr' value='"+data[i].Expression+"' id='"+data[i].Expression+"'   checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+data[i].Expression+'l'+"' style='padding-left:5px;font-weight:normal'>"+data[i].Expression+"</label></div>"));
+          }
+        }
+        $('#category').val(checkid);
+        $("#myModal").modal('show');
+      },
+      dataType : 'JSON',
+    });
+    
+  }
+  
+}
+
+function addexpression(){
+  var already=2;
+  var expr1=$('#expr').val();
+  var exp=(($('#expr').val()).toLowerCase()).trim();
+  if(exp != ''){
+    $(".newexprlbl").each(function () {
+      var existvalue = ($(this).text()).toLowerCase();
+      if(existvalue == exp){
+        already=1;
+        return false;
+      }
+      else{
+        already=2;
+      }
+    });
+    if(already == 2){
+      $('#express').append($("<div><input type='checkbox' class='newexpr' value='"+expr1+"' id='"+expr1+"'    checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+expr1+'l'+"' style='padding-left:5px;font-weight:normal'>"+expr1+"</label></div>"));
+    }
+  }
+  $('#expr').val('');
+}
+
+function submitExpression(){
+  var attrid=$('#attributid').val();
+  var expres=[];
+  var expr='';
+  $(".newexpr").each(function () {
+    if($(this).is(':checked')){
+      expres.push($(this).next('label').text());
+    }
+  });
+  for(var i=0;i<expres.length;i++){
+      if(expr == ''){
+        expr=expres[i];
+      }
+      else{
+        expr=expr+','+expres[i];
+      }
+  }
+  if(expr != ''){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/submitExpression';
+    $.ajax({
+      data:{'catid':$('#category').val(),'attrid':attrid,'expres':expr},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+            alert_modal("Validation updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function deleteexp(id){
+  console.log(id);
+    var lbl=id+'l';
+    $('#'+id).remove();
+    $('#'+lbl).remove();
+}
+
+function move(){
+  var newLink = $("<a />", {
+        id   : "eatt",
+        name : "link",
+        href : "/admin/",
+        text : "Hello"
+    });
+    $("#temp").append(newLink);
+    $('#eatt').get(0).click();
+}
+</script>
+<style>
+.temp{
+	border:1px solid Lightgrey;
+	border-radius:3px;
+	background-color:#27B7EA;
+	color:white;
+	padding-left:15px;
+	padding-right:15px;
+	padding-top:5px;
+	padding-bottom: 5px;
+}
+.catgeor{
+	
+	border-radius:3px;
+	background-color:#fff;
+	color:#000;
+	padding:15px;
+	padding-top:0px;
+}
+</style>
+<div class="content-here col-md-11" style="height:600px;overflow:auto;margin-top: 20px">
+<link href="../stylesheets/adminstyle.css" rel="stylesheet">
+	<div id="diveditAttribute" style="padding:10px" >
+        <div class="col-md-12" style="margin-top:15px;">
+            <label>Attribute:<%=category[0].attributeName%></label>
+            <input type="text" value='<%=category[0].AttributeID%>' id='attributid' class="hide"/>
+        </div>
+        	<div class="col-md-12"  style="margin-top:15px;">
+            	<div class="">
+               		<div class=" temp"  onclick="show(this.id);" >
+               			<%=category[0].Name%>
+               		</div>
+               		<div class=" catgeor" >
+               				<div class="row" style="border:1px solid lightgrey;padding-top:8px;" >
+               					<div class="col-md-3" style="padding-left:15px;">
+               						<input type='checkbox' class='newcheck' value='<%=category[0].categoryID%>'   name='newcheck' checked  id='<%=category[0].categoryID%>' onchange="addremove(this.id)"><label class='newlbl' style='padding-left:5px;' ><%=category[0].categoryName%></label>
+               					</div>
+                        <div class="col-md-3" style="padding-bottom: 8px;">
+                          <input type="button" value="Add Validation" class="grayButtonPMS" style="background-color: #F4F4F6;color: #7E7E7E;height: 36px;width: 150px;border-radius: 5px;border: 1px solid #e7e7e7;margin-left:40px;" onclick="showmodal(this.id)" id='<%=category[0].categoryID+'y'%>' />
+                        </div>
+                        <div class="col-md-2" style="padding-bottom: 8px;">
+                          <select id='<%=category[0].categoryID+'a'%>' class='form-control' onchange="editsisattr(this.id);">
+                              <% if(category[0].isAttribute == 1) {%>
+                                <option value="1" selected>Is Attribute</option>
+                                <option value="0" >Not Attribute</option>
+                              <% } else {%>
+                                <option value="1" >Is Attribute</option>
+                                <option value="0" selected>Not Attribute</option>
+                              <%}%>
+                          </select>
+                        </div>
+               					<div class="col-md-2" style="padding-bottom: 8px;">
+               						<select id='<%=category[0].categoryID+'s'%>' class='form-control' onchange='editvalset(this.id)'>
+               							<option value="0" selected>Select</option>
+               							<% for(var s=0;s<valset.length;s++){%>
+               								<% if(valset[s].ID == category[0].fk_ValueSetId) {%>
+               									<option value="<%=valset[s].ID%>" selected><%=valset[s].Name%></option>
+               								<% } else {%>
+               									<option value="<%=valset[s].ID%>" ><%=valset[s].Name%></option>
+               								<%}%>
+               							<%}%>
+               						</select>
+               					</div>
+               					<div class="col-md-2" style="padding-bottom: 8px;">
+               						<select id='<%=category[0].categoryID+'v'%>' class='form-control' onchange="editvalidation(this.id);">
+               								<% if(category[0].Validation == 1) {%>
+               									<option value="1" selected>Required</option>
+                                <option value="0" >Not Required</option>
+               								<% } else {%>
+               									<option value="1" >Required</option>
+                                <option value="0" selected>Not Required</option>
+               								<%}%>
+               						</select>
+               					</div>
+               				</div>
+               		</div>
+            	</div>
+        	</div>
+         <div class="col-lg-12 ">
+        <input type="submit" value="Cancel" style="    float: right;
+   color: #7e7e7e;
+    background-color: #F4F4F6;
+    width: 150px;
+    height: 40px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;margin-bottom:10px;margin-right:10px;" onclick="move();"/>
+          <input type="submit" value="Submit" style="    float: right;
+   color: #7e7e7e;
+    background-color: #F4F4F6;
+    width: 150px;
+    height: 40px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;margin-bottom:10px;margin-right:10px;" onclick="move();"/>
+     
+          </div>
+	</div>
+  <div id="myModal" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#3BBDEB;">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <center> <h4 class="modal-title" style="color:white">Validation</h4></center>
+                   </div>
+                     <div class="modal-body">
+                      <div class="row">
+                        <div class="col-md-10">
+                          <input type="text" id="expr" class="form-control" placeholder="Enter The Expression" style="margin-left:5px;">
+                          <input type="text" id="category" class="form-control hide" placeholder="Enter The Expression" style="margin-left:5px;">
+                        </div>
+                        <div class="col-md-2" style="margin-top:8px;">
+                          <input type="button" class="btn btn-success" style="width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border-radius:5px;margin-right:50px;margin-left:-28px;" value="Add" onclick="addexpression();">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12" id="express" style="border:1px solid lightgray;height:300px;border-radius:5px;overflow-y:scroll;">
+                        </div>
+                        <div class="col-md-12" id="express" style="margin-top:5px;">
+                          <input type="button" class="btn btn-success" style="width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border-radius:5px;margin-right:3px;margin-left:-28px;float:right;" value="Submit" data-dismiss="modal" onclick="submitExpression();">
+                        </div>
+                      </div>
+                     </div>
+                    <div class="modal-footer" style="border-top: 0px solid #e5e5e5;">
+                    </div>
+                </div>
+             </div>
+          </div>
+          <div id="temp" class="hide">
+          </div>
+</div>
+<% include ../footer %>

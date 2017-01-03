@@ -1,0 +1,314 @@
+<% include ./user_header %>
+
+    <!-- <script src="/javascripts/q.js"></script> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+
+    <script type="text/javascript">
+        function getMerchant() {
+            // alert($('#merchant_id').val())
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/users' + '/checkMerchat';
+            $.ajax({
+                url: url,
+                method: 'post',
+                data: {
+                    'id': $('#merchant_id').val()
+                },
+                success: function (data) {
+                    console.log(data)
+                    if(!data.length > 0) {
+                        // alert('');
+                        $.notify({
+                            message: 'Merchant Id not Exist'
+                        }, {
+                            type: 'danger'
+                        });
+
+
+                        $('#merchant_id').val('');
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+    </script>
+
+    <style>
+        label {
+            line-height: 32px !important;
+        }
+          input.error,
+        select.error,
+        label.error {
+            border: 2px solid red;
+            background-color: #FFFFD5;
+            margin: 0px;
+            color: red;
+        }
+    </style>
+    <div id="upload-template" style="">
+        <form action="" id='aform' method="POST" encType="multipart/form-data">
+            <div class="col-lg-12 center" style=" background-color:#f4f4f6;">
+
+                <center>
+                    <h3>Upload Template</h3>
+                </center>
+
+            </div>
+            <div class="col-lg-12" style="background-color:white;">
+                <div class="col-lg-12 uptop" style="margin-top:20px">
+                    <div class="col-lg-4">
+                        <label for="template">Upload Template</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input id="upload-file" name="template" type="file" class="form-control" placeholder="Template" required>
+                        <input type="text" name="fname" id="fname" class="hide" />
+                    </div>
+                </div>
+                <div class="col-lg-12 uptop">
+                    <div class="col-lg-4">
+                        <label for="template">Select Template</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <select name="selected_template" class="form-control" required>
+       <option disabled selected value=" ">Select</option>
+        <% for (var a = 0; a < templates.length; a++) { %>
+
+        <option value="<%=templates[a]%>"><%=templates[a]%></option>
+        <% } %>
+      </select>
+                    </div>
+                </div>
+                <div class="col-lg-12 uptop">
+                    <div class="col-lg-4">
+                        <label for="sheet number"> Excel Sheet Number</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input name="sheet_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="10" min="1" max="99999" type="number" class="form-control" placeholder="Sheet Number" maxlength="2" required>
+                    </div>
+                </div>
+                <div class="col-lg-12 uptop">
+                    <div class="col-lg-4">
+                        <label for="header row number">Header Row</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input name="header_row_number" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);" maxlength="10" min="1" max="99999" type="number" class="form-control" placeholder="Header Row Number" maxlength="2" required>
+                    </div>
+                </div>
+                <div class="col-lg-12 uptop ">
+                    <div class="col-lg-4">
+                        <label for="header row number">Image Path</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input name="image_path" onchange="checkpath()" id='image_path' type="text" class="form-control" placeholder="Image Path">
+                    </div>
+                </div>
+                <div class="col-lg-12 uptop">
+                    <div class="col-lg-4">
+                        <label for="merchnats"> Merchant Code</label>
+                    </div>
+                    <div class="col-lg-8">
+                        <input name="merchant_id" class="form-control" id="merchant_id" maxlength="40" required>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 uptop">
+                    <center> <button id="sub" type="button" onclick='savefile()' class="btn btn-default" style="color:#7e7e7e;background-color:#f4f4f6;width:150px;height:35px;">Submit</button>
+                    </center>
+                </div>
+            </div>
+        </form>
+    </div>
+    <% include ./footer %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+
+                var fileInput = $('#upload-file');
+                fileInput.change(function () {
+                    var filename = fileInput.val();
+                    var flname = filename.split('\\');
+                    $('#fname').val(flname[flname.length - 1]);
+                    var ext = fileInput.val().split('.').pop().toLowerCase();
+                    if($.inArray(ext, ['xls', 'xlsx']) == -1) {
+                        notify.update({
+                            'type': 'danger',
+                            'message': 'invalid extension! Extention could only be xls or xlsx'
+                        });
+                        // alert('');
+                        fileInput.val('');
+                    }
+                });
+
+
+                var $form = $('#myForm');
+
+                $('#sub111').click(function () {
+                    var value = $("#merchant_id").val().trim();
+                    if(value == '') {
+                        notify.update({
+                            'type': 'danger',
+                            'message': 'Merchant Code required.'
+                        });
+                        // alert("");
+                        return false;
+                    }
+                    checkpath();
+
+                    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/users' + '/checkMerchat';
+                    $.ajax({
+                        url: url,
+                        method: 'post',
+                        async: false,
+                        data: {
+                            'id': $('#merchant_id').val()
+                        },
+                        success: function (data) {
+                            console.log(!data.length > 0)
+                            if(!data.length > 0) {
+                                notify.update({
+                                    'type': 'danger',
+                                    'message': 'Merchant Id not Exist'
+                                });
+                                // alert('Merchant Id not Exist');
+                                $('#merchant_id').val('');
+                            } else {
+                                $form.submit();
+                            }
+                        },
+                        dataType: 'JSON',
+                    });
+                    return true;
+                });
+
+            });
+
+            function checkpath() {
+
+                if($('#image_path').val().trim() != '') {
+                    var notify = $.notify('<strong>Checking</strong> for errors.', {
+                        type: 'success',
+                        allow_dismiss: false
+                    });var a=$('#image_path').val().trim().replace(/\\/g, "/")
+                    $('#image_path').val(a)
+                    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/users' + '/getfolderFiles';
+                    $.ajax({
+                        url: url,
+                        method: 'post',
+                        async: false,
+                        data: {
+                            'path': $('#image_path').val(),
+                            'flag': 1
+                        },
+
+                        success: function (data) {
+                            console.log(!data.length > 0)
+                            if(!data.length > 0) {
+                                // alert('Path');
+                                // $('#image_path').val('');
+                            } else {
+                                notify.update({
+                                    'type': 'success',
+                                    'message': '<strong></strong> Image Folder verifyed '
+                                });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            notify.update({
+                                'type': 'danger',
+                                'message': '<strong></strong> Image Folder does not exists'
+                            });
+                            // $('#image_path').val('');
+                        },
+                        dataType: 'JSON',
+                    });
+                }
+
+            }
+
+
+
+            function savefile(id) {
+                checkpath()
+                getMerchant()
+                setTimeout(function () {
+                    var data1 = new FormData($('#aform')[0]);
+                    if(!$('#aform').valid()) {
+                        // alert('')
+                        $.notify({
+                            message: 'File required'
+                        }, {
+                            type: 'danger'
+                        });
+                    } else {
+                        $('#aform').submit()
+                            // var form = new FormData();
+
+                        // var url1 = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/users/upload_template';
+                        // $.ajax({
+                        //     url: url1,
+                        //     method: 'POST',
+                        //     data: data1,
+
+                        //     contentType: false,
+                        //     processData: false,
+
+
+                        //     success: function (csvData1) {
+                        //         console.log(csvData1)
+                        //          window.location='/users/map_columns';
+                        //         alert(csvData1)
+                        //     },
+                        //      error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        //         console.log(XMLHttpRequest, textStatus, errorThrown)
+                        //         // notify.update({
+                        //         //     'type': 'danger',
+                        //         //     'message': '<strong></strong> Image Folder does not exists'
+                        //         // });
+                        //         // $('#image_path').val('');
+                        //     },
+                        //     dataType: 'JSON',
+                        // });
+                    }
+                }, 1000);
+
+
+            }
+
+            // function validateform() {
+            //     var value = $("#merchant_id").val().trim();
+
+            //     if(value == '') {
+            //         alert("Please Select The Merchant");
+            //         return false;
+            //     }
+
+            //     var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/users' + '/checkMerchat';
+            //     $.ajax({
+            //         url: url,
+            //         method: 'post',
+            //         async: 'false',
+            //         async: false,
+            //         data: {
+            //             'id': $('#merchant_id').val()
+            //         },
+            //         success: function (data) {
+            //             console.log(!data.length > 0)
+            //             if(!data.length > 0) {
+
+
+            //                 alert('Merchant Id not Exist');
+            //                 $('#merchant_id').val('');
+            //                 return false;
+            //                 // deferred.reject(new Error(error));
+            //             } else {
+
+
+            //             }
+            //         },
+            //         dataType: 'JSON',
+            //     });
+            // }
+        </script>
+        <script type="text/javascript" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="/javascripts/bootstrap-notify.js"></script>
+        <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>

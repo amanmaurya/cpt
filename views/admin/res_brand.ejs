@@ -1,0 +1,306 @@
+
+<% include ./sidemenu %>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+errorArrayList=<%-JSON.stringify(errordata)%>;
+function formatString(array) {
+var header=['S.No','Brand','MerchantID','Remark'];
+    var newData = [];
+    newData.push(header);
+window.arr = array;
+
+    array.forEach(function(o, i){
+        var r  = [];
+        for (var k in o){
+            r.push(o[k]);
+        }
+        newData.push(r);
+    });
+    return  newData.join("\n");
+}
+
+var oTable;
+$(document).ready(function () {
+    oTable = $('#tbllogs').dataTable({
+               'iDisplayLength': 10,
+                "order":[],
+                "bDestroy": true, 
+                "info":false,
+            });
+  $("#lirib").addClass('activetab');
+  if(errorArrayList.length>0)
+        {
+            var csvContent = "data:text/csv;charset=utf-8,";
+            csvContent=csvContent+formatString(errorArrayList)
+            var encodedUri = encodeURI(csvContent);       
+            var link = document.createElement("a");       
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Error_Upload" + ".csv");       
+            document.body.appendChild(link);       
+            link.click();   
+            document.body.removeChild(link);
+            errorArrayList=null;   
+        }
+
+
+   var fileInput = $('#attributefile');
+    fileInput.change(function() {
+    var filename=fileInput.val();
+    var flname=filename.split('\\');
+    $('#fname').val(flname[flname.length-1]);
+    var ext = fileInput.val().split('.').pop().toLowerCase();
+    if($.inArray(ext, ['xls','xlsx']) == -1) {
+      alert_modal('invalid extension! Extention could only be xls or xlsx','danger');
+      fileInput.val('');
+    }
+  });
+
+
+});
+</script>
+<script type="text/javascript">
+    
+function showmodal()
+{
+    $("#myModal").modal('show');
+}
+function showmoda1()
+{
+    $("#myModal1").modal('show');
+}
+</script>
+<div class="content-here col-md-10" style="height:600px;overflow:auto;margin-top: 20px">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<link href="../stylesheets/adminstyle.css" rel="stylesheet">
+ <div class="row">
+ <div class="col-md-2" style="margin-left:-10px;">
+ <input type="button" value="Add Restricted Brand" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    float:right;" onclick="add()" />
+    </div>
+    <div class="col-md-2">
+ <input type="button" value="Upload Restricted Brand" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 180px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="showmodal()" />
+  </div>
+  <div class="col-md-8 "></div>
+  </div>
+  <table id="tbllogs" class="table one" style="border:1px solid black;">
+        <thead>
+                <tr>
+                       <!-- <th> Brand ID </th>-->
+                        <th> Brand Name </th>
+                        <th> Merchent Code </th>
+                        <th> Action </th>
+                </tr>
+        </thead>
+        <tbody>
+                <% for(var i = 0; i < rows.length ; i++) { %>
+
+                        <tr id='tr_<%=rows[i].ID %>'>
+                             <!--   <td><%=rows[i].ID %> </td> -->
+                                <td><%=rows[i].Brand %> </td>
+                                <td><%=rows[i].MerchantId %> </td>
+                              
+                               <td><span title="Edit" style="cursor: pointer;" class="glyphicon glyphicon-pencil" onclick="div_show_onedit(<%=rows[i].ID %>,'<%=rows[i].Brand %>','<%=rows[i].MerchantId %>')" > Edit&nbsp;</span><span title="Delete" style="cursor: pointer;" class="glyphicon glyphicon-trash" onclick="deleterestricted(<%=rows[i].ID %>)" > Delete &nbsp; </span></td>
+                        </tr>
+                        <%}%>
+        </tbody>
+  </table>
+</div>
+<% include ../footer %>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#3BBDEB;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+       <center> <h4 class="modal-title" style="color:white;">Upload Restricted Brand</h4></center>
+      </div>
+      <div class="modal-body">
+       <div class="row" id="divUploadAttribute" >
+
+    <form  action="/admin/upload_resbrand" method="post" encType="multipart/form-data" onsubmit="return verifyfile('fileuploadfile')">
+                        
+                        <div class="col-lg-12">
+                        <div class="col-lg-4" style="padding-right:0px;">
+                        Upload Restricted Brand Excel file :
+                        </div>
+                         <div class="col-lg-8">
+                         <input type="file" id="attributefile" name="attributefile" class="fileuploadfile form-control" required>
+                         </div>
+                        </div>
+                        <div class="col-lg-12">
+                        <button type="submit" class="btn btn-success" style="    float: right;
+    margin-top: 20px;
+    margin-right: 16px;
+    background-color: #3BBDEB;
+    border: 1px solid lightgrey;height: 30px;">Submit</button>
+                        </div>
+                        
+                        </form>
+
+
+                           <div class="panel " style="background-color:white;">
+                            
+                            <div class="panel-body">
+                            <hr style="    margin-left: 15px;
+    margin-right: 20px;"/>
+                            <h4 style="padding-left:20px;">Note for Uploading files</h4>
+                                <ul>
+                                    <li style="list-style:square;">The maximum file size for uploads is <strong>5 Mb</strong></li>
+                                    <li style="list-style:square;">Only data files (<strong>.xls,.xlsx</strong>) are allowed </li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+    </div>
+      </div>
+      <div class="modal-footer" style="border-top: 0px solid #e5e5e5;">
+      
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+  <div id="adg1">
+    <div id="popupContact">
+        
+
+     <form class="login-form" id="form2" method="post" action="/admin/addeditrestrictedbrand" style="max-width: 542px;" onsubmit="return valdatetempandcate();" >
+        <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide1()" />
+        <center> <h3  id="heading">Add Restricted Brand</h3></center>
+        <hr style="    margin-left: 2px;
+    margin-right: 1px;"/>
+        <div class="modal-body">
+          <input type="text" class="hide" id="brandid" name="brandid">
+          <div class="col-lg-12">
+          <div class="col-lg-4 ll">
+          <label style="line-height:42px;" >Name:</label>
+                    </div>
+                    <div class="col-lg-8">
+                    <input type="text" class="form-control" id="brandname" name="brandname" placeholder="Enter Brand Name" required style="margin-top:5px;width:300px" maxlength="50">
+                    </div>
+                    </div>
+          <div class="col-lg-12" id="des">
+          <div class="col-lg-4 ll">
+          <label style="line-height:48px;" >Merchent Code:</label>
+                    </div>
+                    <div class="col-lg-7">
+                   <input type="text" class="form-control" id="merchantcode" name="merchantcode" placeholder="Enter Merchent Code" style="margin-top: 5px;
+                         width: 300px;
+                         padding-left: 4px;
+                         font-size: 16px;margin-bottom: 9px;" maxlength="25" >
+                    </div>
+                    </div>          
+        </div>
+        <center>
+          <input type="submit" class="btn btn-success" value="Submit" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+          <input type="reset" class="btn btn-success"  id="resetmodal" value="Clear" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+        </center>
+      </form>
+    </div>
+  </div>
+
+  <script>
+  function add(){
+  div_show1();
+}
+function div_show1(){ 
+$("#brandid").val(0);
+document.getElementById('adg1').style.display = "block";
+}
+function div_show_onedit(id,bname,merchantcode){
+$("#brandid").val(id);
+$("#brandname").val(bname);
+$("#merchantcode").val(merchantcode);
+document.getElementById('adg1').style.display = "block";
+
+}
+function div_hide1(){
+document.getElementById('adg1').style.display = "none";
+$("#resetmodal").click();
+}
+function valdatetempandcate(){
+if($("#brandname").val().trim()==""){
+alert_modal("  Name is required.",'danger');
+return false;
+}
+else
+{
+if($("#merchantcode").val().trim()=="")
+   {
+    alert_modal("Merchent Code is required.",'danger');
+    return false;
+    }
+  else{ var flag=0;
+        var bn=$("#brandname").val().trim().toLowerCase();
+        var mc=$("#merchantcode").val().trim().toLowerCase();
+        var table = $("table tbody");
+        table.find('tr').each(function (i) {
+           var $tds = $(this).find('td'),
+                bname = $tds.eq(0).text().trim().toLowerCase(),
+                mcode = $tds.eq(1).text().trim().toLowerCase();
+                if(bname == bn && mcode == mc ){ 
+                      flag=1; 
+                      alert_modal("This brand has already Restricted for this Merchent",'danger');
+                      
+                        }
+                    });
+        if(flag==1){
+          return false;
+        }
+
+      }
+}
+}
+
+function deleterestricted(ide){
+if(confirm("Do you want to delete this Record.")){
+       
+  $.ajax({
+      data:{"id":ide},
+      url: '/admin/deleterestrictedbrand',
+      method: 'POST',
+      success: function(data) {
+        console.log(data);
+        if(data.length != 0){
+          //alert_modal(msg);
+          if(data[0].res==1){
+          alert_modal("Record Deleted Successfully",'danger');
+         // window.location.reload();
+         $("#tr_"+ide).remove()
+        }
+
+        }
+      },
+      dataType: 'JSON',
+    });
+
+}
+}
+</script>

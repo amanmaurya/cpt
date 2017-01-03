@@ -1,0 +1,900 @@
+<% include ./sidemenu %>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#lilov").addClass('activetab')
+            getexistvalueset();
+            addlov();
+            $("#divadd").click(function () {
+                $("#divaddd").show();
+                $("#diveditt").hide();
+            });
+            $("#divedit").click(function () {
+                $("#diveditt").show();
+                $("#divaddd").hide();
+
+            });
+
+            setTimeout(function () {
+                if (localStorage['lovlabel'] != undefined)
+                    selectatt(localStorage['lovlabel'])
+            }, 100);
+        });
+
+        function getexistvalueset() {
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/existgetvaluset';
+            $.ajax({
+                url: url,
+                method: 'get',
+                success: function (data) {
+                    if (data.length != 0) {
+                        $('#vlset').html('');
+                        $('#valusetgroup').append('');
+                        $('#valusetgroup')
+                            .append($("<option></option>")
+                                .attr("value", '0')
+                                .text("select valueset"));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#vlset').append("<div><label style='font-weight:normal' id=" + data[i].ID + 'e' + " onclick='getdropdownvalues(this.id);' class='vset'>" + data[i].Name + "</label></div>");
+                            $('#vlset1').append("<div class='divlset1'id='divlset1" + data[i].ID + "' ><label style='display:grid;font-weight:normal;cursor: pointer;overflow: hidden;text-overflow: ellipsis;max-width:150px;width:150px' class='lblset1' id=" + data[i].ID + 'e' + " onclick='getdropdownvalues(this.id);' class='vset'>" + data[i].Name + "</label><span style='cursor: pointer;' class='glyphicon glyphicon-transfer spanSign' onclick='selectatt(" + data[i].ID + ");'></span><span title='Delete' style='padding:8px;float:right; cursor: pointer;' class='glyphicon glyphicon-trash' onclick='DeleteLOV(" + data[i].ID + ")'></span></div>");
+                            $('#valusetgroup')
+                                .append($("<option></option>")
+                                    .attr("value", data[i].ID)
+                                    .text(data[i].Name));
+                        }
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+
+        function DeleteLOV(lovid) {
+// alert(1)
+            $('#myModalalert').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                }).one('click', '#delete', function (e) {
+
+                    $.ajax({
+                        data: {
+                            "lovid": lovid
+                        },
+                        url: '/admin/deletelov',
+                        method: 'post',
+                        success: function (data) {
+                            //console.log("data--",data);
+                            if (data[0].abc == 1) {
+                                alert_modal(" Deleted Successfully", 'success');
+                                $('#divlset1' + lovid).addClass('hide');
+                            } else {
+                                alert_modal("This Valueset is mapped to Attribute -" + data[0].attrnames + ".Please remove mapping first.", 'danger');
+                            }
+                        },
+                        dataType: 'JSON',
+                    });
+                });
+
+
+        }
+
+        function getdropdownvalues(id) {
+            //var em=id+'e';
+            //alert_modal(id);
+            //$('.lblset1').removeClass('activetab');
+            //$('#'+id).addClass('activetab');
+
+            var orid = id.replace('e', '');
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getdropdownvaluesbyddname';
+            $.ajax({
+                data: {
+                    "data": orid
+                },
+                url: url,
+                method: 'post',
+                success: function (data) {
+                    $('#existing').html('');
+                    $('#eexisting').html('');
+                    var len = data.length + 10000;
+                    if (data.length != 0) {
+                        $('#eexisting').append($("<input type='checkbox' style='font-family:myfirstfont;font-size:13px'  onchange='CheckAll(this.id);' id='selectall'><label></label>")
+                            .attr("value", "0")
+                            .text("Select All"));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#existing').append($("<div><input type='checkbox' class='exsitcheck' value='" + data[i].ID + "'  name='existcheck' id='" + i + "'><label class='existlbl' style='padding-left:5px;' id='" + i + 'l' + "'>" + data[i].ListValue + "</label></div>"));
+                            $('#eexisting').append($("<div><input type='checkbox' class='eexsitcheck' value='" + data[i].ID + "'  name='existcheck' id='" + len + "'><label class='eexistlbl' style='padding-left:5px;' id='" + len + 'l' + "'>" + data[i].ListValue + "</label></div>"));
+                            len++;
+                        }
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+
+
+        function addlov() {
+            /*var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getlovs';
+            $.ajax({
+            	url: url,
+            	method: 'POST',
+            	success: function(data) {
+            		$('#existing').html('');
+            		for(var i = 0 ;i<data.length;i++){
+            			$('#existing').append($("<div><input type='checkbox' class='exsitcheck' value='"+data[i].ID+"'  name='existcheck' id='"+i+"'><label class='existlbl' style='padding-left:5px;' id='"+i+'l'+"'>"+data[i].ListValue+"</label></div>"));
+            		}
+            	},
+            	dataType: 'JSON',
+            });*/
+        }
+
+        function move() {
+            var flag = 0;
+            $(".exsitcheck").each(function () {
+                if ($(this).is(':checked')) {
+                    var id = $(this).attr("id");
+                    id1 = id + 'l';
+                    var value = $(this).val();
+                    var text = ($(this).next('label').text()).toLowerCase();
+                    var text1 = $(this).next('label').text();
+                    $(".newlbl").each(function () {
+                        var existvalue = ($(this).text()).toLowerCase();
+                        if (existvalue == text) {
+                            flag = 1;
+                        }
+                    });
+                    if (flag == 0) {
+                        $('#new').append($("<div><input type='checkbox' class='newcheck' value='" + value + "'  name='newcheck' checked  id='" + id + 'm' + "' onchange='removenew(this.id)'><label class='newlbl' style='padding-left:5px;' id='" + id + 'nl' + "'>" + text1 + "</label></div>"));
+                        $(this).remove();
+                        $('#' + id1).remove();
+                        if (value == 0) {
+                            if ($('#lovtext').val() == '') {
+                                $('#lovtext').val(text);
+                            } else {
+                                var txt = $('#lovtext').val();
+                                $('#lovtext').val(txt + ',' + text);
+                            }
+                        }
+                    } else {
+                        flag = 0;
+                    }
+                }
+            });
+        }
+
+        function removenew(id) {
+            var str = $('#lovtext').val();
+            var rid = id.replace('m', '');
+            id1 = rid + 'nl';
+            var value = $('#' + id).val();
+            //	.log(value);
+            var text = $('#' + id).next('label').text();
+            $('#existing').append($("<div><input type='checkbox' class='exsitcheck' value='" + value + "'  name='existcheck' id='" + rid + "'><label class='existlbl' style='padding-left:5px;' id='" + rid + 'l' + "'>" + text + "</label></div>"));
+            $('#' + id).remove();
+            $('#' + id1).remove();
+            var index = str.search(text);
+            //console.log(index);
+            if (index >= 0) {
+                if (index == 0) {
+                    str = str.replace(text + ',', '');
+                    str = str.replace(text, '');
+                    $('#lovtext').val(str);
+                } else {
+                    str = str.replace(',' + text, '');
+                    $('#lovtext').val(str);
+                }
+            }
+        }
+
+        function addlovvalue() {
+            var count = 0;
+            var already = 0;
+            var count1 = 0;
+            var actvalue = ($('#lov').val()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var value = (($('#lov').val()).toLowerCase()).trim();
+
+            if (actvalue == '') {
+                alert_modal("Please Enter Values !", 'danger');
+                return false;
+            }
+            //var uniqueNames=actvalue.split(',');
+            var actvalue1 = []; //actvalue.replace(",", "|");
+            actvalue1.push(actvalue.replace(/,/g, "|"));
+            /*$.each(uniqueNames, function(i, el){
+    if($.inArray(el, actvalue1) == -1) actvalue1.push(el);
+	});*/
+
+            var value12 = (($('#lov').val()).toLowerCase()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            //var valuetem=value12.split(',');
+            var value = [];
+            value.push(value12.replace(/,/g, "|"));
+            //console.log("dsadsadasdasd",value.length);
+            /*$.each(valuetem, function(i, el){
+    if($.inArray(el, value) == -1) value.push(el);
+	});*/
+            //console.log(value)
+            //$("#newlovvalue").html(' ');
+
+            if (value != '') {
+                for (var k = 0; k < value.length; k++) {
+                    $(".existlbl").each(function () {
+                        var existvalue = ($(this).text()).toLowerCase();
+                        count1++;
+                        if (existvalue == value[k]) {
+                            var lid = $(this).attr("id");
+                            var orid = lid.replace('l', '');
+                            var cvalue = $('#' + orid).val();
+                            var ctext = $('#' + orid).next('label').text();
+                            //console.log(ctext);
+                            $(this).remove();
+                            $('#' + orid).remove();
+                            $('#new').append($("<div><input type='checkbox' class='newcheck' value='" + cvalue + "'  name='newcheck' checked  id='" + orid + 'm' + "' onchange='removenew(this.id)'><label class='newlbl' style='padding-left:5px;' id='" + orid + 'nl' + "'>" + ctext + "</label></div>"));
+                            if (cvalue == 0) {
+                                if ($('#lovtext').val() == '') {
+                                    $('#lovtext').val(actvalue1[k]);
+                                } else {
+                                    var txt = $('#lovtext').val();
+                                    $('#lovtext').val(txt + ',' + actvalue1[k]);
+                                }
+                            }
+                            count = count + 1;
+                        }
+                    });
+                    if (count == 0) {
+                        var v = $(".newlbl").text();
+                        if (v != '') {
+                            $(".newlbl").each(function () {
+                                count1++;
+                                var existvalue = ($(this).text()).toLowerCase();
+                                if (existvalue == value[k]) {
+                                    already = 1;
+                                    return false;
+                                } else {
+                                    already = 2;
+                                }
+                            });
+                        } else {
+                            already = 2;
+                        }
+                    }
+                    if (already == 2) {
+                        $('#new').append($("<div><input type='checkbox' class='newcheck' value='0'  name='newcheck' checked  id='" + count1 + 'm' + "' onchange='removenew(this.id)'><label class='newlbl' style='padding-left:5px;' id='" + count1 + 'nl' + "'>" + actvalue1[k] + "</label></div>"));
+                        if ($('#lovtext').val() == '') {
+                            $('#lovtext').val(actvalue1[k]);
+                        } else {
+                            var txt = $('#lovtext').val();
+                            $('#lovtext').val(txt + ',' + actvalue1[k]);
+                        }
+                    }
+                }
+                $("#lov").val('');
+            }
+        }
+
+        function submitvalueset() {
+            var flag = 1;
+            var valueset = ($('#set').val()).trim();
+            var desc = $('#desclov').val();
+            var newvauleset = $('#lovtext').val();
+            var checklist = "";
+            $(".newcheck").each(function () {
+                var nvale = $(this).val();
+                if (checklist == '') {
+                    checklist = checklist + nvale;
+                } else {
+                    checklist = checklist + ',' + nvale;
+                }
+            });
+            if (valueset == '') {
+                alert_modal("Please insert the valueset name", 'danger');
+                flag = 0;
+            }
+            $(".vset").each(function () {
+                var vtext = ($(this).text()).toLowerCase();
+                if (vtext == valueset) {
+                    alert_modal("Valueset already exist", 'danger');
+                    flag = 0;
+                }
+            });
+            if (checklist == "") {
+                alert_modal("Please insert the LOV values", 'danger');
+                flag = 0;
+            }
+            var isnan = 1;
+            $(".newlbl").each(function () {
+                if (IsNumeric($(this).text()) != true) {
+                    isnan = 0;
+                }
+            });
+
+            if (flag == 1) {
+                //console.log(valueset);
+                //console.log(desc);
+                //console.log(newvauleset);
+                //console.log(checklist);
+                var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/addvalueset';
+                $.ajax({
+                    data: {
+                        "valueset": valueset,
+                        "desc": desc,
+                        "newvauleset": newvauleset,
+                        "checklist": checklist,
+                        "isnan": isnan
+                    },
+                    url: url,
+                    method: 'POST',
+                    success: function (data) {
+                        alert_modal("Valueset added successfully", 'success');
+                        window.location.reload();
+                    },
+                    dataType: 'JSON',
+                });
+                setTimeout(function () {
+                    getexistvalueset();
+                }, 1000);
+                window.location.reload();
+            }
+        }
+
+        function getlovlist(id) {
+            getlovbuid($('#' + id).val());
+        }
+
+        function IsNumeric(input) {
+            var RE = /^-{0,1}\d*\.{0,1}\d+$/;
+            return (RE.test(input));
+        }
+
+        function movedit() {
+            var flag = 0;
+            $(".eexsitcheck").each(function () {
+                if ($(this).is(':checked')) {
+                    var id = $(this).attr("id");
+                    id1 = id + 'l';
+                    var value = $(this).val();
+                    var text = ($(this).next('label').text()).toLowerCase();
+                    var text1 = $(this).next('label').text().trim();
+                    $(".enewlbl").each(function () {
+                        var existvalue = ($(this).text()).toLowerCase();
+                        if (text == existvalue) {
+                            flag = 1;
+                        }
+                    });
+                    if (flag == 0) {
+                        $('#enew').append($("<div><input type='checkbox' class='enewcheck' value='" + value + "'  name='newcheck' checked  id='" + id + "' onchange='eremovenew(this.id)'><label class='enewlbl' style='padding-left:5px;' id='" + id + 'l' + "'>" + text1 + "</label></div>"));
+                        $(this).remove();
+                        $('#' + id1).remove();
+                        if (value == 0) {
+                            if ($('#elovtext').val() == '') {
+                                $('#elovtext').val(text1);
+                            } else {
+                                var txt = $('#elovtext').val();
+                                $('#elovtext').val(txt + ',' + text1);
+                            }
+                        }
+                    } else {
+                        flag = 0;
+                    }
+                }
+            });
+        }
+
+        function eremovenew(id) {
+            var str = $('#elovtext').val();
+            id1 = id + 'l';
+            var value = $('#' + id).val();
+            var text = $('#' + id).next('label').text();
+            $('#' + id).remove();
+            $('#' + id1).remove();
+            $('#eexisting').append($("<div><input type='checkbox' class='eexsitcheck' value='" + value + "'  name='existcheck' id='" + id + "'><label class='eexistlbl' style='padding-left:5px;' id='" + id + 'l' + "'>" + text + "</label></div>"));
+            var index = str.search(text);
+            //console.log(index);
+            if (index >= 0) {
+                if (index == 0) {
+                    str = str.replace(text + ',', '');
+                    str = str.replace(text, '');
+                    $('#elovtext').val(str);
+                } else {
+                    str = str.replace(',' + text, '');
+                    $('#elovtext').val(str);
+                }
+            }
+        }
+
+        function editadd() {
+            var count = 0;
+            var already = 0;
+            var count1 = 0;
+            var actualvalue = ($('#newlovvalue').val()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var actualvalue1 = [];
+            //var uniqueNames=actualvalue.split(',');
+            actualvalue1.push(actualvalue.replace(/,/g, "|"));
+
+            /*$.each(uniqueNames, function(i, el){
+    if($.inArray(el, actualvalue1) == -1) actualvalue1.push(el);
+	});*/
+
+
+            var value = (($('#newlovvalue').val()).toLowerCase()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var value1 = [];
+            //var valuetem=value.split(',');
+            value1.push(value.replace(/,/g, "|"));
+            /*$.each(valuetem, function(i, el){
+    if($.inArray(el, value1) == -1) value1.push(el);
+	});*/
+            $("#newlovvalue").html(' ');
+            //console.log(value);
+            if (value != '') {
+                for (var k = 0; k < value1.length; k++) {
+                    if (value1[k] != '') {
+                        $(".eexistlbl").each(function () {
+                            var existvalue = (($(this).text()).toLowerCase()).trim();
+                            count1++;
+                            if (existvalue == value1[k]) {
+                                var lid = $(this).attr("id");
+                                var orid = lid.replace('l', '');
+                                var cvalue = $('#' + orid).val();
+                                var ctext = $('#' + orid).next('label').text();
+                                $(this).remove();
+                                $('#' + orid).remove();
+                                $('#enew').append($("<div><input type='checkbox' class='enewcheck' value='" + cvalue + "'  name='existcheck' id='" + orid + "' checked onchange='eremovenew(this.id)'><label class='enewlbl' style='padding-left:5px;' id='" + orid + 'l' + "'>" + ctext + "</label></div>"));
+                                if (cvalue == 0) {
+                                    if ($('#elovtext').val() == '') {
+                                        $('#elovtext').val(actualvalue1[k]);
+                                    } else {
+                                        var txt = $('#elovtext').val();
+                                        $('#elovtext').val(txt + ',' + actualvalue1[k]);
+                                    }
+                                }
+                                count = count + 1;
+                            }
+                        });
+                        if (count == 0) {
+                            var v = $(".enewlbl").text();
+                            if (v != '') {
+                                $(".enewlbl").each(function () {
+                                    count1++;
+                                    var existvalue = (($(this).text()).toLowerCase()).trim();
+                                    if (existvalue == value) {
+                                        already = 1;
+                                        return false;
+                                    } else {
+                                        //console.log("hello");
+                                        already = 2;
+                                    }
+                                });
+                            } else {
+                                already = 2;
+                            }
+                        }
+                        if (already == 2) {
+                            $('#enew').append($("<div><input type='checkbox' class='enewcheck' value='0'  name='existcheck' id='" + count1 + "' checked onchange='eremovenew(this.id)'><label class='enewlbl' style='padding-left:5px;' id='" + count1 + 'l' + "'>" + actualvalue1[k] + "</label></div>"));
+                            if ($('#elovtext').val() == '') {
+                                $('#elovtext').val(actualvalue1[k]);
+                            } else {
+                                var txt = $('#elovtext').val();
+                                $('#elovtext').val(txt + ',' + actualvalue1[k]);
+                            }
+                        }
+                    }
+                }
+            }
+            $('#newlovvalue').val('');
+        }
+
+        function CheckAll(id) {
+            if ($('#' + id + ':checked').val() == 0) {
+                $('.eexsitcheck').prop('checked', true);
+
+            } else {
+                categoryid = [];
+                $('.eexsitcheck').prop('checked', false);
+            }
+        }
+
+        function getlovbuid(id1) {
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getlovlistbyid';
+            $.ajax({
+                data: {
+                    "id": id1
+                },
+                url: url,
+                method: 'post',
+                success: function (data) {
+                    var present = data[0];
+                    var absent = data[1];
+                    $('#enew').html('');
+                    $('#eexisting').html('');
+                    $('#elovtext').val('');
+                    var len = present.length + absent.length + 1000;
+                    if (present.length != 0) {
+                        $('#editdesclov').val(present[0].Description);
+                        $('#entervalueset1').val(present[0].Name);
+                        for (var i = 0; i < present.length; i++) {
+                            $('#enew').append($("<div><input type='checkbox' class='enewcheck' value='" + present[i].ID + "'  name='existcheck' id='" + len + "' checked onchange='eremovenew(this.id)'><label class='enewlbl' style='padding-left:5px;' id='" + len + 'l' + "'>" + present[i].ListValue + "</label></div>"));
+                            len++;
+                        }
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+
+        function editlov() {
+            var flag = 1;
+            var valueset = $('#valusetgroup').val();
+            var desc = $('#editdesclov').val();
+            var newvauleset = $('#elovtext').val();
+            var checklist = "";
+            $(".enewcheck").each(function () {
+                var nvale = $(this).val();
+                if (checklist == '') {
+                    checklist = checklist + nvale;
+                } else {
+                    checklist = checklist + ',' + nvale;
+                }
+            });
+            if (valueset == '0') {
+                alert_modal("Please select the valueset ", 'danger');
+                flag = 0;
+            }
+            if (($('#entervalueset1').val()).trim() == '') {
+                alert_modal("Please enter Valueset", 'danger');
+                return false;
+            }
+            var isnan1 = 1;
+            $(".enewlbl").each(function () {
+                if (IsNumeric($(this).text()) != true) {
+                    isnan1 = 0;
+                }
+            });
+
+            if (flag == 1) {
+                //console.log(valueset);
+                //console.log(desc);
+                //console.log(newvauleset);
+                //console.log(checklist);
+                var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editvalueset';
+                $.ajax({
+                    data: {
+                        "valueset": valueset,
+                        "desc": desc,
+                        "newvauleset": newvauleset,
+                        "checklist": checklist,
+                        'valueset1': ($('#entervalueset1').val()).trim(),
+                        "isnan1": isnan1
+                    },
+                    url: url,
+                    method: 'POST',
+                    success: function (data) {
+
+                        alert_modal("Valueset updated successfully", 'success');
+                    },
+                    dataType: 'JSON',
+                });
+                setTimeout(function () {
+                    getexistvalueset();
+                }, 1000);
+                setTimeout(function () {
+                    getlovbuid(valueset);
+                }, 1000);
+                setTimeout(function () {
+                    addlov();
+                }, 1000);
+                window.location.reload();
+            }
+
+
+        }
+
+        function check() {
+
+            var actval = ($('#entervalueset').val()).trim();
+            var vlovset = ($('#entervalueset').val()).toLowerCase();
+            var flag = 0;
+            if (actval == '') {
+                alert_modal('Please Enter Dropdown Name !', 'danger');
+            }
+            if (vlovset != '') {
+                $(".vset").each(function () {
+                    var vtext = ($(this).text()).toLowerCase();
+                    if (vtext == vlovset) {
+
+                        var idname = $(this).attr("id");
+
+                        var realid = idname.replace('e', '');
+
+                        $("#valusetgroup").val(realid);
+                        getlovlist("valusetgroup");
+                        flag = 1;
+                    }
+                });
+                if (flag == 1) {
+                    $('#new').html('');
+                    $('#existing').html('');
+                    //$('#entervalueset1').val(actval);
+                    $("#diveditt").removeClass('hide');
+                    $("#divaddd").addClass('hide');
+                }
+                if (flag == 0) {
+                    $('#enew').html('');
+                    $('#eexisting').html('');
+                    $("#diveditt").addClass('hide');
+                    $("#divaddd").removeClass('hide');
+                    $("#set").val(actval);
+                }
+            }
+        }
+
+        function showadd() {
+            $("#hideaddbutton").removeClass('hide');
+            $("#hideadd").addClass('hide');
+        }
+
+        function showadd2() {
+            $("#hideaddbtn2").removeClass('hide');
+            $("#hideadd2").addClass('hide');
+        }
+
+        function filterAttribute() {
+            var filter = $("#filter").val().trim();
+            var lnks = document.getElementById('vlset').querySelectorAll('.vset');
+            for (var i = 0, len = lnks.length; i < len; i++) {
+                t = lnks[0];
+
+                //if(lnks[i].textContent!=filter && filter !="")
+                if (lnks[i].textContent.toLowerCase().indexOf(filter.toLowerCase()) > -1)
+                    lnks[i].style.display = "inline";
+                else
+                    lnks[i].style.display = "none";
+            }
+        }
+
+        function filterAttribute1() {
+            //alert_modal($("#filter1").val().trim())
+            var filter = $("#filter1").val().trim();
+            var lnks = document.getElementById('vlset1').querySelectorAll('.lblset1');
+            var lnks1 = document.getElementById('vlset1').querySelectorAll('.spanSign');
+            //	console.log(lnks1)
+            for (var i = 0, len = lnks.length; i < len; i++) {
+                t = lnks[0];
+                //console.log(lnks[i],lnks1[i])
+                //if(lnks[i].textContent!=filter && filter !="")
+                if (lnks[i].textContent.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+                    lnks[i].style.display = "inline";
+                    lnks1[i].style.display = "inline";
+                } else {
+                    lnks[i].style.display = "none";
+                    lnks1[i].style.display = "none";
+                }
+            }
+        }
+
+        function searchexisting2() {
+            var search = $("#search2").val().trim();
+            var result = document.getElementById('existing').querySelectorAll('.existlbl');
+            var result2 = document.getElementById('existing').querySelectorAll('.exsitcheck');
+            for (var i = 0; i < result.length; i++) {
+                if (result[i].textContent.toLowerCase().indexOf(search.toLowerCase()) > -1) {
+                    result[i].style.display = "inline";
+                    result2[i].style.display = "inline";
+                } else {
+                    result[i].style.display = "none";
+                    result2[i].style.display = "none";
+                }
+            }
+        }
+
+        function checklov() {
+            //dalert_modal('1');
+            var actval = ($('#entervalueset1').val()).trim();
+            var vlovset = ($('#entervalueset1').val()).toLowerCase();
+            var flag = 0;
+            //dalert_modal(actval);
+            if (vlovset != '') {
+                $(".vset").each(function () {
+                    var vtext = ($(this).text()).toLowerCase();
+                    if (vtext == vlovset) {
+                        flag++;
+                        //alert_modal(vtext);
+                    }
+                });
+                if (flag > 0) {
+                    alert_modal("valueset already exsit", 'danger')
+                    $('#entervalueset1').val($('#entervalueset').val().trim());
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        //function to select from att list
+        function selectatt(value) {
+            localStorage['lovlabel'] = value;
+            //alert_modal(value);
+            $('.divlset1').removeClass('activetab');
+            $('#divlset1' + value).addClass('activetab');
+            var a = $('#' + value + 'e').text();
+            //alert_modal(a)
+            $('#entervalueset').val(a);
+            check();
+
+        }
+    </script>
+    <style>
+        .enewlbl {
+            font-weight: normal;
+            font-size: 10pt;
+        }
+        
+        .eexistlbl {
+            font-weight: normal;
+            font-size: 10pt;
+        }
+    </style>
+    <div class="content-here col-md-11">
+        <link href="../stylesheets/adminstyle.css" rel="stylesheet">
+        <div id="addlovv" style="width:100%;padding:20px;">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="col-md-12" style="margin-top:15px;">
+                        <div class="col-md-9" style="padding-left:0px;">
+                            <div class="col-lg-12" style="padding-left:0px;">
+                                <input type="text" style="width:109%;height:30px;margin-top:2px;margin-bottom:10px;margin-left: 4%;" maxlength="50" placeholder="Enter Dropdown Name" id="entervalueset" />
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="padding-left:0px;padding-right:15px;">
+                            <input type="button" class="" style="width: 75px;
+    height: 30px;
+    color: #7e7e7e;
+    background-color: #F4F4F6;
+    border: 1px solid lightgrey;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-left: 54px;margin-top:2px" value="Add" onclick="check();">
+                        </div>
+                    </div>
+                    <div class="col-lg-12 hide" id="diveditt">
+                        <div class="col-md-12" style="margin-top:5px;padding:10px;">
+                            <div class="col-md-12 hide" style="padding-left:0px;">
+                                <label style="font-weight:normal">Select valueset</label>
+                                <select style="width:100%;height:36px;margin-top:10px;margin-bottom:10px;" placeholder="Enter Value Name" id="valusetgroup" onchange="getlovlist(this.id);">	
+							</select>
+                            </div>
+                            <div class="col-md-12" style="padding-left:6px;">
+                                <label style="font-weight:normal">Valuset</label>
+                                <input class="col-md-12" name="desc" rows="1" style="border-radius: 5px;width:100%;height:31px;margin-top:2px;margin-bottom:10px;" id="entervalueset1" onchange="checklov();" required/>
+                            </div>
+                            <div class="col-md-12" style="padding-left:6px;">
+                                <label style="font-weight:normal">Description</label>
+                                <textarea class="col-md-12" name="desc" rows="4" style="border-radius: 5px;width:100%;height:70px;margin-top:2px;margin-bottom:10px;" placeholder="Enter Description" id="editdesclov" required></textarea>
+                            </div>
+                            <div id="hideaddbutton" class="hide">
+                                <div class="col-md-9" style="padding-left:0px;">
+                                    <div class="col-lg-12" style="padding-left:6px;">
+                                        <label style="font-weight:normal">Add Dropdown value</label>
+                                        <input type="text" class="col-md-10" style="width:119%;height:36px;margin-top:2px;margin-bottom:10px;" placeholder="Enter Dropdown Value" id="newlovvalue" />
+                                        <input type="text" name="newvauleset" class="hide" style="width:100%;height:36px;margin-top:10px;margin-bottom:10px;" id="elovtext" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="margin-top:25px;padding-left:0px;padding-right:15px;">
+                                    <input type="button" class="btn btn-success" style="width: 75px;
+    height: 30px;
+    color: #7e7e7e;
+    background-color: #F4F4F6;
+    border: 1px solid #D3D3D3;
+    border-radius: 5px;
+    margin-left: 45%;" value="Add" onclick="editadd();">
+                                </div>
+                            </div>
+                            <div>
+                                <input id="hideadd" type="button" class="btn btn-success" style="width: 170px;
+    height: 30px;
+    color: #7e7e7e;
+    background-color: #F4F4F6;
+    border: 1px solid lightgrey;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-left: 7px;" value="Add Dropdown value" onclick="showadd();">
+                            </div>
+                            <div class="col-md-5" style=" margin-top:10px;border:1px solid #ccc;;height:200px;overflow:auto;background-color:white;color:black;overflow-y:scroll;    margin-left: 7px;" id="eexisting">
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <input type="button" value=">" class="" style="width:35px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border:1px solid lightgrey;border-radius:5px;margin-left:10px;margin-top:85px;" onclick="movedit();" />
+                                </center>
+                            </div>
+                            <div class="col-md-5" style="border:1px solid #ccc;margin-top:10px;height:200px;overflow:auto;background-color:white;color:black;overflow-y:scroll;margin-left:30px;" id="enew">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="margin-top:10px;">
+                                    <input type="button" class="btn btn-success" style="float:right;width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border:1px solid lightgrey;border-radius:5px;margin-right: 11px;" value="Submit" onclick="editlov();">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 hide" style="padding-left:0px;padding-right:0px;border:0px solid #BFE3DA;border-radius:5px;">
+                            <input type="search" class="form-control" id="filter" style="width:100%;" placeholder="Search" onchange="filterAttribute();">
+                            <div style="border-top-left-radius:5px;border-top-right-radius:5px;background-color: rgb(39, 183, 234); color: rgb(246, 240, 240); height: 44px; margin-top: 0px; padding-top: 2px;padding-left:5px;">
+                                <h5>Existing value set</h5>
+                            </div>
+                            <div id="vlset" style="overflow-y: scroll;height: 500px;padding-top: 10px;padding-left: 14px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 hide" id="divaddd">
+                        <div class="col-md-12" style="margin-top:5px;padding:10px;">
+                            <div class="col-md-12 hide" style="padding-left:0px;">
+                                <label style="font-weight:normal">Valueset Name</label>
+                                <input type="text" name="vauleset" style="width:100%;height:36px;margin-top:10px;margin-bottom:10px;" placeholder="Enter Value Name" required id="set" />
+                                <input type="text" name="newvauleset" class="hide" style="width:100%;height:36px;margin-top:10px;margin-bottom:10px;" id="lovtext" />
+                            </div>
+                            <div class="col-md-12" style="padding-left:6px;">
+                                <label style="font-weight:normal">Description</label>
+                                <textarea class="col-md-12" name="desc" rows="4" style="border-radius: 5px;width:100%;height:70px;margin-top:2px;margin-bottom:10px;" maxlength="150" placeholder="Enter Description" id="desclov" required></textarea>
+                            </div>
+                            <div id="hideaddbtn2" class="hide">
+                                <div class="col-md-9" style="padding-left:0px;">
+                                    <div class="col-lg-12" style="padding-left:6px;">
+                                        <label style="font-weight:normal">Add Dropdown value</label>
+                                        <input type="text" class="col-md-10" style="width:119%; height:36px; margin-top:2px;margin-bottom:10px;" maxlength="30" placeholder="Enter Dropdown Value" id="lov" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3" style="margin-top:28px;padding-left:0px;padding-right:15px;">
+                                    <input type="button" class="btn btn-success" style="width: 75px;
+    height: 30px;
+    color: #7E7E7E;
+    background-color: #F4F4F6;
+    border: 1px solid lightgrey;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-left: 44%;" value="Add" onclick="addlovvalue();">
+                                </div>
+                            </div>
+                            <div>
+                                <input id="hideadd2" type="button" class="btn btn-success" style="width: 170px;
+    height: 30px;
+    color: #7e7e7e;
+    background-color: #F4F4F6;
+    border: 1px solid lightgrey;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-left: 5px; " value="Add Dropdown value" onclick="showadd2();">
+                            </div>
+                            <div class="col-md-12">
+                                <input id="search2" type="search" class="form-control hide" style="	width:247px; height:36px; margin-top:20px; margin-left:-15px;" placeholder="search" onchange="searchexisting2();">
+                            </div>
+                            <div class="col-md-5" style=" margin-top:5px;border:1px solid #ccc;;height:200px;overflow:auto;background-color:white;color:black;overflow-y:scroll;" id="existing">
+                            </div>
+                            <div class="col-md-1">
+                                <center>
+                                    <input type="button" value=">" class="" style="width:35px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border:1px solid lightgrey;border-radius:5px;margin-left:10px;margin-top:80px;" onclick="move();" />
+                                </center>
+                            </div>
+                            <div class="col-md-5" style="border:1px solid #ccc;margin-top:5px;height:200px;overflow:auto;background-color:white;color:black;overflow-y:scroll;margin-left:40px;" id="new">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12" style="margin-top:10px;">
+                                    <input type="button" class="btn btn-success" style="float:right;width:75px;height:30px;color
+								:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border:1px solid lightgrey;border-radius:5px;    margin-right: 11px;" value="Submit" onclick="submitvalueset();">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3" style="
+    margin-top: 10px;">
+                    <input type="search" class="form-control" id="filter1" style="width:100%;" placeholder="Search" onkeyup="filterAttribute1();">
+                    <div style="width: 100%;margin-top: 10px;height: 30px;
+    padding-left: 15px;font-size: 13pt;color: #7E7E7E;background-color: rgb(244, 244, 246);border: 2px solid Lightgrey;border-bottom: 0px;">
+                        <h5>Existing value set</h5>
+            </div>
+            <div id="vlset1" style="height: 480px;
+    overflow-y: scroll;padding-left:15px;
+    border: 2px solid lightgrey;">
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    <% include ../footer %>

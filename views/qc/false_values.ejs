@@ -1,0 +1,112 @@
+<% include ./qc_header %>
+<div class="se-pre-con"></div>
+<form id="false-values" style="height:auto" class="map-form" action="/qc/map_false_values" method="POST" enctype="application/json">
+    <div class="col-lg-12" style="background-color:#f4f4f6;">
+        <center>
+            <h4>Correction</h4>
+        </center>
+    </div>
+    <div class="col-md-6"><% var categories = Object.keys(wrongValues) %><%  var a=1;for (var i = 0; i < Math.ceil(categories.length/2); i++) { %><% var category = categories[i] %><% if (Object.keys(wrongValues[category]).length > 0) { %>
+      <% var attributes = Object.keys(wrongValues[category]) %><% for (var j = 0; j < attributes.length; j++) { %><% var attribute = attributes[j] %><% if (attribute != 'Category Id' && attribute != 'undefined') {%><% if (validValues[category] && validValues[category][attribute]) { %><% var wrongList = Object.keys(wrongValues[category][attribute]); a=0;%>
+
+      <% } %><% } %><% }%> 
+      <%if(a==0){%>
+        <div class="col-md-12">
+            <h3 class="false-value-category-header"><%=category%>
+            </h3>
+
+        </div><%}%>
+
+        <% var attributes = Object.keys(wrongValues[category]) %><% for (var j = 0; j < attributes.length; j++) { %><% var attribute = attributes[j] %><% if (attribute != 'Category Id' && attribute != 'undefined') {%><% if (validValues[category] && validValues[category][attribute]) { %><% var wrongList = Object.keys(wrongValues[category][attribute]) %>
+        <div class="col-md-12">
+            <h5 class="wrong-value-column-name" style="margin-top: 23px;font-weight: 100pt;color: #404242;font-size: 12pt;"><%=attribute%>
+            </h5>
+        </div>
+        <div class="col-md-12"><% for (var k = 0; k < wrongList.length; k++) {%>
+            <div class="col-md-6">
+                <h6><%=wrongList[k]%>
+                </h6>
+            </div>
+            <div class="col-md-6">
+                <select name="<%=category%><%=attribute%><%=wrongList[k]%>" class="col-md-6 input-sm form-control small-dropdowns"><% var validList = validValues[category][attribute].sort() %>
+                    <option>--ignore</option><% for(var p = 0; p < validList.length; p++) { %>
+                    <option value="<%=validList[p]%>"><%=validList[p]%>
+                    </option><% } %>
+                </select>
+            </div><% } %>
+        </div><% } %><% } %><% } %><% } %><% } %>
+    </div>
+    <div class="col-md-6"><% var a=1; for (var i = Math.ceil(categories.length/2); i < categories.length; i++) { %><% var category = categories[i] %><% if (Object.keys(wrongValues[category]).length > 0) { %>
+       <% var attributes = Object.keys(wrongValues[category]) %><% for (var j = 0; j < attributes.length; j++) { %><% var attribute = attributes[j] %><% if (attribute != 'Category Id' && attribute != 'undefined') {%><% if (validValues[category] && validValues[category][attribute]) { %><% var wrongList = Object.keys(wrongValues[category][attribute]); a=0;%>
+
+      <% } %><% } %><% }%> 
+      <%if(a==0){%>
+        <div class="col-md-12">
+            <h3 class="false-value-category-header"><%=category%>
+            </h3>
+
+        </div><%}%>
+       <% var attributes = Object.keys(wrongValues[category]) %><% for (var j = 0; j < attributes.length; j++) { %><% var attribute = attributes[j] %><% if (attribute != 'Category Id' && attribute != 'undefined') {%><% if (validValues[category] && validValues[category][attribute]) { %><% var wrongList = Object.keys(wrongValues[category][attribute]) %>
+        <div class="col-md-12">
+            <h5 class="wrong-value-column-name" style="margin-top: 23px;font-weight: 100pt;color: #404242;font-size: 12pt;"><%=attribute%>
+            </h5>
+        </div>
+        <div class="col-md-12"><% for (var k = 0; k < wrongList.length; k++) {%>
+            <div class="col-md-6">
+                <h6><%=wrongList[k]%>
+                </h6>
+            </div>
+            <div class="col-md-6">
+                <select name="<%=category%><%=attribute%><%=wrongList[k]%>" class="col-md-6 input-sm form-control small-dropdowns"><% var validList = validValues[category][attribute].sort() %>
+                    <option>--ignore</option><% for(var p = 0; p < validList.length; p++) { %>
+                    <option value="<%=validList[p]%>"><%=validList[p]%>
+                    </option><% } %>
+                </select>
+            </div>
+            <div style="clear:both"></div>
+            <% } %>
+        </div><% } %><% } %><% } %><% } %><% } %>
+    </div>
+    <div class="map-column-button">
+        <button class="btn btn-primary" type="submit" id="map-columns-submit-button" style="color: #7e7e7e;
+    background-color: #f4f4f6;
+    width: 150px;
+    height: 35px;border:1px solid #e7e7e7;margin-bottom:10px;">Submit</button>
+    </div>
+</form>
+<div id="no-wrong-values-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">No Wrong Values</h4>
+            </div>
+            <div class="modal-body">
+                <p>There are no wrong values for correction.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="next-page" type="button" class="btn btn-default" data-dismiss="modal" style="
+        color:#7e7e7e;background-color:#f4f4f6;">Next</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal --><% include ./footer %>
+<script>
+$(window).load(function() {
+  // Animate loader off screen
+ var options = $('option');
+ if (options.length > 0) {
+    $(".se-pre-con").fadeOut("slow");
+ }
+ if (options.length == 0) {
+    $('#no-wrong-values-modal').modal({backdrop: 'static'})  
+    $('#no-wrong-values-modal').modal('show').css('z-index', 99999);
+ }
+});
+
+$('#next-page').click(function() {
+  $('#map-columns-submit-button').click();
+});
+</script>

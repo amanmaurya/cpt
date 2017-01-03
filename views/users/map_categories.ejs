@@ -1,0 +1,62 @@
+<% include ./user_header %>
+<form id="map-categories" class="map-form" method="POST" action="/users/map_categories">
+  <div class="col-md-12 head">
+    <div class="col-md-6 first-half headers">
+      <div class="col-md-6 excel-heading">Excel Categories</div>
+      <div class="col-md-6 template-column">Template Categories</div>
+    </div>
+    <div class="col-md-6 second-half headers">
+      <div class="col-md-6 excel-heading">Excel Categories</div>
+      <div class="col-md-6 template-column">Template Categories</div>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="col-md-6 first-half">
+      <% for (var e = 0; e < Math.ceil(categoriesFromExcel.length/2); e++) { %>
+      <% if (categoriesFromExcel[e]) { %>
+      <div value="<%=categoriesFromExcel[e]%>" class="col-md-6 excel-column"><%=categoriesFromExcel[e]%></div>
+      <div class="col-md-6">
+        <select name="<%=categoriesFromExcel[e]%>" class="col-md-6 input-sm form-control small-dropdowns" >
+        <option value="">--select--</option>
+          <% for (var d = 0;d < categoriesFromDatabase.length; d++) { %>
+          <% if (String(categoriesFromExcel[e]).toLowerCase() == String(categoriesFromDatabase[d].split('(')[0]).toLowerCase()) { %>
+          <option selected value="<%=categoriesFromDatabase[d]%>"><%=categoriesFromDatabase[d]%></option>
+          <% } else { %>
+          <option value="<%=categoriesFromDatabase[d]%>"><%=categoriesFromDatabase[d]%></option>
+          <% } %>
+          <% } %>
+        </select>
+      </div>
+      <% } %>
+      <% } %>
+    </div>
+    <!--second half-->
+    <div class="col-md-6 second-half">
+      <% for (var e = Math.ceil(categoriesFromExcel.length/2); e < categoriesFromExcel.length; e++) { %>
+      <% if (categoriesFromExcel[e]) { %>
+      <div value="<%=categoriesFromExcel[e]%>" class="col-md-6 excel-column"><%=categoriesFromExcel[e]%></div>
+      <div class="col-md-6">
+        <select name="<%=categoriesFromExcel[e]%>" class="col-md-6 input-sm form-control small-dropdowns" >
+        <option value="">--select--</option>
+          <% for (var d = 0;d < categoriesFromDatabase.length; d++) { %>
+          <% if (String(categoriesFromExcel[e]).toLowerCase() == String(categoriesFromDatabase[d].split('(')[0]).toLowerCase()) { %>
+          <option selected value="<%=categoriesFromDatabase[d]%>"><%=categoriesFromDatabase[d]%></option>
+          <% } else { %>
+          <option value="<%=categoriesFromDatabase[d]%>"><%=categoriesFromDatabase[d]%></option>
+          <% } %>
+          <% } %>
+        </select>
+      </div>
+      <% } %>
+      <% } %>
+    </div>
+  </div>
+  <div class="map-column-button">
+    <button class="btn btn-primary" type="submit" id="map-columns-submit-button" style="color: #7e7e7e;
+    background-color: #f4f4f6;
+    width: 150px;
+    height: 35px;border:1px solid #e7e7e7;margin-bottom:10px;">Submit</button>
+  </div>
+</form>
+<% include ./footer %>

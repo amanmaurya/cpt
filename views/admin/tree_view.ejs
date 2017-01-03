@@ -1,0 +1,291 @@
+<% include ../login_header %>
+<% include ./sidemenu %>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+	maketree();
+
+});
+function div_show1() {
+	document.getElementById('adg1').style.display = "block";
+}
+function div_hide1() {
+	document.getElementById('adg1').style.display = "none";
+}
+function div_show2() {
+	document.getElementById('adg2').style.display = "block";
+}
+function div_hide2() {
+	document.getElementById('adg2').style.display = "none";
+}
+function div_show3() {
+	document.getElementById('adg3').style.display = "block";
+}
+function div_hide3() {
+	document.getElementById('adg3').style.display = "none";
+}
+function prepareList() {
+	$('#expList').find('li:has(ul)')
+	.click( function(event) {
+		if (this == event.target) {
+			$(this).toggleClass('expanded');
+			$(this).children('ul').toggle('medium');
+		}
+			return false;
+	})
+	.addClass('collapsed')
+	.children('ul').hide();
+};
+function maketree(){
+	$("#divAddAttribute").addClass('hide');
+	$('.ul1').remove();
+	<% if(templatedata.length != 0) {%>
+		var data = <%-JSON.stringify(templatedata)%>;
+		tree=_makeTree({q: data});
+		function _makeTree(options) {
+			var children, e, id, o, pid, temp, _i, _len, _ref,flg;
+			id = options.id || "id";
+			pid = options.parentid || "parentid";
+			children = options.children || "children";
+			flg = options.flag || "flag";
+			temp = {};
+			o = [];
+			_ref = options.q;
+			for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+				e = _ref[_i];
+				e[children] = [];
+				temp[e[id]] = e;
+				if (temp[e[pid]] != null ) {
+					temp[e[pid]][children].push(e);
+				} else {
+					o.push(e);
+				}
+
+			}
+		return o;
+		};
+		var rend= "<ul class='ul1 panel  panel-success'><li class='panel  panel-success' id='0&-1&-1'>Template <input type='button' class='btn btn-primary' id='0&-1&-1'  style='margin:5px 0px 0px 5px; margin-top:-5px !important;' value='Add'  onclick='add(this.id);'>"
+			+_renderTree(tree)+"</li></ul>";
+		function _renderTree (tree) {
+			var e, html, _i, _len;
+			html = "<ul class='ul1 panel  panel-success'>";
+			for (_i = 0, _len = tree.length; _i < _len; _i++) {
+				e = tree[_i];
+				html += "<li class='panel  panel-success' id="+(e.id+'&'+e.flag)+">" + e.name;
+				if(e.flag == '0' || e.flag == '1'){
+					html +="<input type='button' id="+(e.id+'&'+e.parentid+'&'+e.flag)+" class='btn btn-danger' style='float:right;' value='Delete'>"
+					html +="<input type='button' id="+(e.id+'&'+e.parentid+'&'+e.flag)+"  class='btn btn-success' style='float:right;' value='Edit' onclick='edit(this.id);'>"
+					html +="<input type='button' id="+(e.id+'&'+e.parentid+'&'+e.flag)+" class='btn btn-primary' style='float:right;' value='Add' onclick='add(this.id);'>"
+				}
+				else{
+					html +="<input type='button' id="+(e.orid+'&'+e.parentid+'&'+e.flag)+" class='btn btn-danger' style='height:20px;float:right;' value='Delete'>"
+					html +="<input type='button' id="+(e.orid+'&'+e.parentid+'&'+e.flag)+" class='btn btn-success' style='height:20px; float:right;' value='Edit' onclick='edit(this.id);'>"
+					html +="<input type='button' id="+(e.orid+'&'+e.parentid+'&'+e.flag)+" class='btn btn-primary' style='height:20px;float:right;' value='Add'>"
+				}
+				if (e.children.length != 0) {
+					html += _renderTree(e.children);
+				}
+				html += "</li>";
+			}
+			html += "</ul>";
+			return html;
+		};
+		$('#tree').append(rend);
+		prepareList();
+
+	<%}%>
+}
+function add(id){
+	var value=id;
+	console.log(id);
+	var value1=value.split('&');
+	var id=value1[0];
+	var flag=value1[2];
+	var pid=value1[1];
+	$('#id1').val(id);
+	$('#flg').val(flag);
+	if(flag == '-1'){
+		$('#heading').html("Add Template");
+		$('#code').addClass('hide');
+		$('#desc').removeClass('hide');
+		$('#returntime').addClass('hide');
+		$('#rpolicyid').addClass('hide');
+		$('#catgroup').addClass('hide');
+	}
+	if(flag == '0' || flag == '1'){
+		$('#heading').html("Add Category");
+		$('#code').removeClass('hide');
+		$('#desc').addClass('hide');
+		$('#returntime').removeClass('hide');
+		$('#rpolicyid').removeClass('hide');
+		$('#catgroup').removeClass('hide');
+		var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getgroup';
+		$.ajax({
+			url: url,
+			method: 'POST',
+			success: function(data) {
+				console.log(data);
+				$('#catgroup').empty();
+				$('#catgroup')
+				.append($("<option></option>")
+				.attr("value",0)
+				.text("Select Group"));
+				for(var i =0;i<data.length;i++){
+					$('#catgroup')
+					.append($("<option></option>")
+					.attr("value",data[i].ID)
+					.text(data[i].CategoryGroup ));
+				}
+
+			},
+			dataType: 'JSON',
+		});
+
+	}
+	div_show1();
+}
+function edit(id){
+	var value1=id.split('&');
+	var id=value1[0];
+	var flag=value1[2];
+	var pid=value1[1];
+	$('#cid').val(id);
+	$('#cflg').val(flag);
+	$('#aid').val(id);
+	$('#aflg').val(flag);
+	$('#apid').val(pid);
+	var values;
+	var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/edittempcatatt';
+	$.ajax({
+		url: url,
+		method: 'POST',
+		data: {"id1":id,"flg":flag,"patid": pid},
+		success: function(data) {
+			if(flag == '0'){
+				$('#cname').val(data[0].Name);
+				$('#cdesc').val(data[0].Description);
+			}
+			if(flag == '1'){
+				$('#cname').val(data[0].categoryName);
+				$('#ccode').val(data[0].CategoryCode);
+				$('#creturntime').val(data[0].return_time);
+				$('#crpolicyid').val(data[0].returnpolicyid);
+				$('#ccatgroup').val(data[0].fk_categorygroupid);
+			}
+			if(flag == '2'){
+				$('#validation').empty();
+				if(data.length != 0){
+					$('#astate').val(1);
+					$('#msg').html("Attribute has 'Not Null' validation");
+				}
+				else{
+					$('#astate').val(0);
+					$('#msg').html("Attribute has not validation");
+				}
+			}
+		},
+		dataType: 'JSON',
+	});
+	if(flag == '0'){
+		console.log("Template");
+		$('#heading1').html("Edit Template");
+		$('#ccode').addClass('hide');
+		$('#cdesc').removeClass('hide');
+		$('#creturntime').addClass('hide');
+		$('#crpolicyid').addClass('hide');
+		$('#ccatgroup').addClass('hide');
+		div_show2();
+	}
+	if(flag == '1'){
+		$('#heading1').html("Edit Category");
+		$('#ccode').removeClass('hide');
+		$('#cdesc').addClass('hide');
+		$('#creturntime').removeClass('hide');
+		$('#crpolicyid').removeClass('hide');
+		$('#ccatgroup').removeClass('hide');
+		div_show2();
+	}
+	if(flag == '2'){
+		console.log("Attribute");
+		div_show3();
+	}
+}
+</script>
+
+<div class="content-here" style="width:80%;">
+	<link href="../stylesheets/adminstyle.css" rel="stylesheet">
+	<div id="listContainer" style="width:100%;height:520px !important;overflow:auto;">
+		<ul id="expList" style="padding:0px;">
+			<div id="tree"></div>
+		</ul>        
+	</div>
+	<div id="adg1">
+		<div id="popupContact">
+			<form class="login-form" id="form2" method="post" action="/admin/addtempandcat" >
+				<img id="close" class="img-circle" src="../images/download.png" onclick="div_hide1()" />
+				<center> <h3 style="color:white" id="heading">Modal Header</h3></center>
+				<div class="modal-body">
+					<input type="text" class="hide" id="flg" name="flg">
+					<input type="text" class="hide" id="id1" name="id1">
+					<input type="text" class="form-control" id="name" name="name" placeholder="Enter name" required style="margin-top:5px;width:250px">
+					<textarea row="5" class="form-control" id="desc" name="desc" placeholder="Enter description" style="margin-top:5px;width:250px" ></textarea>
+					<input type="text" class="hide form-control" id="code"  name="code" placeholder="Enter code" style="margin-top:5px;">
+					<input type="text" class="hide form-control" id="returntime" value="0"  name="returntime" placeholder="Enter return time" style="margin-top:5px;">
+					<input type="text" class="hide form-control" id="rpolicyid" value="0" name="rpolicyid" placeholder="Enter return policy id" style="margin-top:5px;">
+					<select class="form-control hide" name="catgroup" id="catgroup" style="margin-top:5px; width:250px">
+					</select>
+				</div>
+				<center>
+					<input type="submit" class="btn btn-success" value="Submit" style="width:150px;height:40px;">
+				</center>
+			</form>
+		</div>
+	</div>
+	<div id="adg2">
+		<div id="popupContact">
+			<form class="login-form" id="form2" method="post" action="/admin/editcatandtemp">
+				<img id="close" class="img-circle" src="../images/download.png" onclick="div_hide2()" />
+				<center> <h3 style="color:white" id="heading1">Modal Header</h3></center>
+				<div class="modal-body">
+					<input type="text" class="hide" id="cflg" name="cflg">
+					<input type="text" class="hide" id="cid" name="cid">
+					<input type="text" class="form-control" id="cname" name="cname" placeholder="Enter name" required>
+					<textarea row="5" class="form-control" id="cdesc" name="cdesc" placeholder="Enter description" style="margin-top:5px;" ></textarea>
+					<input type="text" class="hide form-control" id="ccode"  name="ccode" placeholder="Enter code" style="margin-top:5px;">
+					<input type="text" class="hide form-control" id="creturntime" value="0"  name="creturntime" placeholder="Enter return time" style="margin-top:5px;">
+					<input type="text" class="hide form-control" id="crpolicyid" value="0" name="crpolicyid" placeholder="Enter return policy id" style="margin-top:5px;">
+					<input type="text" class="hide form-control" id="ccatgroup" value="0" name="ccatgroup" placeholder="Enter return policy id" style="margin-top:5px;">
+				</div>
+				<center>
+					<input type="submit" class="btn btn-success" value="Submit" style="width:150px;height:40px;">
+				</center>
+			</form>
+		</div>
+	</div>
+	<div id="adg3">
+		<div id="popupContact">
+			<form class="login-form" id="form2" method="post" action="/admin/editattribute">
+				<img id="close" class="img-circle" src="../images/download.png" onclick="div_hide3()" />
+				<center> <h3 style="color:white" id="heading1">Edit Attribute</h3></center>
+				<div class="modal-body">
+					<input type="text" class="hide" id="aflg" name="aflg">
+					<input type="text" class="hide" id="aid" name="aid">
+					<input type="text" class="hide" id="apid" name="apid">
+					<input type="text" class="hide" id="astate" name="astate">
+					<p id="msg" style="color:white;"></p>
+					<select class="form-control" name="valid"  style="margin-top:5px;">
+						<option value='0'>No Validation</option>
+						<option value='1'>Not Null</option>
+					</select>
+				</div>
+				<center>
+					<input type="submit" class="btn btn-success" value="Submit" style="width:150px;height:40px;">
+				</center>
+			</form>
+		</div>
+	</div>
+</div>
+<% include ../footer %>

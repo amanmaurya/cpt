@@ -1,0 +1,443 @@
+<!doctype html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<% include ./qc_header %>
+<link href="/data_sheet/css/bootstrap.min.css" rel="stylesheet">
+<link href="/stylesheets/style.css" rel="stylesheet">
+<link href="/stylesheets/compair.css" rel="stylesheet">
+<link href="http://docs.handsontable.com/0.15.1/styles/samples.css" rel="stylesheet">
+<link href="http://handsontable.com/bower_components/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="https://docs.handsontable.com/0.29.0/bower_components/handsontable/dist/handsontable.full.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="/javascripts/libraries/jquery.js"></script>
+</head>
+<body>
+<style>
+
+</style>
+<script type="text/javascript">
+var count=0;
+  $(document).ready(function(){
+    
+     $("#pici").click(function(){
+      if(count==0)
+      {
+        $("#picm").show();
+      
+      $("#pici").removeClass("ahh");
+           $("#picm").removeClass("ahh1");
+        $("#picm").addClass("ah1");
+        $("#pici").addClass("ah");
+        count=1;
+      }
+      else if(count==1)
+      {
+         $("#pici").removeClass("ah");
+       $("#picm").hide();
+           $("#picm").removeClass("ah1");
+        $("#pici").addClass("ahh");
+        $("#picm").addClass("ahh1");
+        count=0;
+      }
+    });
+     
+});
+</script>
+<div class="se-pre-con"></div>
+<div id="wait" style="display:block;width:69px;height:89px;border:0px solid black;position:absolute;top:60%;left:20%;padding:2px; z-index: 12;"><img src='/images/demo_wait.gif' width="64" height="64" /><br>Loading..</div>
+<div class="col-lg-12 " >
+<div class="col-lg-12" style="padding-left:0px;padding-right:0px;border-bottom:1px solid #e7e7e7;margin-top:3px;">
+
+<div class="col-lg-10">
+</div>
+ 
+</div>
+<div class="col-lg-6" id="processedfilediv" style="background-color:white;margin-left: -17px;">
+<div class="col-lg-6" style="margin-top:10px;float:left">
+
+<button id="qc-export" class="exbutton" style="float:left">Export</button>
+<div class="col-lg-1 activeetab tab" id="proc" style="border:1px solid #e7e7e7;margin-left: 419px; margin-top: -35px;">
+Processed File
+</div>
+
+</div>
+
+<div id="divMainHeader" class="col-lg-6" style="    margin-top: 50px;">
+  <% var categories =  Object.keys(sheetData);  console.log("catagry name",categories.length,"",categories);%>
+  <div class="tab-content" style="margin-left: -24px">
+      <div id="filters" style="width:630px;">
+    <% var headers = sheetHeaders; console.log("catagry name",sheetHeaders) %>
+    <table>
+    <tr>
+    <%  for (var p = 0; p < headers.length; p++) { %>
+    <td><input id="<%=p%>" class="textStatus1" type="search" placeHolder="<%=headers[p]%>"></td>
+    <% } %>
+    </tr>
+    </table>
+  </div>
+    <div role="tabpanel " class="tab-pane active" id="<%=categories[0].replace(/[^a-z0-9]/gi, '_')%>"></div>
+    <% for (var i = 1; i < categories.length; i++) { %>
+    <div role="tabpanel" class="tab-pane" id="<%=categories[i].replace(/[^a-z0-9]/gi, '_')%>">
+
+    </div>
+    <% } %>
+  </div>
+</div>
+<!--shgsgsdhhend-->
+
+<div id="qc-compare" class="col-lg-6 " style="    height: 400px;
+    margin-top: 64px;    ">
+  <div class="col-md-6"  style="paddin-right:0px;">
+    <div class="col-md-6 hide" id="processedSheet" style="border:2px solid #e7e7e7;padding-left:0px;padding-right:0px;width:200%"></div>
+  </div>
+  </div>
+  
+</div>
+<div class="col-lg-6" id="excelfilediv" style="background-color:white;">
+<div class="col-lg-6" style="margin-top:10px;float:left">
+
+<div class="col-lg-1 activeetab tab" id="exc" style="border:1px solid #e7e7e7;margin-left: 14px; margin-top: -1px;">
+Excel File
+</div>
+<input type="search"  id="excel-input" class="form-control" style="width:200px;float:right;margin-right:-326px;" placeholder="search"> 
+</div>
+<div id="qc-compare1" class="col-lg-6" style="margin-left: -315px;">
+  <div class="col-md-6"  style="paddin-right:0px;height:400px;width:630px; overflow-x:scroll;overflow-y:scroll;margin-top:85px;margin-left: -17px;">
+     <div id="excelSheet" class="col-md-6 hot handsontable" style="border:2px solid #e7e7e7;padding-left:0px;padding-right:0px;    margin-top:0px;
+    margin-left:0px;/* height:10000px;*/width:120%;overflow-x: scroll;overflow-y:scroll;
+" ></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="image-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" style="float:right;" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Image</h4>
+      </div>
+      <div id="imagediv" class="modal-body">
+        <img id="modal-image" height="300px" width="570px">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button style="display:none" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</body>
+<script>
+var count=1;
+var tabs=[];
+var lengthoftab='<%=categories.length%>';
+$(document).ready(function() {
+   tabs.push("0");
+   $(".se-pre-con").fadeOut("slow");
+  var csvData = <%-JSON.stringify(csvData)%>;
+  var excelData = <%-JSON.stringify(excelData)%>;
+  var csvHeader = <%-JSON.stringify(csvHeader)%>
+  var excelHeader = <%-JSON.stringify(excelHeader)%>
+  var qcimagepath = '';
+  var csvContainer = document.querySelector('#processedSheet');
+  var excelContainer = document.querySelector('#excelSheet');
+  var exportable = null;
+    var flnm='<%=flnam%>';
+  var uid = '<%=uid%>';
+  var imagepath = '<%=imagepath%>';
+  var categoryCodes = <%-JSON.stringify(categoryCodes)%>
+  var attributes = <%-JSON.stringify(attributes)%>
+  var sheetData = <%-JSON.stringify(sheetData)%>;
+  var expression = <%-JSON.stringify(expression)%>;
+  var _sheetHeaders = <%-JSON.stringify(csvHeader)%>; //console.log(sheetHeaders"sheetHeaders",_sheetHeaders);
+  var nameToCode=<%-JSON.stringify(nameToCode)%>;
+  var merchantId=56;//<%-JSON.stringify(merchantId)%>;
+  var myArr =[];
+  for(key in _sheetHeaders){
+      myArr.push(_sheetHeaders[key]);
+  }
+  console.log("sheetData",sheetData);
+   console.log("csvData",csvData);
+  var sheetHeaders = myArr.filter(function(x, i) {
+    return x.substring(x.length-5, x.length) != 'Input';
+  });
+ var mycsvArr =[];
+  for(key in csvHeader){
+      mycsvArr.push(csvHeader[key]);
+  }
+    var csvHeaders1 = mycsvArr.filter(function(x, i) {
+    return x.substring(x.length-5, x.length) != 'Input';
+  });
+  var brands=<%-JSON.stringify(brands)%>;
+  //console.log(brands);
+  var validationData = <%-JSON.stringify(validationData)%>;
+  var notNulls = <%-JSON.stringify(notNulls)%>
+  var attrsFromDb = <%-JSON.stringify(attributesFromDatabase)%>
+  //sheetHeaders.push(' ');
+  //var validators = getValidations(validationData, sheetHeaders, notNulls, expression, brands);
+  var firstCategory = Object.keys(sheetData)[0];
+  var excelHeaders = [];
+  var currentInstances={};
+
+  var tempHeaders1 = sheetHeaders.map(function(x, i) {
+      return x +" ("+ generateRandomAlphas(i)+")";
+  });
+ 
+  var tempHeaders=[];
+  for(var i=0;i<tempHeaders1.length-1;i++){
+ 
+    tempHeaders[i]=tempHeaders1[i];
+ 
+  }
+  var validators = getValidations(validationData, sheetHeaders, notNulls, expression, brands);
+ 
+    csvseaderfinal=[];
+    for(var jk=0;jk<csvHeaders1.length;jk++){
+    
+     
+        csvseaderfinal[jk]=csvHeaders1[jk];
+     
+    }
+
+
+     var csvheaders = csvseaderfinal.map(function(x, i) {
+      return x +" ("+ generateRandomAlphas(i)+")";
+  }); 
+  //console.log("dadasdada",csvheaders,csvseaderfinal);  
+  var tempHeaders = sheetHeaders.map(function(x, i) {
+      return x +" ("+ generateRandomAlphas(i)+")";
+  });
+  $(this).tab('show');
+  sheet(csvData,
+        csvseaderfinal,
+        validators[firstCategory],
+        firstCategory,
+        csvheaders,
+        currentInstances,imagepath,1);
+
+  $("#grids a").click(function(e) {
+   
+    e.preventDefault();
+
+    var category = $(this).text();
+    currentInstances[category] || (create(category, sheetHeaders));
+    $(this).tab('show');
+    function create(category, sheetHeaders) {
+      var data = sheetData[category];      
+      var v = validators[category];
+      sheet1(data,
+            csvheaders,
+            v,
+            category,
+            csvheaders,
+            currentInstances,imagepath,1,csvContainer);
+    }
+  });
+
+ var  imageColumn = excelHeader.indexOf('Image Name');
+  init1(excelContainer, excelData, excelHeader, "excel");
+  function init1(container, data, tempHeaders, flag, imageFolderColumn) {
+    if(flag == "csv"){
+      tempHeaders.push('Error');
+      for(var i = 0 ; i < data.length ; i++){
+      }
+    }
+    imageFolderPath = 3;
+    var maxPossibleRows = data.length;
+    var hit=maxPossibleRows*25;
+    var myData = data;
+    var hot = new Handsontable(container, {
+      data: data,
+      startRows: 0, 
+      startCols: 0,
+      //manualColumnResize: true,
+     // manualRowResize: true, 
+      minSpareRows: 0,
+      minSpareCols: 0,
+      maxRows: maxPossibleRows,
+      minRows:100,
+      height:hit,
+      colHeaders: tempHeaders,
+      columnSorting: true,
+      sorting: true,
+      search: true,
+      manualColumnMove: true,
+      manualRowMove: true,
+      stretchH: 'all',
+      contextMenu: true,
+     // nativeScrollbars: true,
+         afterOnCellMouseDown: function(e, coords, td) {   
+               
+       if (coords.col == imageColumn) {
+       
+       var imagePath1 = td.textContent;
+         if(imagePath1.indexOf("http://")==0 ||imagePath1.length>1000 || imagePath1.indexOf("https://")==0  || imagePath1.indexOf(":")==0) {
+                 $('#imagediv').html('');
+                 $('#imagediv').append('<img id="modal-image" height="300px" width="570px">');
+                 $("#modal-image").attr("src", imagePath1);
+                 $('#image-modal').modal('toggle');
+            }
+            else{
+                 imagePath1 = imagepath + '/@' + imagePath1;
+
+                    showImagess(imagePath1);
+            
+            }
+       }
+       }, 
+     
+      beforeKeyDown: function (e) { 
+         var index=tempHeaders.indexOf('Image Folder');
+        var selection = hot.getSelected();
+        if (selection && selection.length > 1) {
+          var row = selection[0];
+          var col = selection[imageFolderColumn];
+          var imagePath1 = hot.getDataAtCell(row, index);
+        if(qcimagepath != ''){
+            imagePath1 = qcimagepath+'/'+imagePath1;
+          }
+          showImage(imagePath1);
+        } 
+        if (e.keyCode < 37 || e.keyCode > 40) 
+          return;
+        var edit = hot.getActiveEditor();
+        if (!edit || !edit._opened) return;
+        if (e.keyCode == 37 && edit.TEXTAREA.selectionStart > 0)
+          return;
+        if (e.keyCode == 39 && edit.TEXTAREA.selectionEnd < edit.TEXTAREA.value.length)
+          return;
+        if (selection && selection.length > 1) {
+          var row = selection[0];
+          var col = selection[1];
+          hot.selectCell(row, col); 
+        } 
+      } 
+    }); 
+
+    if (flag == 'csv') {
+      exportable = hot;
+      var gridId = '#processedSheet';
+      var searchInput = '#'+flag+'-input';
+    } else {
+      var gridId = '#excelSheet';
+      var searchInput = '#'+flag+'-input';
+    }
+
+    $(searchInput).on('keyup', function(event) {
+      var value = ('' + this.value).toLowerCase(), row, col, r_len, c_len, td;
+      var example = $('#exampleGrid');
+      var data = myData;
+      var searcharray = [];
+      if (value) {
+        for (row = 0, r_len = data.length; row < r_len; row++) {
+          for (col = 0, c_len = data[row].length; col < c_len; col++) {
+            if (data[row][col] == null) {
+              continue;
+            }
+            if (('' + data[row][col]).toLowerCase().indexOf(value) > -1) {
+              searcharray.push(data[row]);
+              break;
+            }
+            else {
+            }
+          }
+        }
+        hot.loadData(searcharray);
+      }
+      else {
+        hot.loadData(myData);
+      }
+    });
+  }
+  function showImage(imagePath) {
+    $.ajax({
+    data : {'path':'/Link to ImageSrc'+'/'+imagePath},
+    url: '/users/getFiles',
+    method: 'GET',
+    success: function(data) {
+      if(data.length != 0){
+        for(var j =0 ; j< data.length ; j++){
+          var temp=data[j];
+          var completepath=temp.split('/');
+          var image=completepath[completepath.length -1];
+          var img=image.split('.');
+          var len = img[0].length - 3;
+          var index = img[0].indexOf("_th");
+          if(len == index){
+            var image='/Link to ImageSrc'+'/'+imagePath+'/'+image;
+             $("#section-image").attr("src", image);
+              break;
+          }
+        }
+      }
+    },
+    });
+  }
+  $('.textStatus1').on('keyup', function(e) {
+    e.preventDefault();
+    var code = e.which;
+    if(code==32||code==13||code==188||code==186){
+      filters1(csvseaderfinal, validators, sheet, csvData,csvheaders,firstCategory,imagepath,1);}
+  });
+
+  $("div").scroll(function(){
+   $(".wtHolder").scrollLeft($("#filters").scrollLeft()); 
+  //.ht_clone_left .wtHolder
+}); 
+//console.log('csvseaderfinal',csvseaderfinal);
+  $('#qc-export').click(function() {
+    exportCSV(currentInstances,
+        csvseaderfinal,
+        excelHeaders,
+        validators,
+        notNulls,
+        attributes,
+        categoryCodes,
+        attrsFromDb,flnm,uid,expression,brands,nameToCode,merchantId,0)
+  });
+});
+ function notification(id){
+ 
+  var index=tabs.indexOf(id);
+  if(index == -1){
+    tabs.push(id);
+    count++;
+  }
+ }
+
+ function showImagess(imagePath) {
+  $.ajax({
+    data : {'path':'/'+imagePath},
+    url: '/users/getFiles',
+    method: 'GET',
+    success: function(data) {
+      $('#imagediv').html('');
+      $('#imagediv').append(data);
+      $('#image-modal').modal('show');
+    }
+  });
+} 
+</script>
+<script src="/javascripts/libraries/handsontable/bower_components/ruleJS/dist/full/ruleJS.all.full.min.js"></script>
+<script src="https://docs.handsontable.com/0.29.0/bower_components/handsontable/dist/handsontable.full.js"></script>
+<script src="/javascripts/libraries/handsontable/src/handsontable.formula.js"></script>
+<script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+<script src="/javascripts/grid/search_replace.js"></script>
+<script src="/javascripts/grid/filters.js"></script>
+<script src="/javascripts/grid/show_image.js"></script>
+<script src="/javascripts/grid/validations.js"></script>
+<script src="/javascripts/grid/export_csv.js"></script>
+<script src="/javascripts/grid/alphanumeric.js"></script>
+<script src="/javascripts/grid/initialize.js"></script>
+<script src="/javasripts/alasql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.12/xlsx.core.min.js"></script>
+<script src="js/alasql.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="/data_sheet/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>

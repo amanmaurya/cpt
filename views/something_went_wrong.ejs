@@ -1,0 +1,10 @@
+<% include ./users/user_header %>
+<div id="error-page">
+  <div id="error-main-section">Sorry, something went wrong</div>
+  <div id="error-message-section"><%=message%></div>
+  <div id="go-back"><button class="btn btn-primary" action="action" type="button" value="Go Back" onclick="window.history.go(-1)">Go Back</button></div>
+</div>
+
+<script>
+window.error = <%-JSON.stringify(message)%>
+</script>

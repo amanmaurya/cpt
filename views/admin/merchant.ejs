@@ -1,0 +1,665 @@
+<% include ./sidemenu %>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        errorArrayList = <%-JSON.stringify(errordata)%>;
+
+        function formatString(array) {
+
+            var header = ['S.No', 'MerchantID', 'DispatchTime', 'Remark'];
+            var newData = [];
+            newData.push(header);
+            window.arr = array;
+            array.forEach(function (o, i) {
+                var r = [];
+                for (var k in o) {
+                    r.push(o[k]);
+                }
+                newData.push(r);
+            });
+            return newData.join("\n");
+        }
+
+        var editflag = 0;
+        $(window).load(function () {
+            $(".se-pre-con").fadeOut("slow");
+
+        });
+        $(document).ready(function () {
+
+            $("#form3").submit(function () {
+                $(".se-pre-con").fadeIn("slow");
+            });
+            if (errorArrayList.length > 0) {
+                var csvContent = "data:text/csv;charset=utf-8,";
+                csvContent = csvContent + formatString(errorArrayList)
+                var encodedUri = encodeURI(csvContent);
+                var link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "Error_Upload" + ".csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                errorArrayList = null;
+            }
+            strofheaderdata = [{
+                "data": "MerchantCode"
+            }, {
+                "data": "DispatchTime"
+            }];
+            for (var i = 0; i < <%= merchantdata.length %> ; i++) {
+                var j = i + 1;
+                strofheaderdata.push({
+                    "data": "attr" + j + ""
+                });
+            }
+            strofheaderdata.push({
+                "data": "DispatchTime"
+            });
+            console.log("jai ho", strofheaderdata);
+            var i = 0;
+            linedata = [];
+            otable = $('#tblMerchant').DataTable({
+                "ajax": {
+                    url: '/admin/getmerchant',
+                    type: "POST"
+                },
+                "columns": strofheaderdata,
+                "processing": true,
+                "serverSide": true,
+                'iDisplayLength': 10,
+                "order": [],
+                "bDestroy": true,
+                "info": false,
+                "columnDefs": [{
+                        "targets": 0,
+                        "width": "150px"
+                    },
+                    {
+                        "targets": strofheaderdata.length - 1,
+                        "width": "450px",
+                        "render": function (data, type, row) {
+                            i++;
+
+                            linedata[i] = row;
+                            //	console.log("jai ho ji",i,linedata);
+
+                            var current_index = row.Sno - 1;
+                            if (row.Isactive == 1) {
+                                return '<td><span title="Edit" style="cursor: pointer;" class="glyphicon glyphicon-pencil" onclick="EditMerchant(' + i + ')" id=' + row.ID + '&' + row.MerchantId + '&' + row.DispatchTime + '> Edit&nbsp;</span><span title="Deactivate" style="cursor: pointer;" class="glyphicon glyphicon-ok-sign" onclick="ActInact(this.id)" id=' + row.ID + '&' + row.Isactive + '>  &nbsp; </span><span title="Delete" style="cursor: pointer;" class="glyphicon glyphicon-trash" onclick="DeleteMerchant(' + row.ID + ')" id="del' + row.ID + '">  &nbsp; </span>';
+                            } else {
+                                return '<td><span title="Edit" style="cursor: pointer;" class="glyphicon glyphicon-pencil" onclick="EditMerchant(' + i + ')" id=' + row.ID + '&' + row.MerchantId + '&' + row.DispatchTime + '> Edit&nbsp;</span><span title="Activate" style="cursor: pointer;" class="glyphicon glyphicon-remove" onclick="ActInact(this.id)" id=' + row.ID + '&' + row.Isactive + '>   &nbsp;</span><span title="Delete" style="cursor: pointer;" class="glyphicon glyphicon-trash" onclick="DeleteMerchant(' + row.ID + ')" id="del' + row.ID + '">  &nbsp; </span>';
+                            }
+                        }
+                    },
+                ]
+            });
+
+            $("#limerchant").addClass('activetab');
+            $('#tblMerchant').DataTable();
+        });
+
+        localStorage.setItem('name', 'linedata');
+
+        function div_showAddmerchant() {
+            document.getElementById('addmerchant').style.display = "block";
+        }
+
+        function div_hidemerchant() {
+
+            editflag = 0;
+            document.getElementById('addmerchant').style.display = "none";
+            $("#lblId").val(0);
+            $("#merchantcode").val('');
+            $("#merchanttime").val('');
+            var leng = $("#tblMerchant thead tr ").children("th").length - 3;
+            for (var i = 0; i < leng; i++) {
+                //var attrvalue="attr".concat(j);
+                $("#attr".concat(i)).val('');
+
+            }
+        }
+
+        function div_hidemerchantattr() {
+            document.getElementById('addmerchantattr').style.display = "none";
+            $("#lblId").val(0);
+            $("#merchantid").val('');
+            $("#merchanttime").val('');
+        }
+
+        function EditAttribute() {
+            document.getElementById('editmerchantattr').style.display = "block";
+        }
+
+        function editdiv_hidemerchantattr() {
+            window.location.reload();
+            //document.getElementById('editmerchantattr').style.display = "none";	
+
+        }
+
+        function EditMerchant(id) {
+            ///yconsole.log("merchant data row ",linedata[id].ID);
+            //var listname=id.split('&');
+            $("#lblId").val(linedata[id].ID);
+            $("#merchantcode").val(linedata[id].MerchantId);
+            $("#merchanttime").val(linedata[id].DispatchTime); //linedata[id].length
+            var leng = $("#tblMerchant thead tr ").children("th").length - 3;
+            for (var i = 0; i < leng; i++) {
+
+                var j = i + 1;
+                var attrvalue = "attr".concat(j);
+                if (linedata[id][attrvalue] != 'null') {
+                    $("#attr".concat(i)).val(linedata[id][attrvalue]);
+                }
+            }
+            editflag = 1;
+            document.getElementById('addmerchant').style.display = "block";
+        }
+
+        function addAttribute() {
+            document.getElementById('addmerchantattr').style.display = "block";
+        }
+
+        function ActInact(id) {
+            var msg = "";
+            var values = id.split("&");
+            if (values[1] == 1) {
+                if (confirm("Do you want to Deactivate this merchant.")) {
+                    msg = "Merchant Deactivated successfully";
+                } else {
+                    return false;
+                }
+            } else {
+                if (confirm("Do you want to Activate this merchant.")) {
+                    msg = "Merchant deleted successfully";
+                } else {
+                    return false;
+                }
+            }
+
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin/changestatusmerchant';
+            $.ajax({
+                data: {
+                    "ID": values[0],
+                    "Status": values[1]
+                },
+                url: url,
+                method: 'POST',
+                success: function (data) {
+                    console.log(data);
+                    if (data.length != 0) {
+                        // alert(msg);
+                        alert_modal(msg, 'warning');
+                        setTimeout(function () {
+                            window.location.reload();
+
+
+                        }, 1000);
+
+                    }
+                },
+                dataType: 'JSON',
+            });
+
+        }
+
+
+
+        function DeleteMerchant(a) {
+
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin/changestatusmerchant';
+            $.ajax({
+                data: {
+                    "ID": a,
+                    "Status": 2
+                },
+                url: url,
+                method: 'POST',
+                success: function (data) {
+                    console.log(data);
+                    if (data.length != 0) {
+                        // alert(msg);
+                        alert_modal('Delete successfully', 'success');
+                        setTimeout(function () {
+                            window.location.reload();
+
+
+                        }, 1000);
+                        // window.location.reload();
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+
+        function showmodal() {
+            $("#myModal").modal('show');
+        }
+
+        function editattrmerchantdata(id) {
+            var values1 = $('#attrid1'.concat(id)).val();
+            var values2 = $('#eattr'.concat(id)).val();
+
+            if (values2.trim() == "") {
+                alert_modal("Attribute Name should be required !", 'danger');
+            } else if (values2.trim().length > 101) {
+                alert_modal("Attribute Name  length should be less then or equal to 100 !", 'danger');
+            } else {
+
+
+                var a = checkduplicateattr1(values2, values1);
+
+                if (a == 0) {
+                    alert_modal("Attribute is already exist !", 'danger');
+                } else {
+                    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin/editattrMerchant';
+                    $.ajax({
+                        data: {
+                            "merchantid1": values1,
+                            "attername": values2,
+                            "attrvalue": ''
+                        },
+                        url: url,
+                        method: 'POST',
+                        success: function (data) {
+                            $('#ladiv'.concat(id)).removeClass('hide');
+                            $('#indiv'.concat(id)).addClass('hide');
+                            $('#butt'.concat(id)).removeClass('hide');
+                            $('#sbutt'.concat(id)).addClass('hide'); //labelshow
+                            $('#labelshow'.concat(id)).html(' ');
+                            $('#labelshow'.concat(id)).append(values2);
+                        },
+                        dataType: 'JSON',
+                    });
+                }
+            }
+        }
+
+        function checkduplicateattr1(id, attid) {
+            var tt = 1;
+            $.ajax({
+                data: {
+                    'checkduplicateattr': id,
+                    attrid: attid
+                },
+                url: '/admin/checkduplicateattronadit',
+                async: false,
+                method: 'POST',
+                success: function (data) {
+
+                    if (data[0].flag > 0) {
+
+                        tt = 0;
+                        //window.location.reload();
+                    }
+                },
+                dataType: 'JSON',
+            });
+            return tt;
+        }
+
+        function checkduplicateattr() {
+            $.ajax({
+                data: {
+                    'checkduplicateattr': ($('#attername').val()).trim()
+                },
+                url: '/admin/checkduplicateattr',
+                method: 'POST',
+                success: function (data) {
+                    console.log(data);
+                    if (data[0].flag > 0) {
+                        alert_modal("Attribute Name already exits", 'danger');
+                        $('#attername').val('')
+                            //window.location.reload();
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+
+        function specialCharacter(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if ((charCode != 38 && charCode > 32 && charCode < 46) || (charCode > 57 && charCode < 64) || charCode == 126 || charCode == 96) {
+                alert_modal("This special character or number is not allowed\n ", 'danger');
+                return false;
+            }
+            return true;
+        }
+
+        function showhide(value) {
+            $('#ladiv'.concat(value)).addClass('hide');
+            $('#indiv'.concat(value)).removeClass('hide');
+            $('#butt'.concat(value)).addClass('hide');
+            $('#sbutt'.concat(value)).removeClass('hide');
+        }
+
+
+        function validatemerchant() {
+            if ($("#merchantcode").val().trim() == "") {
+                alert_modal("  Merchent Code is required.", 'danger');
+                return false;
+            } else {
+                if ($("#merchanttime").val().trim() == "") {
+                    alert_modal("Merchent Name is required.", 'danger');
+                    return false;
+                } else {
+                    if (editflag == 0) {
+                        var flag = 0;
+                        var mc = $("#merchantcode").val().trim().toLowerCase();
+                        var mn = $("#merchanttime").val().trim().toLowerCase();
+                        var table = $("table tbody");
+                        table.find('tr').each(function (i) {
+                            var $tds = $(this).find('td'),
+
+                                mcode = $tds.eq(0).text().trim().toLowerCase(),
+                                mname = $tds.eq(1).text().trim().toLowerCase();
+                            if (mcode == mc) {
+                                flag = 1;
+                                alert_modal("Merchant Code already exits", 'danger');
+                            } else
+                            if (mname == mn) {
+                                flag = 1;
+                                alert_modal("Merchant Name already exits", 'danger');
+                            } else
+                            if (mcode == mc && mname == mn) {
+                                flag = 1;
+                                alert_modal("Merchant already exits", 'danger');
+                            }
+
+                        });
+                        if (flag == 1) {
+                            return false;
+                        }
+
+                    }
+
+
+                }
+            }
+        }
+
+        function deleteattr(id) {
+            $.ajax({
+
+                url: '/admin/delmerchantattr',
+                method: 'POST',
+                data: {
+                    'id': id,
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data[0][0].flag > 0) {
+                        $('#buttdel1' + id).remove();
+                        alert_modal("Attribute delete successfully", 'success');
+
+                        //window.location.reload();
+                    }
+                },
+                dataType: 'JSON',
+            });
+        }
+    </script>
+
+
+    <div class="se-pre-con"></div>
+    <div class="content-here " style="margin-top: 22px">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+        <!-- DataTables CSS -->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+        <!-- DataTables -->
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+        <input type="button" value="Add Merchant" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 100px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="div_showAddmerchant()" />
+        <!--input type="button" value="Upload Merchant" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 150px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="showmodal()" /-->
+        <input type="button" value="Add Attribute" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 150px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="addAttribute();" />
+
+
+        <input type="button" value="Edit Attribute" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 150px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="EditAttribute();" />
+        <div style="height:600px;overflow:auto;">
+
+            <table id="tblMerchant" class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+
+                        <th style="background-color:#F4F8F9;width:150px">Merchant Code</th>
+                        <th style="background-color:#F4F8F9;width:150px">Merchant Name</th>
+                        <%for(var i=0;i<merchantdata.length;i++){%>
+                            <th style="background-color:#F4F8F9;width:150px">
+                                <%=merchantdata[i].Name%>
+                            </th>
+                            <%}%>
+                                <th style="background-color:#F4F8F9;width:200px">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+    <!---->
+    <div id="editmerchantattr" style="display:none">
+        <!-- Popup Div Starts Here -->
+        <div id="popupattr1">
+            <div id="form4" method="post" action="/admin/addattrMerchant" style="padding:15px;">
+
+
+                <img id="close3" class="img-circle" src="/images/download.png" onclick="editdiv_hidemerchantattr()" />
+
+                <center>
+                    <h3>Edit Attrbute</h3>
+                </center>
+                <hr style="    border-top: 1px solid #CECACA;
+    margin-left: 1px;
+    margin-right: 3px;">
+                    <table style="width:100%">
+                        <%if(merchantdata.length==0){%>
+                            <div>No Attribute available for edit</div>
+                            <%}%>
+                                <%for(var i=0;i<merchantdata.length;i++){%>
+                                    <tr id='buttdel1<%=merchantdata[i].attrId%>' style="height:50px;border-bottom: 1px solid">
+                                        <input id="attrid1<%=i%>" maxlength="100" name="merchantid1" placeholder="Enter Merchant Code" type="hidden" width="100%" value="<%=merchantdata[i].attrId%>" required/>
+                                        <td><label>Attribute Name:</label></td>
+                                        <td style="width:200px">
+                                            <div id="ladiv<%=i%>" class=""><label id="labelshow<%=i%>" style="display:grid;font-weight:normal;cursor: pointer;overflow: hidden;text-overflow: ellipsis;max-width:176px;"><%=merchantdata[i].Name%></label></div>
+                                            <div id="indiv<%=i%>" class="hide"><input onkeypress="return specialCharacter(event)" id="eattr<%=i%>" maxlength="50" name="atternamec" value='<%=merchantdata[i].Name%>' placeholder="Enter Attribute Name" onblur="checkduplicateattr(this)" type="text" width="100%" required/></div>
+                                        </td>
+                                        <td>
+                                            <div id="butt<%=i%>" class="" onclick="showhide('<%=i%>')"><button>edit</button></div>
+                                            <div id="sbutt<%=i%>" class="hide" onclick="editattrmerchantdata('<%=i%>')"><button>Submit</button></div>
+                                        </td>
+                                        <td>
+                                            <div id="buttd<%=i%>" class="" onclick="deleteattr('<%=merchantdata[i].attrId%>')"><button>delete</button></div>
+                                        </td>
+                                    </tr>
+                                    <%}%>
+                    </table>
+                    <center>
+
+
+                    </center>
+
+            </div>
+
+        </div>
+        <!-- Popup Div Ends Here -->
+
+    </div>
+    <!---->
+    <div id="addmerchantattr" style="display:none">
+        <!-- Popup Div Starts Here -->
+        <div id="popupattr">
+            <form id="form3" method="post" action="/admin/addattrMerchant" style="padding:15px;">
+                <!-- Contact Us Form -->
+
+                <img id="close2" class="img-circle" src="/images/download.png" onclick="div_hidemerchantattr()" />
+
+                <center>
+                    <h3>Add/Edit Attrbute</h3>
+                </center>
+                <hr style="    border-top: 1px solid #CECACA;
+    margin-left: 1px;
+    margin-right: 3px;">
+
+
+                    <input id="merchantid1" maxlength="100" name="merchantid1" placeholder="Enter Merchant Code" type="hidden" width="100%" value="0" required/>
+
+                    <label>Attribute Name:</label>
+                    <input id="attername" maxlength="50" name="attername" onkeypress="return specialCharacter(event)" placeholder="Enter Attribute Name" onblur="checkduplicateattr(this)" type="text" width="100%" required/>
+                    <!--label>Attribute Value:</label>
+			<input id="attrvalue" name="attrvalue" placeholder="Enter Attribute Value" type="text" value="" class="" width="100%" required-->
+                    <center>
+                        <input type="submit" class="btn btn-success" value="Submit" style="width: 150px;
+    height: 40px;
+    margin-bottom: 10px;
+    background-color: #D0D1D3;
+    color: #7e7e7e;
+    border: 1px solid #e7e7e7;
+    margin-top:10px !important;">
+                    </center>
+
+            </form>
+
+        </div>
+        <!-- Popup Div Ends Here -->
+
+    </div>
+    <!---->
+
+    <div id="addmerchant" style="display:none">
+        <!-- Popup Div Starts Here -->
+        <div id="popupContact">
+
+            <!-- Contact Us Form -->
+            <form id="form2" method="post" action="/admin/addMerchant" style="padding:15px;" onsubmit="return validatemerchant();">
+
+                <img id="close1" class="img-circle" src="/images/download.png" onclick="div_hidemerchant()" />
+
+                <center>
+                    <h3>Add/Edit Merchant</h3>
+                </center>
+                <hr style="    border-top: 1px solid #CECACA;
+    margin-left: 1px;
+    margin-right: 3px;">
+
+                    <label>Merchant code:</label>
+                    <input id="merchantcode" onkeypress="return specialCharacter(event)" maxlength="10" name="merchanecode" placeholder="Enter Merchant Code" type="text" width="100%" required/>
+
+                    <label>Merchant Name:</label>
+                    <input id="merchanttime" onkeypress="return specialCharacter(event)" maxlength="30" name="merchantdispatchtime" placeholder="Enter Merchant Name" type="text" width="100%" required/>
+                    <%for(var i=0;i<merchantdata.length;i++){%>
+                        <label style="width:100px"><%=merchantdata[i].Name%>:</label>
+                        <input id="attr<%=i%>" maxlength="250" onkeypress="return specialCharacter(event)" name="attrname<%=i%>" placeholder="Enter <%=merchantdata[i].Name%>" type="text" width="100%" maxlength='50' required/>
+                        <%}%>
+                            <center>
+                                <input id="lblId" name="merchantid" placeholder="Enter Dispatch Time" type="text" value="0" class="hide" width="100%" required/>
+                                <input type="submit" class="btn btn-success" value="Submit" style="width: 150px;
+    height: 40px;
+    margin-bottom: 10px;
+    background-color: #D0D1D3;
+    color: #7e7e7e;
+    border: 1px solid #e7e7e7;
+    margin-top:10px !important;">
+                            </center>
+
+
+            </form>
+        </div>
+        <!-- Popup Div Ends Here -->
+
+    </div>
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#3BBDEB;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <center>
+                        <h4 class="modal-title" style="color:white;">Upload Merchant</h4>
+                    </center>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="divUploadAttribute">
+
+                        <form action="/admin/upload_merchant" method="post" encType="multipart/form-data" onsubmit="return verifyfile('fileuploadfile')">
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-4" style="padding-right:0px;">
+                                    Upload Merchant Excel file :
+                                </div>
+                                <div class="col-lg-8">
+                                    <input type="file" id="attributefile" name="attributefile" class="fileuploadfile form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button type="submit" class="btn btn-success" style="    float: right;
+    margin-top: 20px;
+    margin-right: 16px;
+    background-color: #3BBDEB;
+    border: 1px solid lightgrey;">Submit</button>
+                            </div>
+
+                        </form>
+
+
+                        <div class="panel ">
+
+                            <div class="panel-body">
+                                <hr style="    margin-left: 15px;
+    margin-right: 20px;" />
+                                <h4 style="padding-left:20px;">Note for Uploading files</h4>
+                                <ul>
+                                    <li style="list-style:square;">The maximum file size for uploads is <strong>5 Mb</strong></li>
+                                    <li style="list-style:square;">Only data files (<strong>.xls,.xlsx</strong>) are allowed </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 0px solid #e5e5e5;">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <% include ../footer %>

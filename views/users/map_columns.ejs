@@ -1,0 +1,182 @@
+<% include ./user_header %>
+<style type="text/css">
+  .validate{
+    background-color: rgba(121, 191, 98, 0.52);; 
+  }
+</style>
+<div id="category-id-not-present-alert" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Error Occured</h4>
+      </div>
+      <div class="modal-body">
+        <p> Category Id is not mapped</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div id="same-column-mapped-alert" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" style="margin-left: 41px;margin-top: -23px;">Error Occured</h4>
+      </div>
+      <div class="modal-body">
+        <p> You have mapped multiple columns with same value--<strong id="twoCol"></strong> </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<form id="map-columns-headers" class="map-form" action="/users/map_columns" method="POST">
+  <div class="col-md-12 head">
+    <div class="col-md-6 first-half headers">
+      <div class="col-md-6 excel-heading">Excel Headers</div>
+      <div class="col-md-6 template-column">Template Headers</div>
+    </div>
+    <div class="col-md-6 second-half headers">
+      <div class="col-md-6 excel-heading">Excel Headers</div>
+      <div class="col-md-6 template-column">Template Headers</div>
+    </div>
+  </div>
+  <div id="map-columns" class="col-md-12">
+    <% var templateHeaders = t.slice(0); templateHeaders.sort(); %>
+    <div class="col-md-6 first-half">
+      <% for (var e = 0; e <= Math.ceil((excelHeaders.length-1)/2); e++) { %>
+      <% if (excelHeaders[e] && excelHeaders[e] != '') { %>
+      <div class="column-row">
+        <div class="col-md-6 excel-column"><%=excelHeaders[e]%></div>
+        <select name="<%=e%>" class="col-md-6 input-sm form-control small-dropdowns">
+          <option>--select</option>
+          <% for (t = 0; t < templateHeaders.length; t++) {%>
+          <% if (String(excelHeaders[e]).toLowerCase() == String(templateHeaders[t].Attribute).toLowerCase()) { %>
+          <option selected value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option>
+          <% } else { 
+            if(autofilldata[e] && autofilldata[e]!='' ){
+            if(String(excelHeaders[e]).toLowerCase() ==String(autofilldata[e].excelheadername).toLowerCase() &&  String(autofilldata[e].attrname).toLowerCase()==String(templateHeaders[t].Attribute).toLowerCase() ){ %>
+          <option selected value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option>
+            <%}else{%><option value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option><%}
+          }
+          else{%>
+          <option value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option>
+          <% } %>
+
+          <% } %>
+          <% } %>
+        </select>
+      </div>
+      <% } %>
+      <% } %>
+    </div>
+    <div class="col-md-6 second-half">
+      <% for (e = Math.ceil((excelHeaders.length-1)/2)+1; e <= excelHeaders.length-1; e++) { %>
+      <% if (excelHeaders[e] && excelHeaders[e] != '') { %>
+      <div class="column-row">
+        <div class="col-md-6 excel-column"><%=excelHeaders[e]%></div>
+        <select name="<%=e%>" class="col-md-6 input-sm form-control small-dropdowns">
+          <option>--select</option>
+          <% for (t = 0; t < templateHeaders.length; t++) { %>
+          <% if (String(excelHeaders[e]).toLowerCase() == String(templateHeaders[t].Attribute).toLowerCase()) { %>
+          <option selected value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%> ><%=templateHeaders[t].Attribute%></option>
+          <% } else { 
+            if(autofilldata[e] && autofilldata[e]!='' ){
+            if(String(excelHeaders[e]).toLowerCase() ==String(autofilldata[e].excelheadername).toLowerCase() &&  String(autofilldata[e].attrname).toLowerCase()==String(templateHeaders[t].Attribute).toLowerCase() ){ %>
+          <option selected value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option>
+            <%}else{%><option value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option><%}
+          }
+          else{%>
+          <option value="<%=templateHeaders[t].Attribute%>" <%if(templateHeaders[t].flag){%> class="validate" <%}%>><%=templateHeaders[t].Attribute%></option>
+          <% } %>
+          <% } %>
+          <% } %>
+        </select>
+      </div>
+      <% } %>
+      <% } %>
+    </div>
+  </div>
+  <div class="map-column-button">
+    <button class="btn btn-primary" type="submit" style="color: #7e7e7e;
+    background-color: #f4f4f6;
+    width: 150px;
+    height: 35px;border:1px solid #e7e7e7;margin-bottom:10px;" id="map-columns-submit-button">Submit</button>
+  </div>
+</form>
+<% include ./footer %>
+<script>
+$(document).ready(function() {
+  $('#map-columns-headers').submit(function(e) {
+    var values = $(this).serializeArray();
+    var i = 0;
+    var templateColumns = [];
+    var mermap='';
+    var merchantCode=1000;
+    values.forEach(function(o) {
+      templateColumns.push(o.value);
+    });
+  var count=0;
+    var selectedtemplate = '<%=tmp%>';
+      var email = '<%=name%>';
+      var merchantCode= '<%=merchantcode%>';
+     <% for (var e = 0; e < excelHeaders.length; e++) { %>
+  mermap=mermap+"'"+email+"','"+selectedtemplate+"','"+merchantCode+"','"+"<%=excelHeaders[e]%>"+"','"+templateColumns[count]+"'),(";
+  count++;
+      <%}%>
+
+   mermap=mermap.substring(0,mermap.length - 3);
+
+  
+   $.ajax({
+                      url: '/users/user_merchant_attributemapp',
+                      type: 'post',
+                      data: {
+                           "email":email,
+                           "template":selectedtemplate,
+                           "merchantCode":merchantCode,
+                           "mermap":mermap,
+                           "async":false                         
+                           },
+                      success:function(data){
+                            console.log("done");
+                           
+                      }
+                  });
+   
+    
+    //console.log(values);
+    if (hasDuplicates(templateColumns)) { 
+      $('#same-column-mapped-alert').modal('show');
+      return false;
+    } 
+    if (!hasSelectedCategory(templateColumns)) {
+      $('#category-id-not-present-alert').modal('show');
+      return false;
+    }
+    function hasSelectedCategory(templateColumns){
+      var x = templateColumns.indexOf('Category Id') > -1 ? true : false;
+      return x;
+    }
+    function hasDuplicates(values) {
+      values = values.sort();
+      for (var i = 0; i < values.length - 1; i++) {
+        if (values[i] === values[i+1] && values[i] != "--select") {
+          $('#twoCol').html(values[i]);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    return true;
+  });
+});
+</script>

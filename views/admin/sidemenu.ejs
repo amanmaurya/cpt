@@ -1,0 +1,133 @@
+<% include ../admin_header %>
+    <style>
+        #navigationMenu {
+            margin-left: -62px;
+            margin-top: 10px;
+        }
+        
+        #navigationMenu li {
+            list-style: none;
+            height: 52px;
+            padding: 2px;
+            width: 54px;
+            text-align: center;
+        }
+        
+        #navigationMenu span {
+            /* Container properties */
+            width: 0;
+            left: 38px;
+            padding: 0;
+            position: absolute;
+            overflow: hidden;
+            font-size: 14px;
+            /* Text properties */
+            font-family: 'Myriad Pro', Arial, Helvetica, sans-serif;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+            line-height: 35px;
+            /* CSS3 Transition: */
+            -webkit-transition: 0.25s;
+            /* Future proofing (these do not work yet): */
+            -moz-transition: 0.25s;
+            transition: 0.25s;
+        }
+        
+        #navigationMenu a {
+            background: #00a2ef;
+            color: #fff;
+            height: 50px;
+            font-size: 40px;
+            width: 50px;
+            display: block;
+            position: relative;
+            padding: 5px 0px 0px 0px;
+            text-decoration: none;
+            z-index: 1000;
+        }
+        /* General hover styles */
+        
+        #navigationMenu a:hover span {
+            width: auto;
+            padding: 0 10px;
+            overflow: visible;
+        }
+        
+        #navigationMenu a:hover {
+            /* CSS outer glow with the box-shadow property */
+            -moz-box-shadow: 0 0 5px #9ddff5;
+            -webkit-box-shadow: 0 0 5px #9ddff5;
+            box-shadow: 0 0 5px #9ddff5;
+            z-index: 1000;
+        }
+        
+        #navigationMenu a span {
+            background-color: #00a2ef;
+            color: #fff;
+            margin: -5px 0px 0px 0px;
+            height: 50px;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+    </style>
+    <script type="text/javascript" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="/stylesheets/adminstyle.css" rel="stylesheet">
+    <div class="admin-panel col-md-1" style="padding-right:0px;padding-left:0px;">
+        <ul id="navigationMenu">
+
+            <li id="litemp" style="border-top-left-radius:11px;"><a class="glyphicon glyphicon-list-alt" href="/admin/"><span >&nbsp;&nbsp;Template</span></a></li>
+
+            <li class="listelement" id="liattribute"><a class="glyphicon glyphicon-record " href="/admin/attribute"><span >&nbsp;&nbsp;Attribute</span></a></li>
+            <li class="listelement" id="lilov"><a href="/admin/lov" class="glyphicon glyphicon-th-list"><span >&nbsp;&nbsp; List Values </span></a></li>
+
+            <li class="listelement"><a class="glyphicon glyphicon-star " href="/admin/merchant"><span >&nbsp;&nbsp;Merchant</span></a></li>
+
+            <li id="liusers"><a class="glyphicon glyphicon-user " href="/admin/user"><span  >&nbsp;&nbsp;User</span></a></li>
+
+            <li class="hide"><a href="#"><span class="glyphicon glyphicon-star">&nbsp;&nbsp;Quality Checker</span></a></li>
+            <li><a href="/" class="glyphicon glyphicon-repeat "><span >&nbsp;&nbsp;File Processor</span></a></li>
+            <li id="lilogs"><a class="glyphicon glyphicon-stats " href="/admin/log_Summary"><span >&nbsp;&nbsp;Logs</span></a></li>
+            <li id="lilogs"><a class="glyphicon glyphicon-play-circle" href="/qc/"><span >&nbsp;&nbsp;Quality check</span></a></li>
+            <li id="lirib"><a class="glyphicon glyphicon-adjust" href="/admin/res_brand"><span>&nbsp;&nbsp;Restricted Brand</span></a></li>
+        </ul>
+    </div>
+
+
+    <div class="modal fade" id="myModalalert" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content" style="width: 66%;margin-left: 103px;">
+                <div class="modal-header" style="background-color: #005278;">
+                    <!-- <button type="button" class="close" style="margin-top: -10px;" data-dismiss="modal">&times;</button> -->
+
+                </div>
+                <div class="modal-body">
+                    <p id="alert_p_text">Are you sure to proceed</p>
+                </div>
+                <div class="modal-footer">
+                   <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete">Proceed</button>
+    <button type="button" data-dismiss="modal" class="btn" id='cancel1' >Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function alert_modal(lab,ty) {
+
+            $.notify({
+                message: lab
+            }, {
+                type: ty
+            });
+            
+        }
+          function alert_modal1(lab,ty) {
+
+           $('#alert_p_text').text(lab);
+            $('#myModalalert').modal('show')
+        }
+    </script>

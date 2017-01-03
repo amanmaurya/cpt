@@ -1,0 +1,209 @@
+
+<% include ./sidemenu %>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function () {
+  $('#tbllogs').DataTable({
+    "order": [[ 1, "desc" ]],
+     "columns": [
+              { "width": "20%" },
+              { "width": "20%" },
+              { "width": "10%" },
+                         ]
+  });
+  // $('table.display').DataTable();
+  $("#lilogs").addClass('activetab');
+});
+</script>
+<script>
+errorArrayList=<%-JSON.stringify(rows1)%>;
+console.log("error list",errorArrayList);
+function formatString(array) {
+
+var header=['User ID','File Name','Template','Total Data','Error Data','Correct Data','Audit Time'];
+
+
+    var newData = [];
+    newData.push(header);
+window.arr = array;
+
+    array.forEach(function(o, i){
+        var r  = [];
+        for (var k in o){
+            r.push(o[k]);
+        }
+        newData.push(r);
+    });
+    return  newData.join("\n");
+}
+function download(){
+
+  if(errorArrayList.length>0)
+        {
+            var csvContent = "data:text/csv;charset=utf-8,";
+            csvContent=csvContent+formatString(errorArrayList)
+            var encodedUri = encodeURI(csvContent);       
+            var link = document.createElement("a");       
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Logs_Download" + ".csv");       
+            document.body.appendChild(link);       
+            link.click();   
+            document.body.removeChild(link);
+            errorArrayList=null;   
+        }
+}
+function showDetail(id,time){
+  //alert(id)
+  div_show5() ;
+  var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/log_Detail';
+  $.ajax({
+    url: url,
+    method: 'POST',
+    data: {"uid":id,"ltime":time},
+    success: function(rows) {
+     if(rows.length>0){
+      var html="<table id='tbllogsdetail' class='table one display' style='border:1px solid black;'><thead>"+"<tr>"+
+                        "<td> Type </td>"+
+                        "<td> File Name </td>"+
+                        "<td> Template </td>"+
+                        "<td> Total Data </td>"+
+                        "<td> Error Data </td>"+
+                        "<td> Correct Data </td>"+
+                        "<td> Start Time </td>"+
+                        "<td> Audit Time </td></tr> </thead><tbody>";
+                  
+                 for(var i = 0; i < rows.length ; i++) { 
+                    var a=rows[i].Audittime
+                    var b=rows[i].sTime
+                       html=html+ "<tr>"+
+                                "<td>"+rows[i].Type +" </td>"+
+                                "<td>"+rows[i].Excelfilename +" </td>"+
+                                "<td>"+rows[i].Template +" </td>"+
+                                "<td>"+rows[i].countofrows +" </td>"+
+                                "<td>"+rows[i].errorrecords  +" </td>"+
+                                "<td>"+rows[i].correctrecords +" </td>"+
+                                "<td>"+b +" </td>"+
+                                "<td>"+ a+" </td>"+
+                                "</tr>";
+                        
+                        }
+                     html=html+"</tbody></table>";
+                     $('#headingname').html(rows[0].fk_UserId)
+                     $('#headingdate').html(rows[0].Audittime)
+                     $('#tbllogsdetail').html(html);
+                      
+                      oTable=$("#tbllogsdetail").dataTable({
+                      "bLengthChange": false,
+                    "scrollY": 200,
+                      "scrollX": true,
+                "bDestroy":true,"columns": [
+              { "width": "10%" },
+              { "width": "10%" },
+              { "width": "10%" },
+              { "width": "10%" },
+              { "width": "10%" },
+              { "width": "10%" },
+              { "width": "10%" },
+              { "width": "10%" },
+
+                         ]
+        
+            });
+            oTable.fnDraw();
+     }
+     
+    },
+    dataType: 'JSON',
+  });
+}
+function div_show5() {
+  document.getElementById('adg5').style.display = "block";
+  
+}
+function div_hide5() {
+  document.getElementById('adg5').style.display = "none";
+}
+$(document).ready(function () {
+  div_hide5() ;
+});
+</script>
+<div class="content-here col-md-11" style="height:600px;overflow:auto;margin-top: 20px">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<link href="../stylesheets/adminstyle.css" rel="stylesheet">
+ <input type="button" value="Download Logs" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 110px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;" onclick="download()" />
+    
+  <table id="tbllogs" class="table one display" style="border:1px solid black;">
+        <thead>
+                <tr>
+                        <td> User ID </td>
+                        <td> Audit Date </td>
+                        <td> File(s)</td>
+                        
+                </tr>
+        </thead>
+        <tbody>
+                <% for(var i = 0; i < rows.length ; i++) { %>
+
+                        <tr>
+                                <td><%=rows[i].fk_UserId; %> </td>
+                                <td><%=rows[i].Audittime %> </td>
+                                <td onclick="showDetail('<%=rows[i].fk_UserId%>','<%=rows[i].Audittime%>')" ><%=rows[i].filecount %> </td>
+
+                        </tr>
+                        <%}%>
+        </tbody>
+  </table>
+</div>
+
+
+<div id="adg5" style="opacity: 1.95; !important">
+    <div id="popupContact" style="left: 37%;">
+      <form class="login-form" id="form2" style="max-width: 812px; !important ">
+        <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide5()" />
+        <center> <h3 id="heading1">Audit Detail</h3></center>
+         <b><h4 style="margin-left: 3%;"id="headingname"></h4></b>
+         <b><h4 style="float:right;margin-top: -4%;
+    margin-right: 3%;" id="headingdate"></h4></b>
+        <div class="modal-body">
+        <center>
+        
+                    <table id='tbllogsdetail' class='table one' style='border:1px solid black;'>
+        <thead>
+                <tr>
+                        <td> Type </td>
+                        <td> File Name </td>
+                        <td> Template </td>
+                        <td> Total Data </td>
+                        <td> Error Data </td>
+                        <td> Correct Data </td>
+                        <td> Start Time </td>
+                        <td> Audit Time </td>
+                        
+                </tr>
+        </thead>
+        <tbody>
+                
+        </tbody>
+  </table>
+        </center>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<% include ../footer %>

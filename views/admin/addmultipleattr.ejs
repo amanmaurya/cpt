@@ -1,0 +1,412 @@
+<% include ./sidemenu %>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    <script>
+    var oTable;
+        $(document).ready(function() {
+           
+
+  oTable = $('#allattr').dataTable({
+               'iDisplayLength': 6,
+                "order":[],
+                "bDestroy": true, 
+                "info":false,
+            });
+
+
+     $("#search").keyup(function() {
+        oTable.fnFilter(this.value);
+      });
+
+
+ setTimeout(function(){
+           <% 
+        for(var i=0;i<attributes.length;i++){
+            for(var s=0;s<vset.length;s++){
+                              for(var a=0;a<valsetattrcap.length;a++){
+                              /// console.log("vsetId--",vset[s].ID,"----valsetattrcap--",valsetattrcap[a].fk_ValueSetId,"---atributeid---",attributes[i].ID,"----valsetattrcap[a].fk_AttributeID----",valsetattrcap[a].fk_AttributeId);
+                                if ( attributes[i].ID === valsetattrcap[a].fk_AttributeId && vset[s].ID ===valsetattrcap[a].fk_ValueSetId  ){ console.log("aaaa",valsetattrcap[a].fk_ValueSetId)%>
+                                
+                                $("#vlueset_"+<%=attributes[i].ID%>).val(<%=valsetattrcap[a].fk_ValueSetId%>);
+                                <%}%>
+                 <% if ( attributes[i].ID === valsetattrcap[a].fk_AttributeId && valsetattrcap[a].VType =='required'){%>
+                        $("#"+<%=attributes[i].ID%>+"v").val(1);
+
+                            <%}
+                          }}}%>
+
+},1000);
+
+
+
+
+        });
+     /*function showmodal1(id) {
+            $('#category1').val(id);
+            $('#express').html('');
+        
+              $("#currentattr").val(id);
+            $("#myModal").modal('show')
+        }*/
+        function showmodal(id)
+{
+ // var checkid=id.replace('y','');
+  //var attrid=$('#attributid').val();
+  $("#currentattr").val(id);
+  if($('#attr_'+id).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getExpression';
+    $.ajax({
+      data:{'catid':$('#categoryid').val(),'attrid':id},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+         $('#express').html('');
+        if(data.length != 0){
+          for(var i=0;i<data.length;i++){
+            $('#express').append($("<div><input type='checkbox' class='newexpr' value='"+data[i].Expression+"' id='"+data[i].Expression+"'   checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+data[i].Expression+'l'+"' style='padding-left:5px;font-weight:normal'>"+data[i].Expression+"</label></div>"));
+          }
+        }
+       // $('#category').val(checkid);
+        $("#myModal").modal('show');
+      },
+      dataType : 'JSON',
+    });
+    
+  }
+  else{
+    alert_modal('First Map The Attribute To Category','danger');
+  }
+  
+}
+
+             function addremove(id, call1) {
+            var flag;
+            /*var selectid = id + 's';
+            var valid = id + 'v';
+            var isattr = id + 'a'
+            var attrid = $('#attributid').val();
+            */if ($('#attr_' + id).is(':checked')) {
+                flag = 0;
+                var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+
+      //       alert_modal("categoryid--"+$('#categoryid').val()+"----attrid---"+id+"----valset---"+$('#vlueset_' + id).val()+"-----isattr----"+0+"----flag---"+flag+"-----validflag----"+$('#' + id+'v').val());
+               // return false;
+                                $.ajax({
+                    data: {
+                        'catid': $('#categoryid').val(),
+                        'attrid': id,
+                        'valset': $('#vlueset_' + id).val(),
+                        'isattr': 0,
+                        'flag': flag,
+                        'validflag': $('#' + id+'v').val()
+                    },
+                    url: url,
+                    method: 'POST',
+                    success: function(data) {
+                        if (call1 != 0) {
+                            alert_modal("Attribute mapped successfully",'success');
+                        }
+                    },
+                    dataType: 'JSON',
+                });
+            } else {
+                flag = 1;
+                var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+               
+
+    //alert_modal("categoryid--"+$('#categoryid').val()+"----attrid---"+id+"----valset---"+$('#vlueset_' + id).val()+"-----isattr----"+0+"----flag---"+flag+"-----validflag----"+$('#' + id+'v').val());
+                
+            // return false;
+
+                $.ajax({
+                    data: {
+                        'catid': $('#categoryid').val(),
+                        'attrid': id,
+                        'valset': $('#vlueset_' + id).val(),
+                        'isattr': 0,
+                        'flag': flag,
+                        'validflag': $('#' + id+'v').val()
+                    },
+                    url: url,
+                    method: 'POST',
+                    success: function(data) {
+                        if (call1 != 0) {
+                            alert_modal("Attribute mapping deleted successfully",'success');
+                        }
+                    },
+                    dataType: 'JSON',
+                });
+            }
+        }
+       
+
+
+
+       function editvalset(id,f){
+  //var catid=id.replace('s','');
+  //var isattr=catid+'a';
+  //var validflag=catid+'v';
+  //var attrid=$('#attributid').val();
+  var flag=3;
+  if($('#attr_'+id).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+    $.ajax({
+      data:{'catid':$('#categoryid').val(),'attrid':id,'valset':$('#vlueset_'+id).val(),'isattr':0,'flag':flag,'validflag':$('#'+id+"v").val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+        if(f==1)
+        alert_modal("Valueset updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function editvalidation(id,f){
+ // var catid=id.replace('v','');
+ // var isattr=catid+'a';
+ // var selectid=catid+'s';
+ // var attrid=$('#attributid').val();
+  var flag=4;
+  if($('#attr_'+id).is(':checked')){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/editandinsert_attribute';
+    $.ajax({
+      data:{'catid':$('#categoryid').val(),'attrid':id,'valset':$('#vlueset_'+id).val(),'isattr':0,'flag':flag,'validflag':$('#'+id+'v').val()},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+        if(f==1)
+        alert_modal("Validation updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+
+        function addexpression() {
+            //alert_modal('wwwwwww')
+            var already = 2;
+            var expr1 = $('#expr').val();
+            var exp = (($('#expr').val()).toLowerCase()).trim();
+            if (exp != '') {
+                $(".newexprlbl").each(function() {
+                    var existvalue = ($(this).text()).toLowerCase();
+                    if (existvalue == exp) {
+                        already = 1;
+                        return false;
+                    } else {
+                        already = 2;
+                    }
+                });
+                if (already == 2) {
+                    $('#express').append($("<div><input type='checkbox' class='newexpr' value='" + expr1 + "' id='" + expr1 + "'    checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='" + expr1 + 'l' + "' style='padding-left:5px;font-weight:normal'>" + expr1 + "</label></div>"));
+                }
+            }
+            $('#expr1').val('');
+            $('#expr').val('');
+        }
+
+
+
+function submitExpression(){
+  var attrid=$('#currentattr').val();
+  var expres=[];
+  var expr='';
+  $(".newexpr").each(function () {
+    if($(this).is(':checked')){
+      expres.push($(this).next('label').text());
+    }
+  });
+  for(var i=0;i<expres.length;i++){
+      if(expr == ''){
+        expr=expres[i];
+      }
+      else{
+        expr=expr+','+expres[i];
+      }
+  }
+  if(expr != ''){
+    var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/submitExpression';
+    $.ajax({
+      data:{'catid':$('#categoryid').val(),'attrid':attrid,'expres':expr},
+      url: url,
+      method: 'POST',
+      success: function(data) {
+            alert_modal("Validation updated successfully",'success');
+      },
+      dataType : 'JSON',
+    });
+  }
+}
+
+function move(){
+  var newLink = $("<a />", {
+        id   : "eatt",
+        name : "link",
+        href : "/admin",
+        text : "Hello"
+    });
+    $("#temp").append(newLink);
+    $('#eatt').get(0).click();
+}
+
+function addattr(){
+   var newLink = $("<a />", {
+        id   : "eatt",
+        name : "link",
+        href : "/admin/attribute",
+        text : "Hello"
+    });
+    $("#temp").append(newLink);
+    $('#eatt').get(0).click();
+}
+    </script>
+    <style>
+        .temp {
+            border: 1px solid Lightgrey;
+            border-radius: 3px;
+            background-color: #27B7EA;
+            color: white;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        
+        .catgeor {
+            border-radius: 3px;
+            background-color: #fff;
+            color: #000;
+            padding: 15px;
+            overflow: auto;
+            height: 300px;
+            padding-top: 0px;
+        }
+        
+        .categor_active {
+            display: block;
+        }
+        
+        .categor_hide {
+            display: none;
+        }
+        
+        body {
+            overflow-y: hidden;
+        }
+    </style>
+    <div class="content-here col-md-11" style="height:600px;overflow:auto;margin-top: 20px">
+        <link href="../stylesheets/adminstyle.css" rel="stylesheet">
+        <div id="divmapAttribute" style="padding:10px">
+            <div class="col-md-12" style="margin-top:15px;">
+              <div class="col-md-6" >
+                <label style="margin-left:-16px;font-size:20px;">Category:<%=categoryname%></label>
+                <input type="hidden"  value="<%=categoryid%>" id='categoryid' class="" />
+              </div>
+              <div class="col-md-6">
+                <input type="button" value="Add Attribute" class="grayButtonPMS" style="    background-color: #F4F4F6;
+    color: #7E7E7E;
+    height: 36px;
+    width: 100px;
+    border-radius: 5px;
+    border: 1px solid #e7e7e7;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    float:right;" onclick="addattr()" />
+              </div>
+            </div>
+
+             <div class="col-md-12">
+                 <table id="allattr" class="table stripe cell-border hover">  
+                 <thead style="background-color:rgb(244, 248, 249);">
+                    <tr>
+                        <th>Action</th>
+                        <th>Attribute Name</th>
+                        <th>Add Validation</th>
+                        <th>List of Values</th>
+                        <th>Required/Not Required</th>
+                    </tr>
+                </thead> 
+                <tbody id="attrbody">
+               <%for(var i=0;i<attributes.length;i++){ %>
+                 <tr  class="rows">       
+                 <td ><input type="checkbox" class="newcheck1" value="<%=attributes[i].ID%>" name="newcheck" id="attr_<%=attributes[i].ID%>" <% for(var j=0;j<attrmapcap.length;j++){if(attrmapcap[j].aId==attributes[i].ID) {%>checked<%}}%> onchange="addremove(this.value,1)"></td>
+                 <td><label><%=attributes[i].Name%></label></td>
+                 <td ><input type="button" value="Add Validation" class="grayButtonPMS" style="background-color: #F4F4F6;color: #7E7E7E;height: 30px;border-radius: 5px;border: 1px solid #e7e7e7;" onclick="showmodal(<%=attributes[i].ID%>)" /></td>
+                 <td ><select style="" id="vlueset_<%=attributes[i].ID%>" class='form-control' onchange='editvalset(<%=attributes[i].ID%>,1)'>
+                            <option value="0" selected>Select</option>
+                            <% for(var s=0;s<vset.length;s++){ if(attributes[i].datatype=='number')
+                            {if(vset[s].isnan==1){%>
+                              <option value="<%=vset[s].ID%>" ><%=vset[s].Name%></option>
+                            <%}}else{%><option value="<%=vset[s].ID%>" ><%=vset[s].Name%></option>
+                            <%}}%>
+                          </select></td>
+                 <td ><select style="" class='form-control' id='<%=attributes[i].ID+'v'%>' onchange="editvalidation(<%=attributes[i].ID%>,1);" style="">
+                                <option value="1" >Required</option>
+                                <option value="0" selected>Not Required</option>
+                            </td>
+                 
+
+                 </tr>
+              <%}%>
+                </tbody>
+            </table>
+
+            </div>
+                    <div class="col-lg-12 ">
+                        <input type="submit" ck value="Back" style="    float: right;
+   color: #7e7e7e;
+    background-color: #F4F4F6;
+    width: 150px;
+    height: 40px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;margin-bottom:10px;margin-right:10px;margin-top:12px;" onclick="move();" />
+
+                    </div>
+        </div>
+    </div>
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#3BBDEB;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <center>
+                        <h4 class="modal-title" style="color:white">Validation</h4>
+                    </center>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <input type="text" id="expr" class="form-control" placeholder="Enter The Expression" style="margin-left:5px;">
+                            <input type="text" id="category" class="form-control hide" placeholder="Enter The Expression" style="margin-left:5px;">
+                        </div>
+                        <div class="col-md-2" style="margin-top:8px;">
+                            <input type="button" class="btn btn-success" style="width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border-radius:5px;margin-right:50px;margin-left:-28px;" value="Add" onclick="addexpression();">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" id="express" style="border:1px solid lightgray;height:300px;border-radius:5px;overflow-y:scroll;">
+                        </div>
+                        <div class="col-md-12" id="express" style="margin-top:5px;">
+                            <input type="hidden" id="currentattr" value="">
+                            <input type="button" class="btn btn-success" style="width:75px;height:30px;color:#7e7e7e;background-color:#f4f4f6;border:1px solid lightgrey;border-radius:5px;margin-right:3px;margin-left:-28px;float:right;" value="Submit" data-dismiss="modal" onclick="submitExpression();">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 0px solid #e5e5e5;">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="temp" class="hide">
+    </div>
+    </div>
+    <% include ../footer %>

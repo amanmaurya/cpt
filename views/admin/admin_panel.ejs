@@ -1,0 +1,1773 @@
+<% include ./sidemenu %>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/javascripts/jquery-1.10.1.min.js"></script>
+    <script src="/javascripts/jquery.sortable.js"></script>
+    <script src="/javascripts/jquery.sortable.min.js"></script>
+
+
+    <style>
+        label {
+            line-height: :32px !important;
+        }
+    </style>
+    <script>
+        var categoryflag;
+        var attradditflag;
+        var categorychild;
+        var tree1 = '';
+        var codeedit;
+        var treeview = [];
+        errorArrayList = <%-JSON.stringify(errordata)%>;
+
+        $(document).ready(function () {
+            <%= msg%>
+            var msg = <%=msg%>
+                // alert(msg)
+            if (msg == 0) {
+                // success
+
+                alert_modal('Please Delete All Available Childs', 'danger');
+
+
+
+            }
+            if (msg == 1) {
+                alert_modal("Record Deleteed Successfully", 'success');
+
+
+
+            }
+            if (msg == 2) {
+                alert_modal('Record Already Exist', 'success');
+
+
+
+            }
+            if (msg == 3) {
+                alert_modal("Record Added Successfully", 'success');
+
+            }
+            if (msg == 4) {
+                alert_modal("Sequence Updated Successfully", 'success');
+
+
+            }
+            $("#litemp").addClass('activetab');
+            catgroup();
+            maketree();
+
+            //         setTimeout(function() {
+            //    expandoldtree()
+
+
+            // }, 1000);
+            $('#expList').find('li:has(ul)')
+                .click(function (event) {
+                    //alert(3)
+                    if (this == event.target) {
+                        $(this).toggleClass('expanded');
+                        $(this).children('ul').toggle('medium');
+// if($(this).children('input').style!=undefined)
+                        $(this).children('input').style.display = "none";
+                        //alert('click');
+                    }
+                    return false;
+                })
+
+        });
+
+        function div_show6() {
+            document.getElementById('adg6').style.display = "block";
+        }
+
+        function div_hide6() {
+            document.getElementById('adg6').style.display = "none";
+        }
+
+        function div_show5() {
+            document.getElementById('adg5').style.display = "block";
+
+        }
+
+        function div_hide5() {
+            document.getElementById('adg5').style.display = "none";
+        }
+
+        function div_show1() {
+            document.getElementById('adg1').style.display = "block";
+        }
+
+        function div_hide1() {
+            document.getElementById('adg1').style.display = "none";
+        }
+
+        function div_show2() {
+            document.getElementById('adg2').style.display = "block";
+        }
+
+        function div_hide2() {
+            document.getElementById('adg2').style.display = "none";
+        }
+
+        function div_show3() {
+            document.getElementById('adg3').style.display = "block";
+        }
+
+        function div_hide3() {
+            document.getElementById('adg3').style.display = "none";
+        }
+
+        function div_show4() {
+            document.getElementById('adg4').style.display = "block";
+        }
+
+        function div_hide4() {
+            document.getElementById('adg4').style.display = "none";
+        }
+
+        function showmodal() {
+            $("#myModal").modal('show');
+        }
+
+        function prepareList() {
+
+            $('#expList').find('li:has(ul)')
+                .click(function (event) {
+                    if (this == event.target) {
+
+                        // alert(4,this.id)
+                        // console.log(this)
+
+                        // alert($(this).attr('jsp1'))
+                        if ($(this).attr('jsp1') == 0) {
+                            console.log($(this).attr('jsp1'), this.classList[0])
+                            // alert(this.classList[0]+"_"+$(this).attr('jsp1')+''+($(this).attr('jsp1') == 0))
+                            localStorage['class'] = this.classList[0]
+                        }
+
+                        console.log(this.classList[0])
+                        $(this).toggleClass('expanded');
+                        $(this).children('ul').toggle('medium');
+                       // if($(this).children('input').style!=undefined)
+                        $(this).children('input').style.display = "none";
+//expList
+
+                    }
+                    return false;
+
+                })
+                .addClass('collapsed')
+                .children('ul').hide();
+            $('#tempopen').click();
+
+        };
+        var countno = 0;
+
+        function maketree() {
+
+            $("#divAddAttribute").addClass('hide');
+            $('.ul1').remove();
+            <% if(templatedata.length != 0) {%>
+            var data = <%-JSON.stringify(templatedata)%>;
+            tree = _makeTree({
+                q: data
+            });
+
+            function _makeTree(options) {
+                var children, e, id, o, pid, temp, _i, _len, _ref, flg;
+                id = options.id || "id";
+                pid = options.parentid || "parentid";
+                children = options.children || "children";
+                flg = options.flag || "flag";
+                temp = {};
+                o = [];
+                _ref = options.q;
+                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                    e = _ref[_i];
+                    e[children] = [];
+                    temp[e[id]] = e;
+                    if (temp[e[pid]] != null) {
+                        temp[e[pid]][children].push(e);
+                    } else {
+                        o.push(e);
+                    }
+
+                }
+                return o;
+            };
+            // alert(1)
+            // console.log(data);
+
+            var rend = "<ul class=' ' style='background-color:white;'><li class='' id='tempopen' jsp1='-1' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'>Template <input type='button' class='btn-primary' id='0&-1&-1'  style='font-size:12px;margin: 5px 0px 0px 5px;margin-top:-5px !important;background-color: #27B7EA;border:1px solid lightgrey;border-radius:5px;    width: 100px;height: 20px;' value='Add'  onclick='add(this.id);'> " +
+                _renderTree(tree) + "</li></ul>";
+
+            function _renderTree(tree) {
+                // console.log('3');
+                // alert(33)
+                var e, html, _i, _len;
+
+                html = "<ul class='ul1  ' style='background-color:white;'>";
+
+                for (_i = 0, _len = tree.length; _i < _len; _i++) {
+                    e = tree[_i];
+                    treeview[_i] = tree[_i];
+                    if (e.CategoryCode != 2) {
+                        // console.log(e)
+                        if (e.flag == 0) {
+                            html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + ",0,0," + e.flag + "," + e.parentid + ");'><li    class='append" + (e.id + '' + _i + '' + e.flag) + "' jsp='0' jsp1='0' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+                        } else {
+                            if (e.children.length != 0) {
+                                html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + ",1,1," + e.flag + "," + e.parentid + ");'><li  class='append" + (e.id + '' + _i + '' + e.flag) + "' jsp='0' jsp1='1' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+
+                            } else {
+                                html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + ",1,1," + e.flag + "," + e.parentid + ");'><li  class='append" + (e.id + '' + _i + '' + e.flag) + "' jsp='0' jsp1='1'  style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+                            }
+                        }
+                        if (e.flag == '0') {
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;width: 13%;' value='Update Sequence' onclick='updateSeq(this.id);'>"
+
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary hide' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add Attribute' onclick='add(this.id);'>"
+
+
+
+                        }
+                        if (e.flag == '1') {
+                            if (e.CategoryCode != -1) {
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;width:13%;' value='Map Attribute' onclick='mapattribute(this.id);'>"
+                                    /*html +="<input type='button' id="+(e.id+'&'+e.parentid+'&'+e.flag)+" class='showbutton"+e.id+''+_i+''+e.flag+''+e.parentid+" bit  btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"*/
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag + '&' + e.CategoryCode) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+
+                            } else {
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary hide' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add Attribute' onclick='add(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag + '&' + e.CategoryCode) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                            }
+                        }
+                        if (e.flag == '2') {
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary hide' style='display:none;height:20px;background-color: #27B7EA;border:1px solid lightgrey;' value='Show' onclick=attrdetail(this.id)>"
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary' style='display:none;height:20px;background-color: #27B7EA;border:1px solid lightgrey;' value='Show' onclick=attrdetail(this.id)>"
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;height:20px;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                            html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;height:20px;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+
+                        }
+                        if ((e.children.length != 0)) {
+
+                            html += _renderTree(e.children);
+
+                        }
+
+                        html += "</li></a>";
+                    }
+                }
+                html += "</ul>";
+                // console.log('sssssss',html)
+                return html;
+            };
+            $('#tree').append(rend);
+            //alert(5)
+            $(".ul1").addClass('expanded');
+            setTimeout(function () {
+                expandoldtree()
+
+            }, 100);
+            $(".ul1").addClass('collapsed');
+            $(".ul1").addClass('collapsed');
+
+            prepareList();
+
+            <%} else{%>
+            var rend = "<ul class=' ' style='background-color:white;'><li class='' id='tempopen' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'>Template <input type='button' class='btn-primary' id='0&-1&-1'  style='font-size:12px;margin: 5px 0px 0px 5px;margin-top:-5px !important;background-color: #27B7EA;border:1px solid lightgrey;border-radius:5px;    width: 100px;height: 20px;' value='Add'  onclick='add(this.id);'></li></ul>";
+            $('#tree').append(rend);
+            <%}%>
+        }
+
+        var value = "Brand";
+        var parent = [];
+
+        function search1(t) {
+            var html = search(t);
+            //console.log(html);
+        }
+
+        function search(tree1) {
+            var e, html, _i, _len;
+            html = "<ul class='ul1  ' style='background-color:white;'>";
+            for (_i = 0, _len = tree.length; _i < _len; _i++) {
+                e = tree[_i];
+                html += e.id;;
+                if (e.children.length != 0) {
+                    html += search(e.children);
+                }
+            }
+            return html;
+
+        }
+
+        function attrdetail(id) {
+            var value1 = id.split('&');
+            var id = value1[0];
+            var flag = value1[2];
+            var pid = value1[1];
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getattrdetails';
+            $.ajax({
+                data: {
+                    'id': id,
+                    'pid': pid
+                },
+                url: url,
+                method: 'POST',
+                success: function (data) {
+                    //console.log(data.length);
+                    $('#valueset').text('Attribute has no valueset');
+                    $('#vid').text('Attribute has no validation');
+                    $('#values').html('');
+                    $('#valid').html('')
+                    $('#values').addClass('hide');
+                    $('#valid').addClass('hide');
+                    if (data.length != 0) {
+                        if (data[0].flag != 0) {
+                            $('#valueset').text('Valuset :' + data[0].Name);
+                            $('#values').removeClass('hide');
+                        } else {
+                            $('#valueset').text('Attribute has no valueset');
+                            $('#values').addClass('hide');
+                        }
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].flag == 1) {
+                                $('#values').append('<label>' + data[i].ListValue + '</label><br/>');
+                            }
+                            if (data[i].flag == 0) {
+                                $('#vid').text('Validation');
+                                $('#valid').removeClass('hide');
+                                $('#valid').append('<label>' + data[i].ListValue + '</label><br/>')
+                            }
+                            if (data[i].flag == 2) {
+                                $('#vid').text('Validation');
+                                $('#valid').removeClass('hide');
+                                $('#valid').append('<label>' + data[i].ListValue + '</label><br/>')
+                            }
+                        }
+                    }
+                },
+                dataType: 'JSON',
+            });
+            div_show4()
+        }
+
+        function add(id) {
+
+            var value = id;
+            //console.log(id);
+            var value1 = value.split('&');
+            var id = value1[0];
+            var flag = value1[2];
+            var pid = value1[1];
+            $('#id1').val(id);
+            $('#flg').val(flag);
+            if (flag == '-1') {
+                categoryflag = 0;
+                $('#heading').html("Add Template");
+                $('#code').addClass('hide');
+                $('#codd').addClass('hide');
+                $('#desc').removeClass('hide');
+                $('#des').removeClass('hide');
+                $('#verticalID').addClass('hide');
+                $('#returntime').addClass('hide');
+                $('#rtime').addClass('hide');
+                $('#rpolicyid').addClass('hide');
+                $('#rpolicy').addClass('hide');
+                $('#catgroup').addClass('hide');
+                $('#cat').addClass('hide');
+            }
+            if (flag == '0' || flag == '1') {
+                categoryflag = 1
+                $('#heading').html("Add Category");
+                $('#code').removeClass('hide');
+                $('#codd').removeClass('hide');
+                $('#desc').addClass('hide');
+                $('#des').addClass('hide');
+                $('#verticalID').addClass('hide');
+                //$('#returntime').removeClass('hide');
+                //$('#rtime').removeClass('hide');
+                $('#rpolicyid').removeClass('hide');
+                $('#rpolicy').removeClass('hide');
+                $('#catgroup').removeClass('hide');
+                $('#cat').removeClass('hide');
+                catgroup();
+
+            }
+            div_show1();
+        }
+
+        function addtempandcat() {
+            // var data1 = new FormData($('.form2addtempandcat')[0]);//.serializeArray();
+            var fdata = $('.form2addtempandcat').serializeArray();
+            //console.log(fdata)
+            // console.log(data1)
+            var url1 = '/admin/addtempandcat';
+            $.ajax({
+                url: url1,
+                method: 'POST',
+                data: fdata,
+                success: function (csvData1) {
+                    //console.log(csvData1)
+
+                    location.reload();
+                    // alert(csvData1)
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    //console.log(XMLHttpRequest, textStatus)
+                },
+                dataType: 'JSON',
+            });
+
+        }
+
+        function updateSeq(id) {
+            $('#upseqbody').html('');
+            $('#upseqbody').width(572);
+            var value1 = id.split('&');
+            var id1 = value1[0];
+            $('#catID').val(id1);
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getcatattribute';
+            $.ajax({
+                url: url,
+                method: 'post',
+                data: {
+                    'catID': id1
+                },
+                success: function (data) {
+                    if (data.length > 0) {
+
+                        $('#tempup').html(data[0].template);
+                        $('#catup').html(data[0].category);
+                        var html = "<div class='col-lg-12'>" +
+                            "<div class='col-lg-6 ll'>" +
+                            "<label style='line-height:42px;'' >Attribute</label>" +
+                            "</div>" +
+                            "<div class='col-lg-6'>" +
+                            "<label style='line-height:42px;' >Sequence</label>" +
+                            "</div>" +
+                            "</div><div id='sortable1' class='sortable list'>";
+                        var i;
+                        var attname = [];
+                        for (i = 0; i < data.length; i++) { //attname.push(data[i].Attribute);
+                            var name = data[i].Attribute == 'Category Id' ? 'Category Id 1' : data[i].Attribute;
+                            html = html + "<div class='col-lg-12  li' draggable='true'>" +
+                                "<div class='col-lg-6 ll'>" +
+                                "<label  style='line-height:42px; font-weight: normal;font-size: 9pt;' >" + name + ":</label>" +
+                                "</div>" +
+                                "<div class='col-lg-6'>" +
+                                "<input  id='a" + i + "' class='upseclass asd' min='1' type='text' onkeypress='return isNumberKey(event)' value='" + data[i].ord + "'/>" +
+                                "<input id='am" + i + "' class='' type='text' style='display:none' value='" + data[i].AttId + "'/>" +
+                                "</div>" +
+                                "</div>";
+                        }
+                        html = html + "</div>";
+                        $('#upseqbody').html(html);
+                        $('#upseqlen').val(i);
+                        $('#templup').val(id1);
+                        $('#sortable1').sortable();
+                        $("#sortable1").on("sortupdate", function (event, ui) {
+                            //alert('aaaa');
+                            updatetxtva();
+                        });
+                    }
+                },
+                dataType: 'JSON',
+            });
+
+            div_show5();
+        }
+
+        function updatetxtva() {
+            //alert('aa');
+            var i = 1;
+            $(".asd").each(function (index) {
+                //console.log(index + ": " + $(this).val(i++));
+            });
+        }
+
+        function callaja() {
+            //alert('ad');
+            var formData = new FormData($('#fajax')[0]);
+
+            $.ajax({
+                url: '/admin/upload_Headers',
+                type: 'POST',
+                data: formData,
+                async: false,
+                success: function (data) {
+                    if (data.length > 0) {
+
+                        $('#tempup').html(data[0].template);
+                        $('#catup').html(data[0].category);
+                        var html = "<div class='col-lg-12'>" +
+                            "<div class='col-lg-6 ll'>" +
+                            "<label style='line-height:42px;'' >Attribute</label>" +
+                            "</div>" +
+                            "<div class='col-lg-6'>" +
+                            "<label style='line-height:42px;' >Sequence</label>" +
+                            "</div>" +
+                            "</div><div id='sortable1' class='sortable list'>";
+                        var i;
+                        var attname = [];
+                        for (i = 0; i < data.length; i++) { //attname.push(data[i].Attribute);
+                            var name = data[i].Attribute == 'Category Id' ? 'Category Id 1' : data[i].Attribute;
+                            html = html + "<div class='col-lg-12 li' draggable='true'>" +
+                                "<div class='col-lg-6 ll'>" +
+                                "<label  style='line-height:42px; font-weight: normal;font-size: 9pt;' >" + name + ":</label>" +
+                                "</div>" +
+                                "<div class='col-lg-6'>" +
+                                "<input  id='a" + i + "' class='upseclass asd' min='1' type='text' onkeypress='return isNumberKey(event)' value='" + data[i].ord + "'/>" +
+                                "<input id='am" + i + "' type='text' style='display:none' value='" + data[i].AttId + "'/>" +
+                                "</div>" +
+                                "</div>";
+                        }
+                        html = html + "</div>";
+                        $('#upseqbody').html(html);
+                        $('#upseqlen').val(i);
+
+                        $('#sortable1').sortable();
+                        $("#sortable1").on("sortupdate", function (event, ui) {
+                            //alert('aaaa');
+                            updatetxtva();
+                        });
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+
+            return false;
+        }
+
+        function subupdateseq() {
+
+            ////alert($('#a'+1).val());
+            ////alert($('#am'+1).val());
+            var len = parseInt($('#upseqlen').val());
+            var map = "";
+            var upse = "";
+            //alert(len);
+            for (var i = 0; i < len - 1; i++) {
+                if ($('#a' + i).val() <= len) {
+
+                    if ($('#a' + i).val() != 0) {
+                        map = map + $('#am' + i).val() + ",";
+                        upse = upse + $('#a' + i).val() + ",";
+                    } else {
+                        //alert($('#a'+i).val());
+
+                        // alert('Sequence No cannot be zero or null');
+                        alert_modal('Sequence No cannot be zero or null', 'danger')
+
+                        $('#a' + i).focus();
+                        return false;
+                    }
+                } else {
+                    //alert(len);
+                    //alert($('#a'+i).val());
+                    if ($('#a' + i).val() == null) {
+
+                        alert_modal('Sequence No cannot be null', 'danger');
+
+                        $('#a' + i).focus();
+                    } else {
+
+                        alert_modal('Sequence No cannot be  greater than total no.', 'danger');
+
+                        $('#a' + i).focus();
+                    }
+                    return false;
+                }
+            }
+            if ($('#a' + i).val() <= len) {
+                if ($('#a' + i).val() != 0) {
+                    map = map + $('#am' + i).val();
+                    upse = upse + $('#a' + i).val();
+                } else {
+
+                    alert_modal('Sequence No cannot be zero or null', 'danger');
+                    $('#a' + i).focus();
+                    return false;
+                }
+            } else {
+                //  alert_modal($('#a'+i).val());
+                if ($('#a' + i).val() == null) {
+
+
+
+                    alert_modal('Sequence No cannot be null', 'danger');
+                    $('#a' + i).focus();
+                } else {
+
+                    alert_modal('Sequence No cannot be  greater than total no.', 'danger');
+                    $('#a' + i).focus();
+                }
+                return false;
+            }
+
+
+            //alert(upse);
+            var upse1 = upse.split(',');
+            var count = 0;
+            for (var j = 0; j < upse1.length; j++) {
+                var temp = upse1[j];
+                for (var i = j + 1; i < upse1.length; i++) {
+                    if (temp == upse1[i]) {
+                        //alert(temp);
+                        count++;
+
+                        alert_modal('Sequence No Duplicated', 'danger');
+                        $('#a' + i).focus();
+                        return false;
+                    }
+                }
+            }
+            if (count > 0) {
+
+                alert_modal('Sequence No Duplicated', 'danger');
+                return false;
+            }
+
+            $('#upseqflg').val(upse);
+            $('#upseqid1').val(map);
+            //alert($('#upseqid1').val());
+            return true;
+        }
+
+        function catgroup() {
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/getgroup';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                success: function (data) {
+                    //console.log(data);
+                    $('#catgroup').empty();
+                    $('#ccatgroup').empty();
+                    $('#catgroup')
+                        .append($("<option></option>")
+                            .attr("value", 0)
+                            .text("Select Group"));
+                    $('#ccatgroup')
+                        .append($("<option></option>")
+                            .attr("value", 0)
+                            .text("Select Group"));
+                    for (var i = 0; i < data.length; i++) {
+                        $('#catgroup')
+                            .append($("<option></option>")
+                                .attr("value", data[i].ID)
+                                .text(data[i].CategoryGroup));
+                        $('#ccatgroup')
+                            .append($("<option></option>")
+                                .attr("value", data[i].ID)
+                                .text(data[i].CategoryGroup));
+                    }
+
+                },
+                dataType: 'JSON',
+            });
+        }
+
+        function edit(id) {
+            var value1 = id.split('&');
+            var id = value1[0];
+            var flag = value1[2];
+            var pid = value1[1];
+            var codeflag = value1[3];
+
+            if (codeflag == '-1') {
+                codeedit = 1;
+            } else {
+                codeedit = 0;
+            }
+            $('#cid').val(id);
+            $('#cflg').val(flag);
+            $('#aid').val(id);
+            $('#aflg').val(flag);
+            $('#apid').val(pid);
+            var values;
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/edittempcatatt';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    "id1": id,
+                    "flg": flag,
+                    "patid": pid
+                },
+                success: function (data) {
+                    if (flag == '0') {
+                        $('#cname').val(data[0][0].Name);
+                        $('#cdesc').val(data[0][0].Description);
+                        $('#cvertid').val(data[0][0].VerticalID)
+                    }
+                    if (flag == '1') {
+                        $('#cname').val(data[0][0].categoryName);
+                        $('#ccode').val(data[0][0].CategoryCode);
+                        $('#creturntime').val(data[0][0].return_time);
+                        $('#crpolicyid').val(data[0][0].returnpolicyid);
+                        if (data[1][0].child > 0) {
+                            attradditflag = 1;
+                        } else {
+                            attradditflag = 0;
+                        }
+                        if (data[2][0].child > 0) {
+                            categorychild = 1;
+                        } else {
+                            categorychild = 0;
+                        }
+                        if (data[0][0].fk_categorygroupid && data[0][0].fk_categorygroupid != '') {
+                            $('#ccatgroup').val(data[0][0].fk_categorygroupid);
+                        } else {
+                            $('#ccatgroup').val(0);
+                        }
+                    }
+                    if (flag == '2') {
+                        $('#validation').empty();
+                        if (data[0].length != 0) {
+                            $('#astate').val(1);
+                            $('#msg').html("Attribute has 'Not Null' validation");
+                        } else {
+                            $('#astate').val(0);
+                            $('#msg').html("Attribute has not validation");
+                        }
+                    }
+                },
+                dataType: 'JSON',
+            });
+            if (flag == '0') {
+                //console.log("Template");
+                $('#heading1').html("Edit Template");
+                $('#ccode').addClass('hide');
+                $('#ccodd').addClass('hide');
+                $('#cdesc').removeClass('hide');
+                $('#cdes').removeClass('hide');
+                $('#creturntime').addClass('hide');
+                $('#crtime').addClass('hide');
+                $('#crpolicyid').addClass('hide');
+                $('#crpolicy').addClass('hide');
+                $('#ccatgroup').addClass('hide');
+                $('#crcat').addClass('hide');
+                $('#cverticalID').addClass('hide')
+                div_show2();
+            }
+            if (flag == '1') {
+                $('#heading1').html("Edit Category");
+                $('#ccode').removeClass('hide');
+                $('#ccodd').removeClass('hide');
+                $('#cdesc').addClass('hide');
+                $('#cdes').addClass('hide');
+                $('#cverticalID').addClass('hide')
+                    //$('#creturntime').removeClass('hide');
+                    //$('#crtime').removeClass('hide');
+                $('#crpolicyid').removeClass('hide');
+                $('#crpolicy').removeClass('hide');
+                $('#ccatgroup').removeClass('hide');
+                $('#crcat').removeClass('hide');
+                div_show2();
+            }
+            if (flag == '2') {
+
+                var newLink = $("<a />", {
+                    id: "eatt",
+                    name: "link",
+                    href: "/admin/getCategoryAndTemplateByAttribute?attrid=" + id + "&catid=" + pid,
+                    text: "Hello"
+                });
+                //console.log("asfdhjfdja",newLink,id,pid);
+                $("#adg3").append(newLink);
+                $('#eatt').get(0).click();
+            }
+
+
+        }
+        var eve = 0;
+
+        function expandoldtree() {
+            var aa = [];
+
+            if (localStorage.getItem("tree") != '' &&localStorage.getItem("tree") != null)
+                aa = JSON.parse(localStorage.getItem("tree"));
+
+            if(localStorage.getItem("class") != null)
+            var cls = localStorage['class']
+                // console.log( $('.'+cls),cls)
+            $('.' + cls).addClass('expanded')
+            $('.' + cls).children('ul').css("display", "block")
+            var i = 0;
+            callseqloop(aa, i)
+                // alert(1)
+        }
+
+        function callseqloop(aa, i) {
+            if (aa.length == i) {
+                return
+            } else {
+                // console.log(i)
+                showbuttons(aa[i].no, aa[i].ides, aa[i].child, aa[i].attrch, aa[i].flag, aa[i].parid)
+                i++
+                setTimeout(function () {
+                    callseqloop(aa, i)
+
+                }, 100);
+            }
+        }
+
+        function showbuttons(no, ides, child, attrch, flag, parid) {
+            // localStorage['tree']['no']=no;
+            // localStorage['tree']['ides']=ides;
+            // localStorage['tree']['child']=child;
+            // loc`lStorage['tree']['attrch']=attrch;
+            // localStorage['tree']['flag']=flag;
+            // localStorage['tree']['parid']=parid;
+            // lo
+            var aa = [];
+            var aastring = '';
+            var tree = {
+                'no': no,
+                'ides': ides,
+                'child': child,
+                'attrch': attrch,
+                'flag': flag,
+                'parid': parid
+            }
+
+                // console.log(no, ides, child, attrch, flag, parid);
+                var data = treeview[no];
+                //alert()
+                var colcount = $(".append" + ides + '' + no + '' + flag + "").attr("jsp");
+                if (colcount == 0) {
+                    if ((child == 1) && (attrch == 0)) {
+                        $(".append" + ides + '' + no + '' + flag + "").addClass('expanded');
+                        rendersubTree(ides, no, flag);
+                    }
+                    if ((child == 0) && (attrch == 1)) {
+                        renderattr(ides, no, flag);
+                        $(".append" + ides + '' + no + '' + flag + "").addClass('expanded');
+                    }
+                    if ((child == 1) && (attrch == 1)) {
+                        rendersubTree(ides, no, flag);
+                        renderattr(ides, no, flag);
+                        $(".append" + ides + '' + no + '' + flag + "").addClass('expanded');
+                    }
+                    $(".append" + ides + '' + no + '' + flag + "").attr("jsp", "1");
+
+
+
+                                // var l1,l2;
+            if (localStorage.getItem("tree") != '' && localStorage.getItem("tree") != null) {
+                aa = JSON.parse(localStorage.getItem("tree"));
+                aastring= localStorage.getItem("tree")
+
+                substring=JSON.stringify(tree);
+                
+                // console.log(aastring.indexOf(substring) !== -1,aa,aa.length )
+                 // l1 =aa.length;
+                aa = aa.filter(function (el) {
+                        if (el.no === no && el.ides === ides && el.child === child && el.attrch === attrch && el.flag === flag && el.parid === parid) {
+                            return false
+                        } else {
+                            return true
+                        };
+                    });
+                  l2=aa.length
+                }
+               
+
+
+                
+                // console.log('local',aa,aa.length)
+                if (aa.length > 10) {
+                    aa.shift()
+                }
+         
+                // if(l1!=l2)
+                aa.push(tree)
+                // console.log(aa)
+                    // console.log(JSON.stringify(aa))
+                localStorage['tree'] = JSON.stringify(aa);
+
+
+                }else{
+                                // var l1,l2;
+            if (localStorage.getItem("tree") != '' && localStorage.getItem("tree") != null) {
+                aa = JSON.parse(localStorage.getItem("tree"));
+                // aastring= localStorage.getItem("tree")
+
+                // substring=JSON.stringify(tree);
+                
+                // console.log(aastring.indexOf(substring) !== -1,aa,aa.length )
+                 l1 =aa.length;
+                aa = aa.filter(function (el) {
+                        if (el.no === no && el.ides === ides && el.child === child && el.attrch === attrch && el.flag === flag && el.parid === parid) {
+                            return false
+                        } else {
+                            return true
+                        };
+                    });
+                  l2=aa.length
+                }
+                // console.log(JSON.stringify(aa))
+                localStorage['tree'] = JSON.stringify(aa);
+
+                }
+                $(".bit").css('display', 'none');
+                setTimeout(function () {
+                    $(".showbutton" + ides + '' + no + '' + flag + '' + parid + "").css('display', 'inline');
+                }, 100);
+
+                /*  eve=event;
+
+
+
+
+event.childNodes[1].style.display='inline';
+event.childNodes[2].style.display='inline';
+event.childNodes[3].style.display='inline';
+event.childNodes[4].style.display='inline';
+return;
+}
+
+event.childNodes[1].style.display='none';
+event.childNodes[2].style.display='none';
+event.childNodes[3].style.display='none';
+event.childNodes[4].style.display='none';*/
+            }
+
+            function addAttribute(id) {
+                var value1 = id.split('&');
+                var id = value1[0];
+                var flag = value1[2];
+                var pid = value1[1];
+                var newLink = $("<a />", {
+                    id: "eatt",
+                    name: "link",
+                    href: "/admin/attribute?catid=" + id,
+                    text: "Hello"
+                });
+                $("#adg3").append(newLink);
+                $('#eatt').get(0).click();
+            }
+
+
+            function mapattribute(id) {
+                var value1 = id.split('&');
+                var id = value1[0];
+                var flag = value1[2];
+                var pid = value1[1];
+                var newLink = $("<a />", {
+                    id: "eatt",
+                    name: "link",
+                    href: "/admin/addmultipleattr?catid=" + id,
+                    text: "Hello"
+                });
+                $("#adg3").append(newLink);
+                $('#eatt').get(0).click();
+            }
+
+            function del(id, thi1s) {
+                // $('#id').parent('div').remove();
+                // $('#fake').html('');
+                // console.log(thi1s)
+                var value1 = id.split('&');
+                var id = value1[0];
+                var flag = value1[2];
+                var pid = value1[1];
+
+                $.ajax({
+                    url: '/admin/deleteTemplateandCategoryandAttribute',
+                    method: 'get',
+                    data: {
+                        'id': id,
+                        'pid': pid,
+                        'flag': flag
+
+                    },
+                    success: function (msg) {
+                        console.log(msg, msg[0].result)
+                        msg = msg[0].result;
+                        if (msg == 0) {
+                            // success
+                            alert_modal('Please Delete All Available Childs', 'danger');
+                        }
+                        if (msg == 1) {
+                            alert_modal("Record Deleteed Successfully", 'success');
+                        }
+                        if ($('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('li').text() != '') {
+                            $('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('li').remove()
+                        } else if ($('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('a').text() != '') {
+
+                            $('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('a').remove()
+                        }
+
+
+                    }
+                });
+                // e.id + '' + _i + '' + e.flag + '' + e.parentid 
+                // $('#showbutton'+id+''+thi1s+''+flag+''+pid)
+                // console.log($('.showbutton'+id+''+thi1s+''+flag+''+pid).parent('li').text()!='')
+
+
+
+                // console.log(value1)
+                // var newLink = $("<a />", {
+                //     id: "delete",
+                //     name: "link",
+                //     href: "/admin/deleteTemplateandCategoryandAttribute?id=" + id + "&pid=" + pid + "&flag=" + flag,
+                //     text: "Hello"
+                // });
+                // $("#fake").append(newLink);
+                // $('#delete').get(0).click();
+            }
+
+            function valdatetempandcate() {
+                var name = ($('#name').val()).trim();
+                if (name == '') {
+
+                    alert_modal("Name should not be blank", 'danger');
+                    return false;
+                }
+                /*else if(($('#code').val().trim()=='')&&(categoryflag==1)){
+       //alert("code should not be blank");
+        return false;
+    }*/
+                else {
+                    return true;
+                }
+            }
+
+            function valdatetempandcate1() {
+                var name = ($('#cname').val()).trim();
+                if (name == '') {
+                    alert_modal(" Name should not be blank", 'danger');
+
+                    return false;
+                } else if ((($('#ccode').val()).trim() == '') && (codeedit == 0) && (attradditflag == 1)) {
+
+                    alert_modal("Code should not be blank because attribute of this category exists. Please delete all attribute first !", 'danger');
+                    return false;
+                } else if ((($('#ccode').val()).trim() != '') && (categorychild == 1)) {
+
+                    alert_modal("Category Code can not be filled.First delete child category  !", 'danger');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+    </script>
+    <script type="text/javascript">
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+    </script>
+
+    <style>
+        #demos section {
+            overflow: hidden;
+        }
+        
+        .sortable {
+            width: 310px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .sortable.grid {
+            overflow: hidden;
+        }
+        
+        .sortable .li {
+            list-style: none;
+            border: 1px solid #CCC;
+            background: #F6F6F6;
+            color: #1C94C4;
+            margin: 5px;
+            /*padding: 5px;*/
+            height: auto;
+            width: 153%;
+        }
+        
+        .sortable.grid .li {
+            line-height: 80px;
+            float: left;
+            width: 80px;
+            height: 80px;
+            text-align: center;
+        }
+        
+        .handle {
+            cursor: move;
+        }
+        
+        .sortable.connected {
+            width: 200px;
+            min-height: 100px;
+            float: left;
+        }
+        
+        .li.disabled {
+            opacity: 0.5;
+        }
+        
+        .li.highlight {
+            background: #FEE25F;
+        }
+        
+        .li.sortable-placeholder {
+            border: 1px dashed #CCC;
+            background: none;
+        }
+    </style>
+    <style>
+        .ll {
+            padding-left: 1px;
+        }
+        
+        input:focus {
+            outline: none !important;
+            border: 1px solid red;
+            box-shadow: 0 0 10px #719ECE;
+        }
+        
+        .panel {
+            background-color: white !important;
+        }
+        .bit {
+                font-size: 12px !important; 
+    margin: 5px 0px 0px 5px !important;
+    margin-top: -11px !important !important;
+    /*background-color: #27B7EA !important;*/
+    border: 1px solid lightgrey !important;
+    border-radius: 5px !important;
+    width: 100px !important;
+    height: 20px !important;
+    padding: inherit !important;
+        }
+        .btn {
+                margin-left: 10px !important;
+    font-size: 12px !important;
+    margin-top: 3px !important;
+    padding: 0px 12px !important;
+        }
+    </style>
+    <style>
+        /* Prevent the text contents of draggable elements from being selectable. */
+        
+        [draggable] {
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+            /* Required to make elements draggable in old WebKit */
+            -khtml-user-drag: element;
+            -webkit-user-drag: element;
+        }
+        
+        .column {
+            height: 150px;
+            width: 150px;
+            float: left;
+            border: 2px solid #666666;
+            background-color: #ccc;
+            margin-right: 5px;
+            -webkit-border-radius: 10px;
+            -ms-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 3px #000;
+            -ms-box-shadow: inset 0 0 3px #000;
+            box-shadow: inset 0 0 3px #000;
+            text-align: center;
+            cursor: move;
+        }
+        
+        .column header {
+            color: #fff;
+            text-shadow: #000 0 1px;
+            box-shadow: 5px;
+            padding: 5px;
+            background: -moz-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
+            background: -webkit-gradient(linear, left top, right top, color-stop(0, rgb(0, 0, 0)), color-stop(0.50, rgb(79, 79, 79)), color-stop(1, rgb(21, 21, 21)));
+            background: -webkit-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
+            background: -ms-linear-gradient(left center, rgb(0, 0, 0), rgb(79, 79, 79), rgb(21, 21, 21));
+            border-bottom: 1px solid #ddd;
+            -webkit-border-top-left-radius: 10px;
+            -moz-border-radius-topleft: 10px;
+            -ms-border-radius-topleft: 10px;
+            border-top-left-radius: 10px;
+            -webkit-border-top-right-radius: 10px;
+            -ms-border-top-right-radius: 10px;
+            -moz-border-radius-topright: 10px;
+            border-top-right-radius: 10px;
+        }
+    </style>
+
+    <style>
+        .column.over {
+            border: 2px dashed #000;
+        }
+    </style>
+
+    <div class="content-here col-md-11">
+        <link href="../stylesheets/adminstyle.css" rel="stylesheet">
+        <div id="listContainer" style="width:100%;height:530px;overflow:auto;font-family:myfirstfont;font-size:12px;">
+            <ul id="expList" style="padding:0px;">
+                <div id="tree"></div>
+            </ul>
+        </div>
+        <div id="adg1">
+            <div id="popupContact">
+                <form class="login-form form2addtempandcat" id="form2" method="post" style="max-width: 542px;" onsubmit="return valdatetempandcate();">
+                    <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide1()" />
+                    <center>
+                        <h3 id="heading">Modal Header</h3>
+                    </center>
+                    <hr style="    margin-left: 2px;
+    margin-right: 1px;" />
+                    <div class="modal-body">
+                        <input type="text" class="hide" id="flg" name="flg">
+                        <input type="text" class="hide" id="id1" name="id1">
+                        <div class="col-lg-12">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Name:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required style="margin-top:5px;width:342px" maxlength="50">
+                            </div>
+                        </div>
+                        <div class="col-lg-12" id="des">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:48px;">Description:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <textarea row="5" class="form-control" id="desc" name="desc" placeholder="Enter Description" style="margin-top: 5px;
+                         width: 342px;
+                         padding-left: 4px;
+                         font-size: 16px;margin-bottom: 9px;" maxlength="100"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 hide" id="verticalID">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Vertical Id:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="vertid" name="vertid" placeholder="Enter Vertical ID" style="margin-top:5px;width:342px" maxlength="10" pattern="[0-9]+([,\.][0-9]+)?" title="Please enter valid numaric value">
+                            </div>
+                        </div>
+                        <div class="col-lg-12" id="codd">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Code:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class=" form-cashok@gmail.comontrol" id="code" name="code" placeholder="Enter Code" style="margin-top:5px;width:342px" maxlength="20">
+                            </div>
+                        </div>
+                        <div class="col-lg-12 hide" id="rtime">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Return Time:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class=" form-control" id="returntime" value="0" name="returntime" placeholder="Enter Return Time" style="margin-top:5px;width:342px" maxlength="10">
+                            </div>
+                        </div>
+                        <!--<div class="col-lg-12" id="rpolicy">
+                    <div class="col-lg-3 ll">
+                    <label style="line-height:42px;">Policy Id:</label>
+                    </div>
+                    <div class="col-lg-9">
+                  <input type="text" class="hide form-control" id="rpolicyid" value="" name="rpolicyid" placeholder="Enter Return Policy id" style="margin-top:5px;width:342px">
+                    </div>
+                    </div>
+                        <!--div class="col-lg-12 hide" id="cat">
+                        <div class="col-lg-3 ll">
+                    <label style="line-height:42px;">Category Group:</label>
+                    </div>
+                    <div class="col-lg-9">
+                 <select class="form-control hide" name="catgroup" id="catgroup" style="margin-top:5px;width:342px;padding-left:4px;">
+                    </select>
+                    </div>
+                    </div-->
+
+
+                    </div>
+                    <center>
+                        <input type="button" class="btn btn-success" value="Submit" onclick="addtempandcat()" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+                        <input type="reset" class="btn btn-success" value="Clear" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+                    </center>
+                </form>
+            </div>
+        </div>
+        <div id="adg2">
+            <div id="popupContact">
+                <form class="login-form" id="form2" method="post" action="/admin/editcatandtemp" style="max-width:526px;" onsubmit="return valdatetempandcate1();">
+                    <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide2()" />
+                    <center>
+                        <h3 id="heading1">Modal Header</h3>
+                    </center>
+                    <hr style="    margin-left: 2px;
+    margin-right: 1px;" />
+                    <div class="modal-body">
+                        <input type="text" class="hide" id="cflg" name="cflg">
+                        <input type="text" class="hide" id="cid" name="cid">
+
+                        <div class="col-lg-12" id="cnam">
+                            <div class="col-lg-4 ll">
+                                <label style="line-height:42px;color:black;">Name:</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="cname" name="cname" placeholder="Enter Name" style="margin-top: 5px;
+    width: 324px;
+    margin-left: -33px;" maxlength="50" required>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12" id="cdes">
+                            <div class="col-lg-4 ll">
+                                <label style="line-height:42px;">Description:</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <textarea row="4" class="form-control" id="cdesc" name="cdesc" placeholder="Enter Description" style="margin-top: 5px;padding-left:4px;
+    width: 324px;
+    margin-left: -33px;font-size: 16px;text-transform:capitalize;" maxlength="100"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" id="cverticalID">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Vertical Id:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class="form-control" id="cvertid" name="cvertid" placeholder="Enter Vertical ID" style="margin-top:5px;width:342px" maxlength="10" pattern="[0-9]+([,\.][0-9]+)?" title="Please enter valid numaric value">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12" id="ccodd">
+                            <div class="col-lg-4 ll">
+                                <label style="line-height:42px;">Code:</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="hide form-control" id="ccode" name="ccode" placeholder="Enter Code" style="margin-top: 5px;
+    width: 324px;
+    margin-left: -33px;" maxlength="20">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 hide" id="crtime">
+                            <div class="col-lg-4 ll">
+                                <label style="line-height:42px;">Return Time:</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <input type="text" class="hide form-control" id="creturntime" value="0" name="creturntime" placeholder="Enter Return Time" style="margin-top: 5px;
+    width: 324px;
+    margin-left: -33px;" maxlength="15">
+                            </div>
+                        </div>
+
+                        <!--<div class="col-lg-12" id="crpolicy">
+                        <div class="col-lg-4 ll">
+                    <label style="line-height:42px;">Return Policy:</label>
+                    </div>
+                    <div class="col-lg-8">
+               <input type="text" class="hide form-control" id="crpolicyid" value="0" name="crpolicyid" placeholder="Enter Return Policy Id" style="margin-top: 5px;
+    width: 324px;
+    margin-left: -33px;"/></div>
+               </div>
+
+                    <!--div class="col-lg-12 hide" id="crcat">
+                <div class="col-lg-4 ll">
+                    <label style="line-height:42px;">Category Group:</label>
+                    </div>
+                    <div class="col-lg-8">
+              <select class="form-control hide" name="ccatgroup" id="ccatgroup" style="margin-top: 5px;
+    width: 324px;
+    margin-left: -33px;padding-left:4px;" placeholder="Select Category Group">
+                    </select>
+                    </div>
+                    </div-->
+
+
+                    </div>
+
+                    <center>
+                        <input type="submit" class="btn btn-success" value="Submit" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+
+                    </center>
+
+                </form>
+            </div>
+        </div>
+        <div id="adg3">
+            <div id="popupContact">
+                <form class="login-form" id="form2" method="post" action="/admin/editattribute">
+                    <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide3()" />
+                    <center>
+                        <h3 id="heading1">Edit Attribute</h3>
+                    </center>
+                    <div class="modal-body">
+                        <input type="text" class="hide" id="aflg" name="aflg">
+                        <input type="text" class="hide" id="aid" name="aid">
+                        <input type="text" class="hide" id="apid" name="apid">
+                        <input type="text" class="hide" id="astate" name="astate">
+                        <p id="msg" style="color:#7e7e7e;"></p>
+                        <select class="form-control" name="valid" style="margin-top:5px;padding-left:4px;">
+                        <option value='0'>No Validation</option>
+                        <option value='1'>Not Null</option>
+                    </select>
+                    </div>
+                    <center>
+                        <input type="submit" class="btn btn-success" value="Submit" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+                    </center>
+                </form>
+            </div>
+        </div>
+        <div id="adg4">
+            <div id="popupContact">
+                <form class="login-form" id="form2" method="post" action="/admin/editattribute">
+                    <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide4()" />
+                    <center>
+                        <h3 id="heading1">Attribute Dropdown & Validation</h3>
+                    </center>
+                    <div class="modal-body">
+                        <center>
+                            <label style="color:#7e7e7e;line-height:42px;" id="valueset"></label>
+                            <div class="hide" style="width:350px;height:150px;overflow-y:scroll;background:#f4f4f6;text-align:left;padding-left:10px;border:2px solid #e7e7e7" id="values">
+                            </div>
+                        </center>
+                        <center>
+                            <label style="color:#7e7e7e;line-height:42px" id="vid"></label>
+                            <div class="hide" style="width:350px;height:150px;overflow-y:scroll;background:#f4f4f6;text-align:left;padding-left:10px;border:2px solid #e7e7e7" id="valid">
+                            </div>
+                        </center>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="adg5">
+            <div id="popupContact" style="left: 43% !important">
+                <form class="login-form" id="form2" method="post" style="max-width: 630px !important" action="/admin/updatesequence" onsubmit="return subupdateseq();">
+                    <img id="close" class="img-circle" src="../images/download.png" onclick="div_hide5()" />
+                    <center>
+                        <h3 id="heading1">Update Sequence</h3>
+                    </center>
+                    <div class="modal-body">
+                        <input type="text" class="hide" id="upseqflg" name="upseqflg">
+                        <input type="text" class="hide" id="upseqid1" name="upseqid1">
+                        <input type="text" class="hide" id="upseqlen" name="upseqlen">
+                        <input type="text" class="hide" id="templup" name="templup">
+                        <div class="col-lg-12">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Template:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <label id='tempup' style="line-height: 42px;font-weight:normal"></label>
+                                <span class="glyphicon glyphicon-upload" style="float:right" onclick="showmodal()"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12" id='upseqbody' style="height:300px;overflow:auto;border:1px solid #7e7e7e;">
+
+                        </div>
+                    </div>
+                    <center>
+                        <input type="submit" class="btn btn-success" value="Submit" style="width: 100px;height: 40px;margin-bottom: 10px;background-color: #D0D1D3;color: #7e7e7e;border: 1px solid #e7e7e7;">
+                    </center>
+                </form>
+            </div>
+        </div>
+
+        <div id="fake" class="hide">
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#3BBDEB;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <center>
+                        <h4 class="modal-title" style="color:white;">Update Header Sequence</h4>
+                    </center>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="divUploadAttribute">
+
+                        <form id="fajax" method="post" encType="multipart/form-data" onsubmit="return verifyfile('fileuploadfile')">
+
+                            <div class="col-lg-12">
+                                <div class="col-lg-4" style="padding-right:0px;">
+                                    Upload Header Excel file :
+                                </div>
+                                <div class="col-lg-8">
+                                    <input type="file" id="attributefile" name="attributefile" class="fileuploadfile form-control" required>
+                                    <input type="text" class="hide" name="catID" id="catID">
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button type="button" class="btn btn-success" style="    float: right;
+    margin-top: 20px;
+    margin-right: 16px;
+    background-color: #3BBDEB;
+    border: 1px solid lightgrey;" data-dismiss="modal" onclick="callaja();">Submit</button>
+                            </div>
+
+                        </form>
+
+
+                        <div class="panel ">
+
+                            <div class="panel-body">
+                                <hr style="    margin-left: 15px;
+    margin-right: 20px;" />
+                                <h4 style="padding-left:20px;">Note for Uploading files</h4>
+                                <ul>
+                                    <li style="list-style:square;">The maximum file size for uploads is <strong>5 Mb</strong></li>
+                                    <li style="list-style:square;">Only data files (<strong>.xls,.xlsx</strong>) are allowed </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 0px solid #e5e5e5;">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script language="javascript">
+        $('#sortable1').sortable({
+            update: function (event, ui) {
+                //var fruitOrder = $(this).html();
+                updatetxtva();
+            }
+        });
+
+
+        function renderattr(ides, index, flag1) {
+
+
+            var values;
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/renderattr';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    "id1": ides
+                },
+                success: function (data) {
+
+                    var e, html, _i, _len, j = 0;
+
+                    html = ' ';
+                    if (data[0].length > 0) {
+                        html = "<ul class='ul1  ' style='background-color:white;'>";
+                        for (_i = 0, _len = data[0].length; _i < _len; _i++) {
+                            e = data[0][_i];
+                            j = _i + 1;
+
+
+                            html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + ",0,0," + e.flag + "," + e.parentid + ");'><li  class='append" + (e.id + '' + _i + '' + e.flag + '' + e.parentid) + "' jsp='0' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+
+
+                            if (e.flag == '0') {
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;width: 13%;' value='Update Sequence' onclick='updateSeq(this.id);'>"
+
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary hide' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add Attribute' onclick='add(this.id);'>"
+
+
+
+                            }
+                            if (e.flag == '1') {
+                                if (e.CategoryCode != -1) {
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Attribute' onclick='addAttribute(this.id);'>"
+
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                                } else {
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary hide' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add Attribute' onclick='add(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                                }
+                            }
+                            if (e.flag == '2') {
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + "  bit btn btn-primary hide' style='display:none;height:20px;background-color: #27B7EA;border:1px solid lightgrey;' value='Show' onclick=attrdetail(this.id)>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + "  bit btn btn-primary' style='display:none;height:20px;background-color: #27B7EA;border:1px solid lightgrey;' value='Show' onclick=attrdetail(this.id)>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;height:20px;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;height:20px;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+
+                            }
+
+
+                            html += "</li></a>";
+                        }
+                        html += "</ul>";
+
+                        $(".append" + ides + "" + index + "" + flag1 + "").append("" + html + "");
+
+                        // console.log(ides, index, flag1);
+                        $("#expList").find('li:has(ul)')
+                            .click(function (event) {
+                                //alert(1,this.id)
+
+                                if (this == event.target) {
+                                    $(this).toggleClass('expanded');
+                                    $(this).children('ul').toggle('medium');
+                                    // if($(this).children('input').style!=undefined)
+                                    $(this).children('input').style.display = "none";
+                                    // alert_modal('click');
+                                }
+                                return false;
+                            })
+                            /*.addClass('collapsed')
+                            .children('ul').hide();*/
+                    }
+                }
+            });
+        }
+
+
+        function rendersubTree(ides, index, flag1) {
+
+            var values;
+            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin' + '/treeforajex';
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    "id1": ides
+                },
+                success: function (data) {
+                    //console.log("datata", data);
+                    var e, html, _i, _len, j = 0;
+
+                    var childflag = data[1][0].child.toString().split(",");
+                    var attrflag = data[2][0].attr.toString().split(",");
+                    //console.log(childflag, attrflag);
+                    html = ' ';
+                    if (data[0].length > 0) {
+                        html = "<ul class='ul1  ' style='background-color:white;'>";
+                        for (_i = 0, _len = data[0].length; _i < _len; _i++) {
+                            e = data[0][_i];
+                            j = _i + 1;
+                            //console.log("jkss", childflag[j], attrflag[j], j);
+                            if ((childflag[j] == 1) && (attrflag[j] == 0)) {
+                                html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + "," + childflag[j] + "," + attrflag[j] + "," + e.flag + "," + e.parentid + ");'><li class='append" + (e.id + '' + _i + '' + e.flag) + " collapsed' jsp='0'  style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+                            }
+                            if ((childflag[j] == 0) && (attrflag[j] == 1)) {
+                                html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + "," + childflag[j] + "," + attrflag[j] + "," + e.flag + "," + e.parentid + ");'><li class='append" + (e.id + '' + _i + '' + e.flag) + " collapsed' jsp='0' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+                            }
+                            if ((childflag[j] == 0) && (attrflag[j] == 0)) {
+
+                                html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + "," + childflag[j] + "," + attrflag[j] + "," + e.flag + "," + e.parentid + ");'><li class='append" + (e.id + '' + _i + '' + e.flag) + "' jsp='0' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+                            }
+                            if ((childflag[j] == 1) && (attrflag[j] == 1)) {
+                                html += "<a style='text-decoration:none;color:#1B1C1D;' onclick='showbuttons(" + _i + "," + e.id + "," + childflag[j] + "," + attrflag[j] + "," + e.flag + "," + e.parentid + ");'><li class='append" + (e.id + '' + _i + '' + e.flag) + " collapsed' jsp='0'  style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'  panel-success'  id=" + (e.id + '&' + e.flag) + ">" + e.name + "";
+                            }
+
+                            if (e.flag == '0') {
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;width: 13%;' value='Update Sequence' onclick='updateSeq(this.id);'>"
+
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " btn btn-primary hide' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add Attribute' onclick='add(this.id);'>"
+
+
+
+                            }
+                            if (e.flag == '1') {
+
+                                if (e.CategoryCode != -1) {
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;width:13%;border:1px solid lightgrey;' value='Map Attribute' onclick='mapattribute(this.id);'>"
+                                        /*html +="<input type='button' id="+(e.id+'&'+e.parentid+'&'+e.flag)+" class='showbutton"+e.id+''+_i+''+e.flag+''+e.parentid+" bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"*/
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag + '&' + e.CategoryCode) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                                } else {
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary hide' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add Attribute' onclick='add(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-primary' style='display:none;background-color: #27B7EA;border:1px solid lightgrey;' value='Add' onclick='add(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag + '&' + e.CategoryCode) + "  class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                    html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+                                }
+                            }
+                            if (e.flag == '2') {
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit  btn btn-primary hide' style='display:none;height:20px;background-color: #27B7EA;border:1px solid lightgrey;' value='Show' onclick=attrdetail(this.id)>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + "  bit btn btn-primary' style='display:none;height:20px;background-color: #27B7EA;border:1px solid lightgrey;' value='Show' onclick=attrdetail(this.id)>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-success' style='display:none;height:20px;background-color: #72D493;border:1px solid lightgrey;' value='Edit' onclick='edit(this.id);'>"
+                                html += "<input type='button' id=" + (e.id + '&' + e.parentid + '&' + e.flag) + " class='showbutton" + e.id + '' + _i + '' + e.flag + '' + e.parentid + " bit btn btn-danger' style='display:none;height:20px;background-color: rgb(241, 139, 139);border:1px solid lightgrey;' value='Delete' onclick='del(this.id," + _i + ")'>"
+
+                            }
+
+
+                            html += "</li></a>";
+                        }
+                        html += "</ul>";
+
+                        $(".append" + ides + "" + index + "" + flag1 + "").append("" + html + "");
+                        //console.log(ides, index, flag1);
+                        /* $(".append"+ides+""+index+"").find('li:has(ul)')
+    .click( function(event) {
+        if (this == event.target) {
+            $(this).toggleClass('expanded');
+            $(this).children('ul').toggle('medium');
+            $(this).children('input').style.display = "none";
+        
+        }
+            return false;
+    })
+    .addClass('collapsed')
+    .children('ul').hide();
+    //document.querySelector(".append"+ides+""+index+"").click();*/
+                        $("#expList").find('li:has(ul)')
+                            .click(function (event) {
+
+                                if (this == event.target) {
+                                    //alert(2,this.id)
+                                    $(this).toggleClass('expanded');
+                                    $(this).children('ul').toggle('medium');
+                                    // if($(this).children('input').style!=undefined)
+                                    $(this).children('input').style.display = "none";
+                                    // alert_modal('click');
+                                }
+                                return false;
+                            })
+
+
+                    }
+                }
+            });
+        }
+
+
+
+        /***************************************/
+    </script>
+
+
+    <% include ../footer %>
