@@ -120,10 +120,12 @@ router.post('/getmerchant', function(req, res, next) {
      sql:"call getMerchantdata(?,?,?)",
      values: [req.body.start,req.body.length,req.body['search[value]']]
  }
+ console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
         } else {
+            // console.log(result)
           // console.log("sahsfahs",result[0],result[1][0].totalRecord)
            // res.json({"data":result[0]});
             res.json({"sEcho": parseInt(req.body.draw),
@@ -167,6 +169,7 @@ router.get('/merchant', function(req, res, next) {
         if (err) {
             console.log(err);
         } else {
+            console.log(result)
             res.render('admin/merchant', {
                 templatedata: '',
                 msg: msg,
@@ -332,7 +335,7 @@ router.post('/addattrMerchant', function(req, res, next) {
         sql: 'call inr_attributeformerchant(?,?,?)',
         values: [req.body.merchantid1, req.body.attername, req.body.attrvalue]
     }
-    //console.log(query)
+    console.log(query)
     mysql(query, function(err, result) {
 
         if (err) {

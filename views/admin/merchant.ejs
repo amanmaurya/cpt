@@ -50,10 +50,13 @@
             }, {
                 "data": "DispatchTime"
             }];
-            for (var i = 0; i < <%= merchantdata.length %> ; i++) {
+             var merchantdata = <%-JSON.stringify(merchantdata)%>
+             console.log(merchantdata)
+            for (var i = 0; i <  merchantdata.length  ; i++) {
                 var j = i + 1;
+                console.log('asdas', merchantdata[i].mer_col_map  )
                 strofheaderdata.push({
-                    "data": "attr" + j + ""
+                    "data": merchantdata[i].mer_col_map 
                 });
             }
             strofheaderdata.push({
@@ -85,8 +88,9 @@
                             i++;
 
                             linedata[i] = row;
-                            //	console.log("jai ho ji",i,linedata);
 
+                            	console.log("jai ho ji",i,row.attr3);
+                                row.attr3
                             var current_index = row.Sno - 1;
                             if (row.Isactive == 1) {
                                 return '<td><span title="Edit" style="cursor: pointer;" class="glyphicon glyphicon-pencil" onclick="EditMerchant(' + i + ')" id=' + row.ID + '&' + row.MerchantId + '&' + row.DispatchTime + '> Edit&nbsp;</span><span title="Deactivate" style="cursor: pointer;" class="glyphicon glyphicon-ok-sign" onclick="ActInact(this.id)" id=' + row.ID + '&' + row.Isactive + '>  &nbsp; </span><span title="Delete" style="cursor: pointer;" class="glyphicon glyphicon-trash" onclick="DeleteMerchant(' + row.ID + ')" id="del' + row.ID + '">  &nbsp; </span>';
