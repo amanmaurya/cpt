@@ -432,11 +432,12 @@ router.post('/save_attribute', function(req, res, next) {
         sql: "call usp_addattribute_nr(?,?,?,?,?,?,?,?,?,?,?)",
         values: [checklist, req.body.txtattribute, req.body.ddlvalidation, req.body.ddlifAttribute, req.body.valuesetgroup, req.body.txtdesc, req.body.txtdatatype, req.body.txtlength, req.body.txtprecison, req.body.scale, req.body.exprcollection]
     }
- //   console.log("jai ho",query);
+   console.log("jai ho",query);
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
         } else {
+            console.log(result)
             if (req.body.renders != 0) {
                 res.redirect('/admin/');
             } else {
@@ -752,7 +753,7 @@ router.post('/editandinsert_attribute', function(req, res, next) {
         sql: 'call usp_insertandupdateattribute_nr(?,?,?,?,?,?)',
         values: [req.body.catid, req.body.attrid, req.body.valset, req.body.isattr, req.body.flag, req.body.validflag]
     }
-    // console.log(query)
+    console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -775,6 +776,7 @@ router.post('/del_attribute', function(req, res, next) {
             console.log(err);
             res.json(result);
         } else {
+            console.log(result)
             res.json(result);
         }
     });

@@ -47,7 +47,7 @@
                                     .text(data[i].Name));
                         }
                     }
-                    if (localStorage['lovlabel'] != undefined)
+                    if (localStorage['lovlabel'] != undefined&&localStorage['lovlabel']!='')
                     selectatt(localStorage['lovlabel'])
                 },
                 dataType: 'JSON',
@@ -70,6 +70,7 @@
                         success: function (data) {
                             //console.log("data--",data);
                             if (data[0].abc == 1) {
+                                localStorage['lovlabel'] = '';
                                 alert_modal(" Deleted Successfully", 'success');
                                 $('#divlset1' + lovid).addClass('hide');
                             } else {
