@@ -194,7 +194,7 @@
             var count = 0;
             var already = 0;
             var count1 = 0;
-            var actvalue = ($('#lov').val()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var actvalue = ($('#lov').val()).trim().replace(/(^[|\s]+)|([|\s]+$)/g, '');
             var value = (($('#lov').val()).toLowerCase()).trim();
             // console.log('asdcas',actvalue)
             // console.log('asdcas11',value)
@@ -204,8 +204,8 @@
             }
             //var uniqueNames=actvalue.split(',');
             var actvalue1 = []; //actvalue.replace(",", "|");
-            var a11=actvalue.replace(/\|/g, "$")
-            actvalue1.push(a11.replace(/,/g, "|").split('$'));
+            // var a11=actvalue.replace(/\|/g, "$")
+            actvalue1.push(actvalue.split('|'));
             actvalue1=actvalue1[0]
             // console.log('actvalue1a',actvalue.replace(/,/g, "|"))
             // console.log('actvalue1',actvalue1)
@@ -213,11 +213,11 @@
     if($.inArray(el, actvalue1) == -1) actvalue1.push(el);
 	});*/
 
-            var value12 = (($('#lov').val()).toLowerCase()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var value12 = (($('#lov').val()).toLowerCase()).trim().replace(/(^[|\s]+)|([|\s]+$)/g, '');
             //var valuetem=value12.split(',');
             var value = [];
-            var a123=  value12.replace(/\|/g, "$");
-            value.push(a123.replace(/,/g, "|").split('$'));
+      
+            value.push(value12.split('|'));
             value=value[0]
             // console.log("dsadsadasdasd",value);
             /*$.each(valuetem, function(i, el){
@@ -231,13 +231,13 @@
                     $(".existlbl").each(function () {
                         var existvalue = ($(this).text()).toLowerCase();
                         count1++;
-                        // console.log('aaaaaaaaaaaaaaa',existvalue ,value[k])
+                        console.log('aaaaaaaaaaaaaaa',existvalue ,value[k])
                         if (existvalue == value[k]) {
                             var lid = $(this).attr("id");
                             var orid = lid.replace('l', '');
                             var cvalue = $('#' + orid).val();
                             var ctext = $('#' + orid).next('label').text();
-                            //console.log(ctext);
+                            console.log(ctext);
                             $(this).remove();
                             $('#' + orid).remove();
                             $('#new').append($("<div><input type='checkbox' class='newcheck' value='" + cvalue + "'  name='newcheck' checked  id='" + orid + 'm' + "' onchange='removenew(this.id)'><label class='newlbl' style='padding-left:5px;' id='" + orid + 'nl' + "'>" + ctext + "</label></div>"));
@@ -417,20 +417,24 @@
             var count = 0;
             var already = 0;
             var count1 = 0;
-            var actualvalue = ($('#newlovvalue').val()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var actualvalue = ($('#newlovvalue').val()).trim().replace(/(^[|\s]+)|([|\s]+$)/g, '');
             var actualvalue1 = [];
             //var uniqueNames=actualvalue.split(',');
-            actualvalue1.push(actualvalue.replace(/,/g, "|"));
+            console.log(actualvalue)
+            actualvalue1.push(actualvalue.split('|'));
+            actualvalue1=actualvalue1[0]
+            // actvalue1.push(a11.split('|'));
 
             /*$.each(uniqueNames, function(i, el){
     if($.inArray(el, actualvalue1) == -1) actualvalue1.push(el);
 	});*/
 
 
-            var value = (($('#newlovvalue').val()).toLowerCase()).trim().replace(/(^[,\s]+)|([,\s]+$)/g, '');
+            var value = (($('#newlovvalue').val()).toLowerCase()).trim().replace(/(^[|\s]+)|([|\s]+$)/g, '');
             var value1 = [];
             //var valuetem=value.split(',');
-            value1.push(value.replace(/,/g, "|"));
+            value1.push(value.split('|'));
+            value1=value1[0]
             /*$.each(valuetem, function(i, el){
     if($.inArray(el, value1) == -1) value1.push(el);
 	});*/
@@ -442,6 +446,7 @@
                         $(".eexistlbl").each(function () {
                             var existvalue = (($(this).text()).toLowerCase()).trim();
                             count1++;
+                            console.log(existvalue ,value1[k])
                             if (existvalue == value1[k]) {
                                 var lid = $(this).attr("id");
                                 var orid = lid.replace('l', '');
@@ -467,7 +472,8 @@
                                 $(".enewlbl").each(function () {
                                     count1++;
                                     var existvalue = (($(this).text()).toLowerCase()).trim();
-                                    if (existvalue == value) {
+
+                                    if (existvalue == value1[k]) {
                                         already = 1;
                                         return false;
                                     } else {
@@ -491,6 +497,9 @@
                     }
                 }
             }
+
+
+
             $('#newlovvalue').val('');
         }
 

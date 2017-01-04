@@ -424,11 +424,15 @@ function alleditvalueset(id)
         $('#myModalalert').modal({ backdrop: 'static', keyboard: false })
         .one('click', '#delete', function (e) {
               $('.mpvlset'+id).each(function() {
-        if($(this).val()!=flag){
+                var str= this.id.replace(/[^0-9]+/ig,"");
+                // console.log($('#str').val(),str)
+        if($(this).val()!=flag&& $('#'+str).is(":checked")){
+
            $(this).val(flag)
          editvalset(this.id,0);
          
         a=1
+        // alert(1)
         }
        })
        if(a!=0){

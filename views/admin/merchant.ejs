@@ -50,11 +50,11 @@
             }, {
                 "data": "DispatchTime"
             }];
-             var merchantdata = <%-JSON.stringify(merchantdata)%>
-             console.log(merchantdata)
+              merchantdata = <%-JSON.stringify(merchantdata)%>
+             // console.log(merchantdata)
             for (var i = 0; i <  merchantdata.length  ; i++) {
                 var j = i + 1;
-                console.log('asdas', merchantdata[i].mer_col_map  )
+              //console.log('asdas', merchantdata[i].mer_col_map  )
                 strofheaderdata.push({
                     "data": merchantdata[i].mer_col_map 
                 });
@@ -62,7 +62,7 @@
             strofheaderdata.push({
                 "data": "DispatchTime"
             });
-            console.log("jai ho", strofheaderdata);
+          //console.log("jai ho", strofheaderdata);
             var i = 0;
             linedata = [];
             otable = $('#tblMerchant').DataTable({
@@ -147,18 +147,21 @@
         function EditMerchant(id) {
             ///yconsole.log("merchant data row ",linedata[id].ID);
             //var listname=id.split('&');
-            console.log(merchantcode)
+            // console.log(merchantcode)
             $("#lblId").val(linedata[id].ID);
             $("#merchantcode").val(linedata[id].MerchantCode);
             $("#merchanttime").val(linedata[id].DispatchTime); //linedata[id].length
             var leng = $("#tblMerchant thead tr ").children("th").length - 3;
-            for (var i = 0; i < leng; i++) {
-
-                var j = i + 1;
-                var attrvalue = "attr".concat(j);
-                if (linedata[id][attrvalue] != 'null') {
-                    $("#attr".concat(i)).val(linedata[id][attrvalue]);
-                }
+           // console.log(merchantdata)
+           // console.log(linedata[id])
+            for (var i = 0; i < merchantdata.length; i++) {
+       // console.log(merchantdata[i].mer_col_map)
+                // var j = i + 1;
+                var attrvalue = merchantdata[i].mer_col_map;
+                // console.log(attrvalue,linedata[id][attrvalue])
+                // if (linedata[id][attrvalue] != 'null') {
+                    $("#"+attrvalue).val(linedata[id][attrvalue]);
+                // }
             }
             editflag = 1;
             document.getElementById('addmerchant').style.display = "block";
@@ -171,21 +174,18 @@
         function ActInact(id) {
             var msg = "";
             var values = id.split("&");
-            if (values[1] == 1) {
-                if (confirm("Do you want to Deactivate this merchant.")) {
-                    msg = "Merchant Deactivated successfully";
-                } else {
-                    return false;
-                }
-            } else {
-                if (confirm("Do you want to Activate this merchant.")) {
-                    msg = "Merchant deleted successfully";
-                } else {
-                    return false;
-                }
-            }
+              
 
-            var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin/changestatusmerchant';
+
+            if (values[1] == 1) {
+
+                  $('#myModalalert').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                }).one('click', '#delete', function (e) {
+
+                   msg = "Merchant Deactivated successfully";
+                               var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin/changestatusmerchant';
             $.ajax({
                 data: {
                     "ID": values[0],
@@ -194,7 +194,7 @@
                 url: url,
                 method: 'POST',
                 success: function (data) {
-                    console.log(data);
+                  //console.log(data);
                     if (data.length != 0) {
                         // alert(msg);
                         alert_modal(msg, 'warning');
@@ -208,6 +208,48 @@
                 },
                 dataType: 'JSON',
             });
+                }).one('click', '#cancel1', function (e) {
+         return false;
+        });
+
+                
+            } else {
+                 $('#myModalalert').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                }).one('click', '#delete', function (e) {
+
+                   msg = "Merchant Activate successfully";
+                               var url = window.location.origin.split("/")[3] ? window.location.origin : window.location.origin + '/admin/changestatusmerchant';
+            $.ajax({
+                data: {
+                    "ID": values[0],
+                    "Status": values[1]
+                },
+                url: url,
+                method: 'POST',
+                success: function (data) {
+                  //console.log(data);
+                    if (data.length != 0) {
+                        // alert(msg);
+                        alert_modal(msg, 'warning');
+                        setTimeout(function () {
+                            window.location.reload();
+
+
+                        }, 1000);
+
+                    }
+                },
+                dataType: 'JSON',
+            });
+                }).one('click', '#cancel1', function (e) {
+         return false;
+        });
+                
+            }
+
+
 
         }
 
@@ -224,7 +266,7 @@
                 url: url,
                 method: 'POST',
                 success: function (data) {
-                    console.log(data);
+                  //console.log(data);
                     if (data.length != 0) {
                         // alert(msg);
                         alert_modal('Delete successfully', 'success');
@@ -314,7 +356,7 @@
                 url: '/admin/checkduplicateattr',
                 method: 'POST',
                 success: function (data) {
-                    console.log(data);
+                  //console.log(data);
                     if (data[0].flag > 0) {
                         alert_modal("Attribute Name already exits", 'danger');
                         $('#attername').val('')
@@ -395,7 +437,7 @@
                     'id': id,
                 },
                 success: function (data) {
-                    console.log(data);
+                  //console.log(data);
                     if (data[0][0].flag > 0) {
                         $('#buttdel1' + id).remove();
                         alert_modal("Attribute delete successfully", 'success');
@@ -590,7 +632,7 @@
                     <input id="merchanttime" onkeypress="return specialCharacter(event)" maxlength="30" name="merchantdispatchtime" placeholder="Enter Merchant Name" type="text" width="100%" required/>
                     <%for(var i=0;i<merchantdata.length;i++){%>
                         <label style="width:100px"><%=merchantdata[i].Name%>:</label>
-                        <input id="attr<%=i%>" maxlength="250" onkeypress="return specialCharacter(event)" name="attrname<%=i%>" placeholder="Enter <%=merchantdata[i].Name%>" type="text" width="100%" maxlength='50' required/>
+                        <input id="<%=merchantdata[i].mer_col_map%>" maxlength="250" onkeypress="return specialCharacter(event)" name="attrname<%=i%>" placeholder="Enter <%=merchantdata[i].Name%>" type="text" width="100%" maxlength='50' required/>
                         <%}%>
                             <center>
                                 <input id="lblId" name="merchantid" placeholder="Enter Dispatch Time" type="text" value="0" class="hide" width="100%" required/>
