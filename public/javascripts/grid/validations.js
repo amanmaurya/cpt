@@ -1,9 +1,9 @@
 function getValidations(validationData, sheetHeaders, notNulls, expression, brands) {
-
+console.log(validationData, sheetHeaders, notNulls, expression, brands)
   var validators = {};
   var categories = Object.keys(validationData);
   var validNull = function(value, callback) {
-     console.log("check brand value",value);
+   //console.log.log("check brand value",value);
     var val = notNullValidation(value);
     setTimeout(function() {
       if (val) callback(true);
@@ -32,7 +32,7 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
     Brands.forEach(function(brand){
       var b1=brand.toLowerCase();
       var val = value.toLowerCase();
-      if(b1 == val){
+      if(b1 == val|| val==''){
         flag = false;
       }
     });
@@ -49,6 +49,7 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
   categories.forEach(function(category, index) {
 
     var notNull = notNulls[category];
+  //console.log.log('notNull',notNull)
     var expr = Object.keys(expression);
     validators[category] = sheetHeaders.map(function(columnName, i) {
       // console.log(notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] || validationData[category][columnName])
@@ -56,29 +57,48 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
         return {data: i, allowInvalid: true, validator: validexp, renderer: expressionValueRenderer, strict: true};
       }
       if(columnName == 'Brand'){
-        return {data: i, allowInvalid: true, validator: checkRestrict, strict: true};
+      //console.log.log(i)
+        // return{data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false}
+        return {data: i, allowInvalid: true,allowEmpty: false, validator: checkRestrict, strict: true};
       }
       /*if (columnName == 'Image Name' || columnName == 'image' || columnName == 'Image') {
         return {data: i, allowInvalid: true,  renderer: coverRenderer, strict: true};}*/
       if (columnName == 'MRP' || columnName == 'Price') {
         return {data: i, allowInvalid: true, validator: validatePrice, renderer: defaultValueRenderer, strict: true};
-      } else if (notNull && notNull.indexOf(columnName) > -1 && validationData && validationData[category] && validationData[category][columnName]) {
+      } 
+      // if(notNull && notNull.indexOf(columnName) ==-1){
+      //    return {data: i, type: 'text',  allowInvalid: true, strict: true,allowEmpty: false};
+      // }
+      if (notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] && validationData[category][columnName]) {
+        // alert(1+columnName)
         var list = validationData[category][columnName]; 
-        return {data: i, type: 'autocomplete', validator: validValueInList, source: list, allowInvalid: true, strict: true};
+        return {data: i, type: 'autocomplete', validator: validValueInList, source: list, allowInvalid: true, strict: true,allowEmpty: false};
         var validValueInList = function(value, callback) {
           setTimeout(function() {
             if (inDropDown(list, value)) callback(true);
             else callback(false);
          });
         }
-      } else if (notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] || validationData[category][columnName]) {
+      } else if (notNull && notNull.indexOf(columnName) == -1 && validationData&& 0 && validationData[category] || validationData[category][columnName]) {
+        // console.log(notNull,columnName,notNull.indexOf(columnName))
+        // alert(1+columnName)
         var list = validationData[category][columnName]; 
-        console.log(columnName, i,list)
-        return {data: i, type: 'autocomplete',  source: list, allowInvalid: false, strict: true};
+        return {data: i, type: 'autocomplete', validator: validValueInList, source: list, allowInvalid: true, strict: true,allowEmpty: false};
+        var validValueInList = function(value, callback) {
+          setTimeout(function() {
+            if (inDropDown(list, value)) callback(true);
+            else callback(false);
+         });
+        }
+      //console.log.log(columnName, i,list)
+      // return {data: i,allowInvalid: true, validator: validNull, strict: true, allowEmpty: false};
+      
       } else if(notNull && notNull.indexOf(columnName) > -1){
-        return {data: i, allowInvalid: true, validator: validNull, strict: true};
+
+        return {data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false};
       } else {
-        return {data: i, allowInvalid: true};
+        // alert(12+columnName)
+        return {data: i, allowInvalid: false,allowEmpty: false};
       }
     }); 
   });
@@ -94,6 +114,7 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
     var priceColumnIndex = sheetHeaders.indexOf('Price');
     var rowData = instance.getData()[row];
     if (!mrpPriceCheck(instance, row)) {
+      // alert(mrpColumnIndex,priceColumnIndex)
       if(col == mrpColumnIndex || col == priceColumnIndex)
         td.style.color = 'RED';
     }
@@ -165,7 +186,8 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
           rowData.map(function(x, i) {
            
             if (i == setToColumn) {
-              var final1=eval(changedValidation);
+              // console.log(x,setToColumn,changedValidation)
+              var final1=eval(x,changedValidation);
               if(!final1){
                 if(col == sheetHeaders.indexOf(v))
                 {

@@ -131,6 +131,7 @@ function exportCSV(currentInstances,
         data.forEach(function(row, rowIndex) {
             var remarks = [];
             var areColumnsCorrect = row.map(function(column, columnIndex) {
+
                 var columnHeaderName = sheetHeaders[columnIndex];
 
                 if (expressionIndex.indexOf(columnIndex) > -1) {
@@ -154,9 +155,9 @@ function exportCSV(currentInstances,
                             }
                         });
                         var setToColumn = sheetHeaders.indexOf(columnHeaderName);
-                        //console.log(setToColumn);
+                        // console.log(column);
                         if (changedValidation != '') {
-                            var final1 = eval(changedValidation);
+                            var final1 = eval(column,changedValidation);
                             if (!final1) {
                                 remarks.push(columnHeaderName);
                                 correct = false;
@@ -188,7 +189,7 @@ function exportCSV(currentInstances,
                 }
 
                 if (columnHeaderName == 'MRP') {
-                   
+                   // alert(column, columnIndex)
                     var correct = true;
                     var mrpIndex = sheetHeaders.indexOf('MRP');
                     var priceIndex = sheetHeaders.indexOf("Price");
@@ -208,21 +209,35 @@ function exportCSV(currentInstances,
                     }
                 }
 
-
+                
 
                 if (notNullIndexes && notNullIndexes.indexOf(columnIndex) > -1 && validations[columnHeaderName]) {
                     var validValuesOfCurrentColumn = validations[columnHeaderName].map(function(x, i) {
                         return String(x).toLowerCase();
                     });
                 }
+                  if(columnHeaderName=='Color'){
+                    console.log(column,'Color',validations[columnHeaderName])
+                }
 
                 if (notNullIndexes && notNullIndexes.indexOf(columnIndex) > -1 && validValuesOfCurrentColumn) {
+                    // alert(columnHeaderName)
+                  
                     if (validValuesOfCurrentColumn.indexOf(column.toLowerCase()) == -1) {
                         remarks.push(columnHeaderName);
                         var correct = false;
                     }
                 } else if (notNullIndexes && notNullIndexes.indexOf(columnIndex) > -1) {
                     if (!(column || column != '')) {
+                        remarks.push(columnHeaderName);
+                        var correct = false;
+                    }
+                }else if(validations[columnHeaderName]){
+                    // alert(1)
+                    var validValuesOfCurrentColumn = validations[columnHeaderName].map(function(x, i) {
+                        return String(x).toLowerCase();
+                    });
+                    if (validValuesOfCurrentColumn.indexOf(column.toLowerCase()) == -1) {
                         remarks.push(columnHeaderName);
                         var correct = false;
                     }

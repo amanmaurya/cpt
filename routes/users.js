@@ -512,7 +512,7 @@ router.get('/data_sheet', function(req, res, next) {
                         console.log(err);
                     } else {
                         var expression = getExpression(expr[0], categories, l);
-                        //console.log(expression);
+                        console.log('expression',expression);
                         mysql({
                                 sql: 'call usp_getcategorycodebytemplatename_rs(?)',
                                 values: [selectedTemplate]
@@ -559,7 +559,7 @@ router.get('/data_sheet', function(req, res, next) {
                                                         //  console.log(e);
                                                     } else {
                                                         var brands = getBrands(brand[0]);
-                                                        // console.log(brands);
+                                                        console.log('brands',brands);
                                                         var attrsFromDb = _result[0].map(function(obj, objIndex) {
                                                             return obj.attributeName;
                                                         });
@@ -656,17 +656,20 @@ function getDefaultExpression(x, categories, l) {
 }
 
 function getExpression(x, categories, l) {
+    console.log('getExpression', x,categories, l)
     var temp = {};
     var nm = ''
     var cat = '';
     var L2s = categories.map(function(category, index) {
         return l[category];
     });
+    console.log('L2s',L2s)
     x.forEach(function(elem, index) {
         if (L2s.indexOf(elem.Categoryname) > -1) {
             nm = elem.Name;
+            nm1 = elem.Categoryname;
             x.forEach(function(elem, index) {
-                if (elem.Name == nm) {
+                if (elem.Name == nm&&nm1==elem.Categoryname) {
                     temp[nm] || (temp[nm] = []);
                     if (temp[nm].indexOf(elem.Expression) == -1) {
                         temp[nm].push(elem.Expression);
@@ -675,6 +678,7 @@ function getExpression(x, categories, l) {
             });
         }
     });
+    console.log('temp',temp)
     return temp;
 }
 

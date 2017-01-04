@@ -200,7 +200,7 @@
                     var validationData = <%-JSON.stringify(validationData)%>;
                     var notNulls = <%-JSON.stringify(notNulls)%>
                     var attrsFromDb = <%-JSON.stringify(attributesFromDatabase)%>
-                        // console.log(validationData)
+                        console.log(validationData, sheetHeaders, notNulls, expression, brands)
                     var validators = getValidations(validationData, sheetHeaders, notNulls, expression, brands);
                     var firstCategory = Object.keys(sheetData)[0];
                     var excelHeaders = [];
