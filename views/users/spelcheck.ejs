@@ -1,0 +1,110 @@
+
+ <script src="/javascripts/Typo/typo/typo.js"></script>
+<% include ./user_header %>
+
+    <script>
+        $(document).ready(function () {
+
+            var data = <%-JSON.stringify(data)%>
+            console.log(data)
+            // render(data)
+        });
+
+        function render(data) {
+           var html='<div class="col-md-6">' 
+            var categories = Object.keys(data);
+            for(var i = 0; i < categories.length; i++) {
+                var category = categories[i]
+                html+='<h1 class="false-value-category-header">'+category+'</h1>'
+                var headers = Object.keys(data[category]);
+                for(var j = 0; j < headers.length; j++) {
+                    var head = headers[j]
+                    console.log(head)
+                    html+='<div class="col-md-12">';
+                    html+='<h1 class="false-value-category-header">'+head+'</h1>';
+                    html+='<div class="col-md-12">';
+                    
+                    var coles = Object.keys(data[category][head]);
+                    for(var k = 0; k < coles.length; k++) {
+                        var col = coles[k]
+                        html+='<div class="col-md-6">'
+                        html+='<h6>'+col+'</h6>'
+                        html+='</div>'
+                        html+='<div class="col-md-6">'
+                         var validList = data[category][head][col] 
+                         for (var l = 0; l < validList.length; l++) {
+                                 validList[l]
+                                 
+            
+                                 html+='<select name="'+col+'" class="col-md-6 input-sm form-control small-dropdowns">'
+                                 html+='<option>--ignore</option>'
+                                for(var p = 0; p < validList.length; p++) { 
+                                      html+='<option value="'+validList[p]+'">'+validList[p]+'</option>'
+                               
+                                    } 
+                                html+='</select>';
+                                
+                         }
+                        html+='</div>'; 
+         
+                    }
+                    html+='</div>';
+                }
+
+            } html+='</div>';
+            $('#htmdlv').html(html)
+        }
+    </script>
+ <form id="map-attributes" class="map-form" method="POST" action="/users/map_spelcheck">
+<div class="col-lg-12" style="background-color:#f4f4f6;">
+  <center><h4>Select Correct Columns</h4></center>
+  
+</div>
+  <div class="col-md-6 " id='maindiv'>
+    <% var categories =Object.keys(data); %>
+    <%for(var i = 0; i < categories.length; i++){
+    var category = categories[i]
+    %>
+    <h1 class="false-value-category-header"><%=category%></h1>
+     <% var headers =Object.keys(data[category]);%>
+     <%for(var j = 0; j < headers.length; j++){
+    var head = headers[j]
+    %>
+    <div class="col-md-12 1">
+    <h1 class="false-value-category-header"><%=head%></h1>
+        <div class="col-md-12 2">
+            <% var coles =Object.keys(data[category][head]);%>   
+            <%for(var k = 0; k < coles.length; k++){
+                var col = coles[k]
+                %> 
+            <div class="col-md-6 3">
+                <h6><%=col%>
+                </h6>
+            </div>
+            <div class="col-md-6 31">
+            
+                <select name="<%=col%>" class="col-md-6 input-sm form-control small-dropdowns"><% var validList = data[category][head][col] %>
+                    <option>--ignore</option><% for(var p = 0; p < validList.length; p++) { %>
+                    <option value="<%=validList[p]%>"><%=validList[p]%>
+                    </option><% } %>
+                </select>
+            </div>
+            <%}%>
+        </div>
+    </div>      
+    <%}%>
+    <%}%>
+    </div>
+
+    <hr/>
+  </div>
+  <div class="col-lg-12" style="border-bottom:1px solid #e7e7e7;"></div>
+  <div class="map-column-button">
+    <button class="btn btn-primary" type="submit" id="map-attrs-submit-button" style="    margin-top: 12px;
+    margin-bottom: 14px;
+    width: 125px;
+    background-color: #f4f4f6;
+    color: #7e7e7e;
+    border-color: #e7e7e7;">Submit</button>
+  </div>
+</form>         

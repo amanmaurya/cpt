@@ -1,6 +1,7 @@
 function sheet(data, headers, validators, category, tempHeaders, hots, imagepath, containerflag, csvContainer) {
     //var container = document.querySelector('[id="'+category.replace(/[^a-z0-9]/gi, '_')+'"]');
     //$(".se-pre-con").fadeIn("slow");
+    // console.log('hots is',hots);
     var maxsize1=1270;
     if (!containerflag) {
        
@@ -19,7 +20,7 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
     if(imageColumn==-1){
         imageColumn = headers.indexOf('Image Name');  
     }
-    console.log("validators jai jai jai",validators);
+    // console.log("validators jai jai jai",validators);
     var maxPossibleRows = data.length;
     var hot = new Handsontable(container, {
         data: data,
@@ -110,12 +111,16 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
       
     });
     setTimeout(function() {
+      // console.log('hots ub==in time',hots);
         hot.validateCells(function() {});
 
        $('.se-pre-con').hide();
     }, 35);
-    hots[category] || (hots[category] = hot);
+    (hots[category] = hot);
+          // console.log('hots ub======= in time',hots);
+
     $('.push').click(function () {
+      // alert('sddssd',this)
     data = hot.getData();
 });
     

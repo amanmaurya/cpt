@@ -1,5 +1,5 @@
 function getValidations(validationData, sheetHeaders, notNulls, expression, brands) {
-console.log(validationData, sheetHeaders, notNulls, expression, brands)
+// console.log(validationData, sheetHeaders, notNulls, expression, brands)
   var validators = {};
   var categories = Object.keys(validationData);
   var validNull = function(value, callback) {

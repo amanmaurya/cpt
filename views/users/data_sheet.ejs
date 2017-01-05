@@ -69,9 +69,12 @@
     <div id="wait" style="display:block;width:69px;height:89px;border:0px solid black;position:absolute;top:60%;left:50%;padding:2px; z-index: 12;"><img src='/images/demo_wait.gif' width="64" height="64" /><br>Loading..</div>
     <div id="jaimaa">
         <div>
+            
             <button id="export-csv">Export</button>
 
             <button id="search-replace">Search/Replace</button>
+            <button id="spell-check" style="    margin-top: 15px;">spell check</button>
+            
             <div id="divMainHeader">
                 <% var categories =  Object.keys(sheetData); console.log("catagry name",categories.length,"",categories);%>
 
@@ -122,17 +125,61 @@
                                 <input class="form-control" type="text" name="searched_term" placeHolder="Search" required/>
                                 <input style="margin-top: 10px" class="form-control" type="text" name="replaced_term" placeHolder="Replace with" />
                                 <select style="margin-top: 10px" name="column_name" class="form-control">
-        <option value="" selected>All Columns</option>
-        <% for (var i=0; i < sheetHeaders.length; i++) { %>
-          <option value="<%=sheetHeaders[i]%>"><%=sheetHeaders[i]%></option> 
-        <% } %>
-        </select>
+                                <option value="" selected>All Columns</option>
+                                <% for (var i=0; i < sheetHeaders.length; i++) { %>
+                                  <option value="<%=sheetHeaders[i]%>"><%=sheetHeaders[i]%></option> 
+                                <% } %>
+                                </select>
 
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <div class="modal fade" id="spell-check-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 style="padding-left: 223px" class="modal-title">Search/Replace</h4>
+                            <button style="float:right;margin-top: -33px " type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body" style=" padding: 29px;height: 223px;overflow: auto;">
+                        
+                            <form id="spell-check-form" class="form-horizontal" role="form">
+                            <div  class="col-md-12" >
+                                <div class="col-md-6" style="margin-top: -14px;"><label>Select Column</label></div>
+                                <div class="col-md-6"><select style="margin-top: -20px" name="column_name" id='column_name' class="form-control" on >
+                                
+                                <% for (var i=0; i < sheetHeaders.length; i++) { 
+                                    if(sheetHeaders[i]!='Category Id'){
+                                    %>
+                                  <option value="<%=sheetHeaders[i]%>"><%=sheetHeaders[i]%></option> 
+                                <% }} %>
+                                </select>
+                                
+                                </div>
+                                <hr style="    margin-top: 20px;margin-bottom: 20px;border: 0;border-top: 3px solid #2d1c1c;"></hr>
+                                </div>
+                                </form>
+                               <!--  <input class="form-control" type="text" name="searched_term" placeHolder="Search" required/>
+                                <input style="margin-top: 10px" class="form-control" type="text" name="replaced_term" placeHolder="Replace with" /> -->
+                                
+                           <div class="col-md-12" id='spell-chec-div'>
+                            
+                            </div>     
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <!--   <button type="submit" class="btn btn-primary">Submit</button> -->
+                            
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -187,7 +234,7 @@
                     var imagepath = '<%=imagepath%>';
                     var categoryCodes = <%-JSON.stringify(categoryCodes)%>
                     var attributes = <%-JSON.stringify(attributes)%>
-                    var sheetData = <%-JSON.stringify(sheetData)%>;
+                     sheetData = <%-JSON.stringify(sheetData)%>;
                     var expression = <%-JSON.stringify(expression)%>;
                     var _sheetHeaders = <%-JSON.stringify(sheetHeaders)%>;
                     var nameToCode = <%-JSON.stringify(nameToCode)%>;
@@ -200,13 +247,13 @@
                     var validationData = <%-JSON.stringify(validationData)%>;
                     var notNulls = <%-JSON.stringify(notNulls)%>
                     var attrsFromDb = <%-JSON.stringify(attributesFromDatabase)%>
-                        console.log(validationData, sheetHeaders, notNulls, expression, brands)
-                    var validators = getValidations(validationData, sheetHeaders, notNulls, expression, brands);
+                        // console.log(validationData, sheetHeaders, notNulls, expression, brands)
+                     validators = getValidations(validationData, sheetHeaders, notNulls, expression, brands);
                     var firstCategory = Object.keys(sheetData)[0];
                     var excelHeaders = [];
-                    var currentInstances = {};
+                     currentInstances = {};
                     var alternateattr = Object.keys(attributes);
-                    var newsheetHeaders = [];
+                     newsheetHeaders = [];
                     for (var i = 0; i < sheetHeaders.length; i++) {
                         for (var j = 0; j < sheetHeaders.length; j++) {
                             if (sheetHeaders[i] == alternateattr[j]) {
@@ -229,17 +276,17 @@
 
                     }
 
-                    var tempHeaders = newsheetHeaders.map(function(x, i) {
+                     tempHeaders = newsheetHeaders.map(function(x, i) {
                         return x + " (" + generateRandomAlphas(i) + ")";
                     });
-                    //console.log("header",tempHeaders,validators[firstCategory]);
+                  //console.log("header",currentInstances,tempHeaders,validators[firstCategory]);
                     sheet(sheetData[firstCategory],
                         newsheetHeaders,
                         validators[firstCategory],
                         firstCategory,
                         tempHeaders,
                         currentInstances, imagepath);
-
+      //console.log('dssssssssssss',currentInstances)
                     $("#grids a").click(function(e) {
                         $("#filters").scrollLeft(0);
                         if ($('#'.concat(e.target.id)).attr('jsp') == 0) {
@@ -248,10 +295,13 @@
                         }
                         e.preventDefault();
                         var category = $(this).text();
+                        // alert('che')
+                      //console.log('currentInstances',currentInstances)
                         currentInstances[category] || (create(category, newsheetHeaders));
                         $(this).tab('show');
 
                         function create(category, newsheetHeaders) {
+
                             var data = sheetData[category];
                             var v = validators[category];
                             sheet(data,
@@ -274,7 +324,14 @@
                                 categoryCodes,
                                 attrsFromDb, flnm, uid, expression, brands, nameToCode, merchantId, 1)
                         } else {
-                            alert('Please Open All Tabs');
+                            // alert('Please Open All Tabs');
+                             $.notify({
+                    // options
+                    message: 'Please Open All Tabs'
+                }, {
+                    // settings
+                    type: 'danger'
+                });
                         }
                     });
 
@@ -293,7 +350,26 @@
                             searchReplace(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
                         });
                     });
+                    $('#spell-check').click(function() {
+                        $('#spell-check-modal').modal('toggle');
+                        $('#column_name').change(function(e) {
+                            e.preventDefault();
+                            // data, headers, sheet, hots, validators, tempHeaders,searchReplace
+                            var data = $('#spell-check-form').serializeArray();
+                            getspellcheck(data, newsheetHeaders, currentInstances)
+                            // spellcheck(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+                        });
+                      
+                    });
 
+
+                    function changesplelling(id){
+                        $('#form'+id).submit(function(e) {
+                            e.preventDefault();
+                            var data = $('#form'+id).serializeArray();
+                            searchReplace(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+                        });
+                    }
                     var imageIndex = 0;
                     $("#prev_image").on("click", function() {
                         imageIndex = (imageIndex + allimage.length - 1) % (allimage.length);
@@ -317,6 +393,17 @@
                     $("div").scrollLeft($("#filters").scrollLeft());
                     //.ht_clone_left .wtHolder
                 });
+                function changesplelling(id){
+  // alert('1aaa')
+   var data = $('#form'+id).serializeArray();
+ //console.log(currentInstances)
+   searchReplace(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+    $('#form'+id).submit(function(e) {
+        e.preventDefault();
+       
+       
+    });
+}
 
                 function notification(id) {
                     var index = tabs.indexOf(id);
@@ -330,7 +417,9 @@
             <script src="/javascripts/libraries/handsontable/bower_components/ruleJS/dist/full/ruleJS.all.full.min.js"></script>
             <script src="https://docs.handsontable.com/0.29.0/bower_components/handsontable/dist/handsontable.full.js"></script>
             <script src="/javascripts/libraries/handsontable/src/handsontable.formula.js"></script>
+             <script src="/javascripts/Typo/typo/typo.js"></script>
             <script src="/javascripts/grid/search_replace.js"></script>
+            <script src="/javascripts/grid/spell_check.js"></script>
             <script src="/javascripts/grid/filters.js"></script>
             <script src="/javascripts/grid/show_image.js"></script>
             <script src="/javascripts/grid/validations.js"></script>
