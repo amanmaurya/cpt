@@ -39,7 +39,7 @@ function isMatch(searchOnString, searchText) {
 
 function getspellcheck(data, headers, hots) {
 $('.se-pre-con').show();
-console.log($('.se-pre-con'),'aaaaaaaa')
+// console.log($('.se-pre-con'),'aaaaaaaa')
 // alert(1)
   var currentCategory = document.getElementsByClassName('active')[1].textContent.trim();
   var columnName = data[0].value;
@@ -117,7 +117,7 @@ function drawsuggetion(data,columnName){
                 });
             }
            $('.se-pre-con').hide(); 
-           console.log($('.se-pre-con'),'aaaaaaaa')          
+           // console.log($('.se-pre-con'),'aaaaaaaa')          
 }
 function drawsuggetioncell(data,columnName){
   var html=''

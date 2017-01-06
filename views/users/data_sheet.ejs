@@ -157,11 +157,7 @@
                                 <div class="col-md-6" style="margin-top: -14px;"><label>Select Column</label></div>
                                 <div class="col-md-6"><select style="margin-top: -20px" name="column_name" id='column_name' class="form-control" on >
                                    <option selected disabled value="">Select Header</option> 
-                                <% for (var i=0; i < sheetHeaders.length; i++) { 
-                                    if(sheetHeaders[i]!='Category Id'){
-                                    %>
-                                  <option value="<%=sheetHeaders[i]%>"><%=sheetHeaders[i]%></option> 
-                                <% }} %>
+                                
                                 </select>
                                 
                                 </div>
@@ -276,12 +272,12 @@
                     var _sheetHeaders = <%-JSON.stringify(sheetHeaders)%>;
                     var nameToCode = <%-JSON.stringify(nameToCode)%>;
                     var merchantId = <%-JSON.stringify(merchantId)%>;
-                    var sheetHeaders = _sheetHeaders.filter(function(x, i) {
+                     sheetHeaders = _sheetHeaders.filter(function(x, i) {
                         return x.substring(x.length - 5, x.length) != 'Input';
                     });
                     var brands = <%-JSON.stringify(brands)%>;
                     // console.log(<%-JSON.stringify(validationData)%>)
-                    var validationData = <%-JSON.stringify(validationData)%>;
+                     validationData = <%-JSON.stringify(validationData)%>;
                     var notNulls = <%-JSON.stringify(notNulls)%>
                     var attrsFromDb = <%-JSON.stringify(attributesFromDatabase)%>
                         // console.log(validationData, sheetHeaders, notNulls, expression, brands)
@@ -435,6 +431,20 @@
                     $('#spell-check').click(function() {
                         $('#spell-chec-div').html('')
                         $('#column_name').val('')
+                        var currentCategory = document.getElementsByClassName('active')[1].textContent.trim();
+                        // alert(currentCategory)[]
+                        var de=validationData[currentCategory]
+                        var de1=Object.keys(de)
+                        var option='  <option selected disabled value="">Select Header</option> ';
+                        for (var i = 0; i < newsheetHeaders.length; i++) {
+                            
+                            if(de1.indexOf(newsheetHeaders[i])==-1&&newsheetHeaders[i] != 'Category Id' && newsheetHeaders[i] != 'MRP'&&newsheetHeaders[i] != 'Price'){
+                                 option+='<option value="'+newsheetHeaders[i]+'">'+newsheetHeaders[i]+'</option>' 
+                            }
+                           ;
+                        }
+                        // console.log(option)
+                        $('#column_name').html(option)
                         $('#spell-check-modal').modal('toggle');
                         $('#column_name').change(function(e) {
                             e.preventDefault();
