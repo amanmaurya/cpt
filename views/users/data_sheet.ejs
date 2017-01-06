@@ -66,14 +66,14 @@
     </style>
     <script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
     <div class="se-pre-con"></div>
-    <div id="wait" style="display:block;width:69px;height:89px;border:0px solid black;position:absolute;top:60%;left:50%;padding:2px; z-index: 12;"><img src='/images/demo_wait.gif' width="64" height="64" /><br>Loading..</div>
+    <div id="wait" style="display:block;width:69px;height:89px;border:0px solid black;position:absolute;top:60%;left:50%;padding:2px; z-index: 999;"><img src='/images/demo_wait.gif' width="64" height="64" /><br>Loading..</div>
     <div id="jaimaa">
         <div>
             
             <button id="export-csv">Export</button>
 
             <button id="search-replace">Search/Replace</button>
-            <button id="spell-check" style="    margin-top: 15px;">spell check</button>
+            <button id="spell-check" style="    margin-top: 15px;">Spell Check</button>
             
             <div id="divMainHeader">
                 <% var categories =  Object.keys(sheetData); console.log("catagry name",categories.length,"",categories);%>
@@ -147,7 +147,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
 
-                            <h4 style="padding-left: 223px" class="modal-title">Search/Replace</h4>
+                            <h4 style="padding-left: 223px" class="modal-title">Spell Check</h4>
                             <button style="float:right;margin-top: -33px " type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         </div>
                         <div class="modal-body" style=" padding: 29px;height: 223px;overflow: auto;">
@@ -156,7 +156,7 @@
                             <div  class="col-md-12" >
                                 <div class="col-md-6" style="margin-top: -14px;"><label>Select Column</label></div>
                                 <div class="col-md-6"><select style="margin-top: -20px" name="column_name" id='column_name' class="form-control" on >
-                                
+                                   <option selected disabled value="">Select Header</option> 
                                 <% for (var i=0; i < sheetHeaders.length; i++) { 
                                     if(sheetHeaders[i]!='Category Id'){
                                     %>
@@ -173,12 +173,13 @@
                                 
                            <div class="col-md-12" id='spell-chec-div'>
                             
-                            </div>     
+                            </div> 
+                            <input type="" class="hide" id='spell-chec-div-length' name="">      
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <!--   <button type="submit" class="btn btn-primary">Submit</button> -->
+                            <button type="" id="spell-check-form-but" class="btn btn-primary">Submit</button>
                             
                         </div>
                     </div>
@@ -187,6 +188,42 @@
                 <!-- /.modal-dialog -->
             </div>
             <!-- /.modal -->
+            <div class="modal fade" id="spell-check-modal1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 style="padding-left: 223px" class="modal-title">Spell Check</h4>
+                            <button style="float:right;margin-top: -33px " type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body" style=" padding: 29px;height: 223px;overflow: auto;">
+                        
+                            <form id="spell-check-form-new" class="form-horizontal" role="form">
+                            </form> 
+                            <div  class="col-md-12" >
+                                
+                                <hr style="    margin-top: 20px;margin-bottom: 20px;border: 0;border-top: 3px solid #2d1c1c;"></hr>
+                                </div>
+                               
+                               <!--  <input class="form-control" type="text" name="searched_term" placeHolder="Search" required/>
+                                <input style="margin-top: 10px" class="form-control" type="text" name="replaced_term" placeHolder="Replace with" /> -->
+                                
+                           <div class="col-md-12" id='spell-chec-divcell'>
+                            
+                            </div>  
+                             <input type="" class="hide" id='spell-chec-divcell-length' name="">  
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" id="spell-check-form-new-but" class="btn btn-primary">Submit</button>
+                            
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
 
             <div class="modal fade" id="image-modal">
                 <div class="modal-dialog">
@@ -325,13 +362,13 @@
                                 attrsFromDb, flnm, uid, expression, brands, nameToCode, merchantId, 1)
                         } else {
                             // alert('Please Open All Tabs');
-                             $.notify({
-                    // options
-                    message: 'Please Open All Tabs'
-                }, {
-                    // settings
-                    type: 'danger'
-                });
+                                $.notify({
+                                // options
+                                message: 'Please Open All Tabs'
+                                }, {
+                                // settings
+                                type: 'danger'
+                                });
                         }
                     });
 
@@ -349,8 +386,55 @@
                             var data = $('#search-replace-form').serializeArray();
                             searchReplace(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
                         });
+                        
+            });
+                    $('#spell-check-form-new-but').click(function (e) {
+                        e.preventDefault();
+                        for(var i = 0; i < $('#spell-chec-divcell-length').val(); i++) {
+
+                            var data = $('#form' + i).serializeArray();
+                            console.log('data11111111', data)
+                            if(data[1].value == '') {
+                                $.notify({
+                                    // options
+                                    message: 'All Filed is required'
+                                }, {
+                                    // settings
+                                    type: 'danger'
+                                });
+                                return false;
+                            }
+                            console.log('data', data)
+                            searchReplacesplel(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+
+                        }
+                        for(var i = 0; i < $('#spell-chec-divcell-length').val(); i++) {
+
+                            var data = $('#form' + i).serializeArray();
+
+                            console.log('data', data)
+                            searchReplacesplel(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+
+                        }
+
                     });
+                    $('#spell-check-form-but').click(function (e) {
+                        e.preventDefault();
+                        
+                        for(var i = 0; i < $('#spell-chec-div-length').val(); i++) {
+
+                            var data = $('#formd' + i).serializeArray();
+
+                            console.log('data', data)
+                            searchReplacesplel(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+
+                        }
+                        $('#spell-check-modal').modal('toggle');
+
+                    });                    
                     $('#spell-check').click(function() {
+                        $('#spell-chec-div').html('')
+                        $('#column_name').val('')
                         $('#spell-check-modal').modal('toggle');
                         $('#column_name').change(function(e) {
                             e.preventDefault();
@@ -358,7 +442,13 @@
                             var data = $('#spell-check-form').serializeArray();
                             getspellcheck(data, newsheetHeaders, currentInstances)
                             // spellcheck(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
+                            $('.suggest-drop').on('click focusin', function() {
+                        this.value = '';
                         });
+
+
+                        });
+
                       
                     });
 
@@ -394,16 +484,10 @@
                     //.ht_clone_left .wtHolder
                 });
                 function changesplelling(id){
-  // alert('1aaa')
-   var data = $('#form'+id).serializeArray();
- //console.log(currentInstances)
-   searchReplace(data, newsheetHeaders, sheet, currentInstances, validators, tempHeaders);
-    $('#form'+id).submit(function(e) {
-        e.preventDefault();
-       
-       
-    });
-}
+                    $('.suggest-drop').on('click focusin', function() {
+                        this.value = '';
+                        });
+                }
 
                 function notification(id) {
                     var index = tabs.indexOf(id);
@@ -432,6 +516,7 @@
             <script type="text/javascript" charset="utf-8" src="/data_sheet/js/bootstrap.min.js"></script>
             <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
             
+            <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
             <!--script src="https://docs.handsontable.com/0.28.4/bower_components/handsontable/dist/handsontable.full.js"></script-->
             <link type="text/css" rel="stylesheet" href="https://docs.handsontable.com/0.28.4/bower_components/handsontable/dist/handsontable.full.min.css">
             <footer>

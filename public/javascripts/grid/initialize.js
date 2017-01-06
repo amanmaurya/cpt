@@ -82,12 +82,20 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
                 $('#image-modal').modal('toggle');  
             }
                }else{
-                  console.log(ext,'hahah')
+                  // console.log(ext,'hahah')
                     showImage(imagePath1,imagepath)
                }
                 //console.log("jai jai jai",imagePath1);var currentDirectory = window.location.pathname.split('/').slice(0, -1).join('/')
                
             }
+            // else if( td.style.color == 'blue'){
+               
+            //    // console.log(coords)
+            //    var data= hot.getDataAtCell(coords.row, coords.col)
+
+            //    getspellcheckcell(data,headers[coords.col])
+            //    hot.selectCell(coords.row, coords.col)
+            // }
         },
         beforeKeyDown: function(e) {
 

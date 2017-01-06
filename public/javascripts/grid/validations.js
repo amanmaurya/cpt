@@ -1,3 +1,4 @@
+var dictionary = new Typo( "en_US" );
 function getValidations(validationData, sheetHeaders, notNulls, expression, brands) {
 // console.log(validationData, sheetHeaders, notNulls, expression, brands)
   var validators = {};
@@ -5,8 +6,9 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
   var validNull = function(value, callback) {
    //console.log.log("check brand value",value);
     var val = notNullValidation(value);
+     // var val1 = dictionary.check(value)
     setTimeout(function() {
-      if (val) callback(true);
+      if (val ) callback(true);
       else callback(false);
     });
   };
@@ -21,6 +23,14 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
     var val = checkBrands(value);
      setTimeout(function() {
       if (val) callback(true);
+      else callback(false);
+    },1000);
+  }
+  var checkSpell = function(value, callback){
+    var val = dictionary.check(value)
+    // console.log(val,value)
+     setTimeout(function() {
+      if (val&&value=='') callback(true);
       else callback(false);
     },1000);
   }
@@ -59,7 +69,7 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
       if(columnName == 'Brand'){
       //console.log.log(i)
         // return{data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false}
-        return {data: i, allowInvalid: true,allowEmpty: false, validator: checkRestrict, strict: true};
+        return {data: i, allowInvalid: true,allowEmpty: false, validator: checkRestrict, strict: true, renderer: spellValueRenderer};
       }
       /*if (columnName == 'Image Name' || columnName == 'image' || columnName == 'Image') {
         return {data: i, allowInvalid: true,  renderer: coverRenderer, strict: true};}*/
@@ -69,7 +79,9 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
       // if(notNull && notNull.indexOf(columnName) ==-1){
       //    return {data: i, type: 'text',  allowInvalid: true, strict: true,allowEmpty: false};
       // }
-      if (notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] && validationData[category][columnName]) {
+      if(columnName=='Category Id'){
+        return {data: i, allowInvalid: false,allowEmpty: false,readOnly: true};
+      }else  if (notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] && validationData[category][columnName]) {
         // alert(1+columnName)
         var list = validationData[category][columnName]; 
         return {data: i, type: 'autocomplete', validator: validValueInList, source: list, allowInvalid: true, strict: true,allowEmpty: false};
@@ -94,11 +106,13 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
       // return {data: i,allowInvalid: true, validator: validNull, strict: true, allowEmpty: false};
       
       } else if(notNull && notNull.indexOf(columnName) > -1){
-
-        return {data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false};
+         // alert(12+columnName)
+        return {data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false, renderer: spellValueRenderer};
       } else {
-        // alert(12+columnName)
-        return {data: i, allowInvalid: false,allowEmpty: false};
+
+       
+         return {data: i, allowInvalid: true, renderer: spellValueRenderer};
+        // return {data: i, allowInvalid: false,allowEmpty: false};
       }
     }); 
   });
@@ -117,6 +131,37 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
       // alert(mrpColumnIndex,priceColumnIndex)
       if(col == mrpColumnIndex || col == priceColumnIndex)
         td.style.color = 'RED';
+    }
+    Handsontable.renderers.TextRenderer.apply(this, args);
+  }
+   function spellValueRenderer(instance, td, row, col, prop, value, cellProperties) {
+    var args = arguments;
+    // var mrpColumnIndex = sheetHeaders.indexOf('MRP');
+    // var priceColumnIndex = sheetHeaders.indexOf('Price')
+   var rowData1= instance.getDataAtCell(row,col)
+    if(rowData1!=''){
+      rowData1=rowData1.split(' ')
+    }
+    var flag=true;
+    for (var i = 0; i < rowData1.length; i++) {
+        var a=dictionary.check(rowData1[i])
+        if(a==false){
+          flag=false;
+        }
+    }
+    // var rowData =dictionary.check(instance.getDataAtCell(row,col));
+    // var a=true;
+    // for (var i = 0; i < rowData.length; i++) {
+    //      a=dictionary.check(rowData[i])
+    //      if(!a){
+    //       return
+    //      }
+    // }
+    if (!flag) {
+      // alert(mrpColumnIndex,priceColumnIndex)
+        td.style.color = 'Blue';
+      // if(col == mrpColumnIndex || col == priceColumnIndex)
+      //   td.style.color = 'yellow';
     }
     Handsontable.renderers.TextRenderer.apply(this, args);
   }
