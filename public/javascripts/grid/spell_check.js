@@ -73,7 +73,7 @@ $('.se-pre-con').show();
 };
 function drawsuggetion(data,columnName){
   var html=''
-  console.log(data)
+  // console.log(data)
                 var coles = Object.keys(data);
                
             
@@ -202,7 +202,7 @@ function changespl1elling(id){
    changesplelling(id)
 };
 function getspellcheckcell(data, columnName) {
-  console.log(data, columnName)
+  // console.log(data, columnName)
 
   // var columnIndex = headers.indexOf(columnName);
   var colval=unique(data.split(' '))
