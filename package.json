@@ -29,6 +29,7 @@
     "nspell": "^1.0.2",
     "readdir": "0.0.13",
     "reformed": "^0.1.1",
-    "serve-favicon": "~2.2.1"
+    "serve-favicon": "~2.2.1",
+    "underscore": "^1.8.3"
   }
 }
