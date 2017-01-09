@@ -73,5 +73,6 @@ function showFilteredData(f, hot, headers, data) {
       
     }
   });
+  
   return filteredData;
 }

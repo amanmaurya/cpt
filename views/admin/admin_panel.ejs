@@ -57,7 +57,7 @@
 
             }
             $("#litemp").addClass('activetab');
-            catgroup();
+            // catgroup();
             maketree();
 
             //         setTimeout(function() {
@@ -178,10 +178,11 @@
             $('.ul1').remove();
             <% if(templatedata.length != 0) {%>
             var data = <%-JSON.stringify(templatedata)%>;
+            // console.log('data',data)
             tree = _makeTree({
                 q: data
-            });
-
+            });_makeTree
+            // console.log('tree',tree)/
             function _makeTree(options) {
                 var children, e, id, o, pid, temp, _i, _len, _ref, flg;
                 id = options.id || "id";
@@ -191,16 +192,23 @@
                 temp = {};
                 o = [];
                 _ref = options.q;
+                // console.log('_ref',_ref)
                 for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                     e = _ref[_i];
                     e[children] = [];
                     temp[e[id]] = e;
+                    // console.log('temp',temp )
+                    // console.log('temp[e[id]]',temp[e[id]])
+                    // console.log('e', e)
                     if (temp[e[pid]] != null) {
                         temp[e[pid]][children].push(e);
+                        // console.log('aads',e[pid])
+                        // console.log(' temp[e[pid]][children]',temp[e[pid]][children])
                     } else {
+                        // console.log("push",e)
                         o.push(e);
                     }
-
+                    // console.log('eo',o)
                 }
                 return o;
             };
@@ -408,7 +416,7 @@
                 $('#rpolicy').removeClass('hide');
                 $('#catgroup').removeClass('hide');
                 $('#cat').removeClass('hide');
-                catgroup();
+                // catgroup();
 
             }
             div_show1();
@@ -419,6 +427,7 @@
             var fdata = $('.form2addtempandcat').serializeArray();
             //console.log(fdata)
             // console.log(data1)
+            // alert(1)
             if($('#name').val().trim()!=''){
                 var url1 = '/admin/addtempandcat';
             $.ajax({
@@ -426,9 +435,14 @@
                 method: 'POST',
                 data: fdata,
                 success: function (csvData1) {
-                    //console.log(csvData1)
+                    
+                    if(csvData1.result[0][0].success==2){
+                        alert_modal('Name Already Exist', 'danger')
+                    }else{
+                        location.reload();
+                    }
 
-                    location.reload();
+                    // 
                     // alert(csvData1)
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -719,6 +733,7 @@
                     "patid": pid
                 },
                 success: function (data) {
+                    console.log('datass',data)
                     if (flag == '0') {
                         $('#cname').val(data[0][0].Name);
                         $('#cdesc').val(data[0][0].Description);
@@ -1004,12 +1019,13 @@ event.childNodes[4].style.display='none';*/
             function del(id, thi1s) {
                 // $('#id').parent('div').remove();
                 // $('#fake').html('');
+
                 // console.log(thi1s)
                 var value1 = id.split('&');
                 var id = value1[0];
                 var flag = value1[2];
                 var pid = value1[1];
-
+                // alert(flag)
                 $.ajax({
                     url: '/admin/deleteTemplateandCategoryandAttribute',
                     method: 'get',
@@ -1020,6 +1036,7 @@ event.childNodes[4].style.display='none';*/
 
                     },
                     success: function (msg) {
+                        if(msg!='error'){
                         console.log(msg, msg[0].result)
                         msg = msg[0].result;
                         if (msg == 0) {
@@ -1028,15 +1045,21 @@ event.childNodes[4].style.display='none';*/
                         }
                         if (msg == 1) {
                             alert_modal("Record Deleteed Successfully", 'success');
-                        }
-                        if ($('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('li').text() != '') {
+                            if ($('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('li').text() != '') {
                             $('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('li').remove()
                         } else if ($('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('a').text() != '') {
 
                             $('.showbutton' + id + '' + thi1s + '' + flag + '' + pid).parent('a').remove()
                         }
+                        }
+                        }else{
+                            alert_modal('Please Delete All Available Childs', 'danger');
+                        }
 
 
+                    },
+                    error:function(){
+                        alert_modal('Please Delete All Available Childs', 'danger');
                     }
                 });
                 // e.id + '' + _i + '' + e.flag + '' + e.parentid 
@@ -1501,7 +1524,7 @@ event.childNodes[4].style.display='none';*/
                             </div>
                             <div class="col-lg-9">
                                 <label id='tempup' style="line-height: 42px;font-weight:normal"></label>
-                                <span class="glyphicon glyphicon-upload" style="float:right" onclick="showmodal()"></span>
+                                <span class="glyphicon glyphicon-upload" title="Upload Excel" style="float:right" onclick="showmodal()"></span>
                             </div>
                         </div>
 

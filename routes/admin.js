@@ -12,7 +12,7 @@ var fs = require('fs');
 var path = require('path');
 
 router.use(function(req, res, next) {
-    // var role = req.session.role;
+    // var role = req.session.role;get
     // console.log('session',req.session)
     if (req.session!=undefined && auth.isUserValidated(req) && auth.isAdmin(req)) {
         next();
@@ -87,7 +87,7 @@ router.post('/addtempandcat', function(req, res, next) {
         sql: 'call usp_addtempandcat_nr(?,?,?,?,?,?,?,?,?)',
         values: [req.body.flg, req.body.id1, req.body.name, req.body.desc, code1, rtime, rpid, ctgroup, vertid]
     }
-    //console.log(query)
+    console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -915,9 +915,11 @@ router.get('/deleteTemplateandCategoryandAttribute', function(req, res, next) {
         sql: 'call usp_deleteTemplateAndCategoryAndAttribute(?,?,?)',
         values: [id, pid, flag]
     }
+    console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
+            res.json('error');
         } else {
             var msg = result[0];
             console.log(msg)
@@ -1059,6 +1061,7 @@ router.post('/treeforajex', function(req, res, next) {
         sql: 'call usp_gettreenodedata_rs(?)',
         values: [req.body.id1]
     }
+    console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);

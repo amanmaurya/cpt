@@ -60,10 +60,10 @@ $("#divat").addClass('hide');
 	getexistvalueset21();
 },3000);
 
-	setTimeout(function(){
-		if(localStorage['attributelable']!=undefined&&localStorage['attributelable']!='')
-		selectatt(localStorage['attributelable'])
-},100);
+// 	setTimeout(function(){
+// 		if(localStorage['attributelable']!=undefined&&localStorage['attributelable']!='')
+// 		selectatt(localStorage['attributelable'])
+// },100);
 
 });
 function addAttribute(){
@@ -421,7 +421,7 @@ function getattr(){
                 	.attr("value",data[i].ID)
                 	.text(data[i].Name));
 			}
-			if(localStorage['attributelable']!=undefined)
+			if(localStorage['attributelable']!=undefined&&localStorage['attributelable']!='')
 		selectatt(localStorage['attributelable'])
 		},
 		dataType : 'JSON',
@@ -793,6 +793,7 @@ function delAtt(){
                     }, {
                         type: 'success'
                     });
+                    localStorage['attributelable']=''
 				setTimeout(function() {
                     window.location.reload();
                 }, 1000);
