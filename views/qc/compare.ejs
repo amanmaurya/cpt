@@ -176,7 +176,7 @@ $(document).ready(function() {
     return x.substring(x.length-5, x.length) != 'Input';
   });
   var brands=<%-JSON.stringify(brands)%>;
-  //console.log(brands);
+  console.log(brands);
   var validationData = <%-JSON.stringify(validationData)%>;
   var notNulls = <%-JSON.stringify(notNulls)%>
   var attrsFromDb = <%-JSON.stringify(attributesFromDatabase)%>
@@ -429,6 +429,7 @@ $(document).ready(function() {
 <script src="https://docs.handsontable.com/0.29.0/bower_components/handsontable/dist/handsontable.full.js"></script>
 <script src="/javascripts/libraries/handsontable/src/handsontable.formula.js"></script>
 <script src="http://cdn.jsdelivr.net/alasql/0.3/alasql.min.js"></script>
+ <script src="/javascripts/Typo/typo/typo.js"></script>
 <script src="/javascripts/grid/search_replace.js"></script>
 <script src="/javascripts/grid/filters.js"></script>
 <script src="/javascripts/grid/show_image.js"></script>
@@ -436,8 +437,8 @@ $(document).ready(function() {
 <script src="/javascripts/grid/export_csv.js"></script>
 <script src="/javascripts/grid/alphanumeric.js"></script>
 <script src="/javascripts/grid/initialize.js"></script>
-<script src="/javasripts/alasql.min.js"></script>
+<!-- <script src="/javasripts/alasql.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.7.12/xlsx.core.min.js"></script>
-<script src="js/alasql.min.js"></script>
+<!-- <script src="js/alasql.min.js"></script> -->
 <script type="text/javascript" charset="utf-8" src="/data_sheet/js/bootstrap.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>

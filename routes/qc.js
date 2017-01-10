@@ -193,7 +193,7 @@ function findKey(obj, value){
                     res.redirect('/qc/upload');
                 } else {
 
-                   console.log("    else 2",r);
+                   console.log("else 2",r);
 
                     req.session.selectedTemplate = r[0][0].Template;
                      //console.log("jksssjksss",r[0][0].Template)
@@ -649,7 +649,7 @@ router.get('/compare', function(req, res, next) {
                                                         console.log(e);
                                                     } else {
                                                         var brands = getBrands(brand[0]);
-                                                        // console.log(brands);
+                                                        console.log(brands);
                                                         var attrsFromDb = _result[0].map(function(obj, objIndex) {
                                                             return obj.attributeName;
                                                         });
