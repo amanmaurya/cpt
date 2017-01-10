@@ -184,16 +184,16 @@ function getCol(matrix, col) {
 function  unique(arra1) {
     var arr = [];
     for(var i = 0; i < arra1.length; i++) {
-        if(!arr.contains(arra1[i])) {
+        if(!contains(arr,arra1[i])) {
             arr.push(arra1[i]);
         }
     }
     return arr; 
 };
 
-  Array.prototype.contains =function(v) {
-    for(var i = 0; i < this.length; i++) {
-        if(this[i] === v) return true;
+  function contains(arr,v) {
+    for(var i = 0; i < arr.length; i++) {
+        if(arr[i] === v) return true;
     }
     return false;
 };

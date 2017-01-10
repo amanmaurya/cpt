@@ -193,7 +193,7 @@ function findKey(obj, value){
                     res.redirect('/qc/upload');
                 } else {
 
-                   //console.log("else 2",r);
+                   console.log("    else 2",r);
 
                     req.session.selectedTemplate = r[0][0].Template;
                      //console.log("jksssjksss",r[0][0].Template)
