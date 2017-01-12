@@ -104,7 +104,7 @@
                             <% } %>
                     </ul>
                     <div class="tab-content">
-                        <div id="filters" style="width:1270px;">
+                        <div id="filters" style="width:1270px;overflow-y: hidden;">
                            
                         </div>
                         <div role="tabpanel " class="tab-pane active" id="<%=categories[0].replace(/[^a-z0-9]/gi, '_')%>"></div>
@@ -404,7 +404,7 @@
                     function filterrow(header) {
             html = " <table><tr>";
             for (var p = 0; p < header.length; p++) {
-                html = html + '<td><input id="' + header[p] + '" style="width:160px !important" class="textStatus" type="search" placeHolder="Search By ' + header[p] + '"></td>';
+                html = html + '<td><div style="width: 160px !important;">&nbsp;</div></td>';
             }
             html = html + '</tr></table>';
             $('#filters').html(html);
