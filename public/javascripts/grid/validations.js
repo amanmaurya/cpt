@@ -1,8 +1,11 @@
 var dictionary = new Typo( "en_US" );
 function getValidations(validationData, sheetHeaders, notNulls, expression, brands) {
 // console.log(validationData, sheetHeaders, notNulls, expression, brands)
+var expressionkey=Object.keys(expression)
+// console.log(expressionkey)
   var validators = {};
   var categories = Object.keys(validationData);
+  // console.log(categories)
   var validNull = function(value, callback) {
    //console.log.log("check brand value",value);
     var val = notNullValidation(value);
@@ -62,7 +65,8 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
   //console.log.log('notNull',notNull)
     var expr = Object.keys(expression);
     validators[category] = sheetHeaders.map(function(columnName, i) {
-      // console.log(notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] || validationData[category][columnName])
+ 
+      // console.log(columnName,i)
       if(expr && expr.indexOf(columnName) > -1){
         return {data: i, allowInvalid: true, validator: validexp, renderer: expressionValueRenderer, strict: true};
       }
@@ -71,18 +75,19 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
         // return{data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false}
         return {data: i, allowInvalid: true,allowEmpty: false, validator: checkRestrict, strict: true, renderer: spellValueRenderer};
       }
+      
       /*if (columnName == 'Image Name' || columnName == 'image' || columnName == 'Image') {
         return {data: i, allowInvalid: true,  renderer: coverRenderer, strict: true};}*/
-      if (columnName == 'MRP' || columnName == 'Price') {
-        return {data: i, allowInvalid: true, validator: validatePrice, renderer: defaultValueRenderer, strict: true};
-      } 
+      // if (columnName == 'MRP' || columnName == 'Price') {
+      //   return {data: i, allowInvalid: true, validator: validatePrice, renderer: defaultValueRenderer, strict: true};
+      // } 
       // if(notNull && notNull.indexOf(columnName) ==-1){
       //    return {data: i, type: 'text',  allowInvalid: true, strict: true,allowEmpty: false};
       // }
-      if(columnName=='Category Id'){
+      if(columnName=='Category Id'||columnName=='Category Id 1'){
         return {data: i, allowInvalid: false,allowEmpty: false,readOnly: true};
       }else  if (notNull && notNull.indexOf(columnName) == -1 && validationData && validationData[category] && validationData[category][columnName]) {
-        // alert(1+columnName)
+        alert(1+columnName)
         var list = validationData[category][columnName]; 
         return {data: i, type: 'autocomplete', validator: validValueInList, source: list, allowInvalid: true, strict: true,allowEmpty: false};
         var validValueInList = function(value, callback) {
@@ -106,7 +111,7 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
       // return {data: i,allowInvalid: true, validator: validNull, strict: true, allowEmpty: false};
       
       } else if(notNull && notNull.indexOf(columnName) > -1){
-         // alert(12+columnName)
+        
         return {data: i, allowInvalid: true, validator: validNull, strict: true, allowEmpty: false, renderer: spellValueRenderer};
       } else {
 
@@ -205,21 +210,26 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
     var args = arguments;
     var rowData = instance.getData()[row];
     var vs = Object.keys(expression);
+    // console.log(vs)
     vs.forEach(function(v) {
+      // console.log(expression[v])
       var validation1 = expression[v];
       // console.log(validation1)
       validation1.forEach(function(valid){
+        // console.log(valid)
         var validation=valid;
         var columns = validation.split(/[^A-Za-z]/)
         .filter(function(x) {return x.length > 0;});
         var changedValidation = valid;
-
+        // console.log('columns',columns)
         var columnIndexes = [];
         columns.forEach(function(column) {
           var columnIndex = sheetHeaders.indexOf(column);
+          // console.log('asdasdasd',column)
           columnIndexes.push(columnIndex);
           if(!!rowData[columnIndex]!=false && rowData[columnIndex]!=/^([^\s])/ && !(/^[a-zA-Z]+$/.test(rowData[columnIndex]) && columnIndex != -1)){
             changedValidation = changedValidation.replace(column, rowData[columnIndex]);
+            // console.log('changedValidation',changedValidation)
           }
           else{
             changedValidation="";
@@ -232,7 +242,8 @@ function getValidations(validationData, sheetHeaders, notNulls, expression, bran
            
             if (i == setToColumn) {
               // console.log(x,setToColumn,changedValidation)
-              var final1=eval(x,changedValidation);
+              // console.log('eval',eval(x+changedValidation))
+              var final1=eval(x+changedValidation);
               if(!final1){
                 if(col == sheetHeaders.indexOf(v))
                 {

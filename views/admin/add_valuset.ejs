@@ -47,8 +47,8 @@
                                     .text(data[i].Name));
                         }
                     }
-                    if (localStorage['lovlabel'] != undefined&&localStorage['lovlabel']!='')
-                    selectatt(localStorage['lovlabel'],1)
+                    // if (localStorage['lovlabel'] != undefined&&localStorage['lovlabel']!='')
+                    // selectatt(localStorage['lovlabel'],1)
                 },
                 dataType: 'JSON',
             });
@@ -70,7 +70,7 @@
                         success: function (data) {
                             //console.log("data--",data);
                             if (data[0].abc == 1) {
-                                localStorage['lovlabel'] = '';
+                                // localStorage['lovlabel'] = '';
                                 alert_modal(" Deleted Successfully", 'success');
                                 $('#divlset1' + lovid).addClass('hide');
                             } else {
@@ -731,7 +731,7 @@
     <script type="text/javascript">
         //function to select from att list
         function selectatt(value) {
-            localStorage['lovlabel'] = value;
+            // localStorage['lovlabel'] = value;
             //alert_modal(value);
             $('.divlset1').removeClass('activetab');
             $('#divlset1' + value).addClass('activetab');

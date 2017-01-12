@@ -123,7 +123,7 @@ background: #F4F4F6;
 
   .activetab
   {
-    background-color: #3BBDEB !important;
+    background-color: white !important;
     text-decoration: none;
     width:100%;     
  
@@ -132,7 +132,7 @@ background: #F4F4F6;
     .activetab a
   {
    
-    color:white !important;
+        color: #3bbdeb !important;;
    
  
   }

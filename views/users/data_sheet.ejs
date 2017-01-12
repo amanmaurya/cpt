@@ -2,6 +2,17 @@
     <script type="text/javascript">
     </script>
     <style type="text/css">
+    .htMenu .ht_master .wtHolder {
+            height: 158px !important;
+            /*attributes*/
+        }
+        .htMenu .ht_master .wtHolder .wtHider .wtSpreader .htCore {
+            height: 158px !important;
+            /*attributes*/
+        }
+        .handsontable td.htInvalid {
+            background-color: #fc42ff !important;
+        }
                .itemsContainer {
             background: red;
             float: left;
@@ -94,14 +105,7 @@
                     </ul>
                     <div class="tab-content">
                         <div id="filters" style="width:1270px;">
-                            <% var headers = sheetHeaders; console.log("catagry header",sheetHeaders) %>
-                                <table>
-                                    <tr>
-                                        <%  for (var p = 0; p < headers.length; p++) { %>
-                                            <td><input id="<%=headers[p]%>" class="textStatus" type="search" style='width: 125px !important;' placeHolder="<%=headers[p]%>"></td>
-                                            <% } %>
-                                    </tr>
-                                </table>
+                           
                         </div>
                         <div role="tabpanel " class="tab-pane active" id="<%=categories[0].replace(/[^a-z0-9]/gi, '_')%>"></div>
                         <% for (var i = 1; i < categories.length; i++) { %>
@@ -267,14 +271,17 @@
                     var imagepath = '<%=imagepath%>';
                     var categoryCodes = <%-JSON.stringify(categoryCodes)%>
                     var attributes = <%-JSON.stringify(attributes)%>
+                     var merchant_attributes = <%-JSON.stringify(merchant_attributes)%>
                      sheetData = <%-JSON.stringify(sheetData)%>;
                     var expression = <%-JSON.stringify(expression)%>;
                     var _sheetHeaders = <%-JSON.stringify(sheetHeaders)%>;
+                    console.log(attributes,merchant_attributes)
                     var nameToCode = <%-JSON.stringify(nameToCode)%>;
                     var merchantId = <%-JSON.stringify(merchantId)%>;
                      sheetHeaders = _sheetHeaders.filter(function(x, i) {
                         return x.substring(x.length - 5, x.length) != 'Input';
                     });
+                     console.log(sheetHeaders)
                     var brands = <%-JSON.stringify(brands)%>;
                     // console.log(<%-JSON.stringify(validationData)%>)
                      validationData = <%-JSON.stringify(validationData)%>;
@@ -286,13 +293,21 @@
                     var excelHeaders = [];
                      currentInstances = {};
                     var alternateattr = Object.keys(attributes);
+                    var almerchant_attributes=Object.keys(merchant_attributes)
                      newsheetHeaders = [];
                     for (var i = 0; i < sheetHeaders.length; i++) {
                         for (var j = 0; j < sheetHeaders.length; j++) {
                             if (sheetHeaders[i] == alternateattr[j]) {
+                                console.log(alternateattr)
                                 newsheetHeaders[i] = attributes[sheetHeaders[i].toString()]; //obj['jobtitel']
                                 break;
-                            } else {
+                            } 
+                            // else if(sheetHeaders[i] == almerchant_attributes[j]){
+                            //     console.log(almerchant_attributes,sheetHeaders[i].toString())
+                            //     newsheetHeaders[i] = almerchant_attributes[sheetHeaders[i].toString()]; //obj['jobtitel']
+                            //     break;
+                            // }
+                            else {
                                 newsheetHeaders[i] = sheetHeaders[i];
                             }
                         }
@@ -313,12 +328,14 @@
                         return x + " (" + generateRandomAlphas(i) + ")";
                     });
                   //console.log("header",currentInstances,tempHeaders,validators[firstCategory]);
+                   filterrow(newsheetHeaders)
                     sheet(sheetData[firstCategory],
                         newsheetHeaders,
                         validators[firstCategory],
                         firstCategory,
                         tempHeaders,
                         currentInstances, imagepath);
+
       //console.log('dssssssssssss',currentInstances)
                     $("#grids a").click(function(e) {
                         $("#filters").scrollLeft(0);
@@ -384,6 +401,14 @@
                         });
                         
             });
+                    function filterrow(header) {
+            html = " <table><tr>";
+            for (var p = 0; p < header.length; p++) {
+                html = html + '<td><input id="' + header[p] + '" style="width:160px !important" class="textStatus" type="search" placeHolder="Search By ' + header[p] + '"></td>';
+            }
+            html = html + '</tr></table>';
+            $('#filters').html(html);
+        }
                     $('#spell-check-form-new-but').click(function (e) {
                         e.preventDefault();
                         for(var i = 0; i < $('#spell-chec-divcell-length').val(); i++) {
@@ -509,7 +534,8 @@
             </script>
             <!--script src="http://handsontable.com/bower_components/handsontable/dist/handsontable.full.min.js"></script-->
             <script src="/javascripts/libraries/handsontable/bower_components/ruleJS/dist/full/ruleJS.all.full.min.js"></script>
-            <script src="https://docs.handsontable.com/0.29.0/bower_components/handsontable/dist/handsontable.full.js"></script>
+                  <script src="https://docs.handsontable.com/pro/1.4.1/bower_components/handsontable-pro/dist/handsontable.full.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://docs.handsontable.com/pro/1.4.1/bower_components/handsontable-pro/dist/handsontable.full.min.css">
             <script src="/javascripts/libraries/handsontable/src/handsontable.formula.js"></script>
              <script src="/javascripts/Typo/typo/typo.js"></script>
             <script src="/javascripts/grid/search_replace.js"></script>
@@ -528,7 +554,7 @@
             
             <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
             <!--script src="https://docs.handsontable.com/0.28.4/bower_components/handsontable/dist/handsontable.full.js"></script-->
-            <link type="text/css" rel="stylesheet" href="https://docs.handsontable.com/0.28.4/bower_components/handsontable/dist/handsontable.full.min.css">
+           
             <footer>
             </footer>
             </body>

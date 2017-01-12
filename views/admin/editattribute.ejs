@@ -140,7 +140,8 @@ function showmodal(id)
          $('#express').html('');
         if(data.length != 0){
           for(var i=0;i<data.length;i++){
-            $('#express').append($("<div><input type='checkbox' class='newexpr' value='"+data[i].Expression+"' id='"+data[i].Expression+"'   checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+data[i].Expression+'l'+"' style='padding-left:5px;font-weight:normal'>"+data[i].Expression+"</label></div>"));
+             
+            $('#express').append($("<div><input type='checkbox' class='newexpr' value='"+data[i].Expression+"' id='"+data[i].Expression+"'   checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+data[i].Expression+'l'+"' style='padding-left:5px;font-weight:normal'>"+data[i].Expression.replace(/</g,"&lt;")+"</label></div>"));
           }
         }
         $('#category').val(checkid);
@@ -161,6 +162,7 @@ function addexpression(){
   var already=2;
   var expr1=$('#expr').val();
   var exp=(($('#expr').val()).toLowerCase()).trim();
+  // alert(expr1)
   if(exp != ''){
     $(".newexprlbl").each(function () {
       var existvalue = ($(this).text()).toLowerCase();
@@ -172,6 +174,7 @@ function addexpression(){
         already=2;
       }
     });
+     var expr1= expr1.replace(/</g,"&lt;")
     if(already == 2){
       $('#express').append($("<div><input type='checkbox' class='newexpr' value='"+expr1+"' id='"+expr1+"'    checked onchange='deleteexp(this.id);'><label class='newexprlbl' id='"+expr1+'l'+"' style='padding-left:5px;font-weight:normal'>"+expr1+"</label></div>"));
     }

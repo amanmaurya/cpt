@@ -19,14 +19,14 @@ function exportCSV(currentInstances,
     attributes,
     categoryCodes,
     attrsFromDb, fname, userid, expression, brands, nameToCode, merchantId, csvFlag) {
-
-    //console.log('currentInstances',currentInstances)
-    //console.log('sheetHeaders',sheetHeaders)
-    //console.log('excelHeaders',excelHeaders)
-    //console.log('validationData',validationData)
-    //console.log('notNulls',notNulls)
-    //console.log('attributes',attributes)
-    //console.log('categoryCodes',categoryCodes)
+    
+    // console.log('currentInstances',currentInstances)
+    // console.log('sheetHeaders',sheetHeaders)
+    // console.log('excelHeaders',excelHeaders)
+    // console.log('validationData',validationData)
+    // console.log('notNulls',notNulls)
+    // console.log('attributes',attributes)
+    // console.log('categoryCodes',categoryCodes)
 
     attrsFromDb.forEach(function(x, i) {
         attributes[x] = x;
@@ -157,7 +157,7 @@ function exportCSV(currentInstances,
                         var setToColumn = sheetHeaders.indexOf(columnHeaderName);
                         // console.log(column);
                         if (changedValidation != '') {
-                            var final1 = eval(column,changedValidation);
+                            var final1 = eval(column+changedValidation);
                             if (!final1) {
                                 remarks.push(columnHeaderName);
                                 correct = false;
@@ -180,6 +180,18 @@ function exportCSV(currentInstances,
                     });
                 }
                 }
+                if (columnHeaderName == 'Category Id'||columnHeaderName == 'Category Id 1') {
+                    var correct = true;
+                    var errorIndex = sheetHeaders.indexOf('Category Id');
+                    if(errorIndex==-1){
+                        errorIndex = sheetHeaders.indexOf('Category Id 1');
+                    }
+                    if (row[errorIndex] == '') {
+                         remarks.push(columnHeaderName);
+                                correct = false;
+                    }
+                    
+                }
                 if (columnHeaderName == 'Error') {
                     var correct = true;
                     var errorIndex = sheetHeaders.indexOf('Error');
@@ -188,26 +200,26 @@ function exportCSV(currentInstances,
                     }
                 }
 
-                if (columnHeaderName == 'MRP') {
-                   // alert(column, columnIndex)
-                    var correct = true;
-                    var mrpIndex = sheetHeaders.indexOf('MRP');
-                    var priceIndex = sheetHeaders.indexOf("Price");
-                    var priceValue = parseFloat(row[priceIndex]);
-                    var mrpValue = parseFloat(row[mrpIndex]);
-                    if (rowIndex == 0) {
-                    // console.log("mrp priice",priceValue, mrpValue)
-                    }
-                    if (isNaN(priceValue) || isNaN(mrpValue)) {
+                // if (columnHeaderName == 'MRP') {
+                //    // alert(column, columnIndex)
+                //     var correct = true;
+                //     var mrpIndex = sheetHeaders.indexOf('MRP');
+                //     var priceIndex = sheetHeaders.indexOf("Price");
+                //     var priceValue = parseFloat(row[priceIndex]);
+                //     var mrpValue = parseFloat(row[mrpIndex]);
+                //     if (rowIndex == 0) {
+                //     // console.log("mrp priice",priceValue, mrpValue)
+                //     }
+                //     if (isNaN(priceValue) || isNaN(mrpValue)) {
 
-                        remarks.push('MRP PRICE validation failed');
-                        correct = false;
-                    }
-                    if (priceValue > mrpValue) {
-                        remarks.push('MRP PRICE validation failed');
-                        correct = false;
-                    }
-                }
+                //         remarks.push('MRP PRICE validation failed');
+                //         correct = false;
+                //     }
+                //     if (priceValue > mrpValue) {
+                //         remarks.push('MRP PRICE validation failed');
+                //         correct = false;
+                //     }
+                // }
 
                 
 
@@ -216,9 +228,9 @@ function exportCSV(currentInstances,
                         return String(x).toLowerCase();
                     });
                 }
-                  if(columnHeaderName=='Color'){
-                    console.log(column,'Color',validations[columnHeaderName])
-                }
+                  // if(columnHeaderName=='Color'){
+                  //   console.log(column,'Color',validations[columnHeaderName])
+                  //   }
 
                 if (notNullIndexes && notNullIndexes.indexOf(columnIndex) > -1 && validValuesOfCurrentColumn) {
                     // alert(columnHeaderName)
@@ -335,7 +347,8 @@ function exportCSV(currentInstances,
         errorHeaders.push('Remarks');
         setTimeout(function() {
             errorArray.unshift(errorHeaders);
-            if (!csvFlag) {
+            if(errorArray.length>1){
+                if (!csvFlag) {
                 //type=2;
                // alasql("SELECT * INTO CSV('QC_MCD_" + merchantId + ".csv') FROM ?", [errorArray]);
                  alasql('SELECT * INTO XLSX("QC_MCD_' + merchantId + '.xlsx",{headers:false}) FROM ?',[errorArray]);
@@ -344,10 +357,22 @@ function exportCSV(currentInstances,
                  alasql('SELECT * INTO XLSX("Processing_MCD_' + merchantId + '.xlsx",{headers:false}) FROM ?',[errorArray]);
             }
 
+            }else{
+                $.notify({
+                    // options
+                    message: 'All Record successfully procced'
+                }, {
+                    // settings
+                    type: 'success'
+                });
+            }
+            
+
         }, 27);
         setTimeout(function() {
             correctArray.unshift(Headers);
-            if (!csvFlag) {
+            if(correctArray.length>1){
+                if (!csvFlag) {
                 //type=2;correctArray
                // alasql("SELECT * INTO CSV('QCDone_" + merchantId + ".csv') FROM ?", [correctArray]);
                alasql('SELECT * INTO XLSX("QCDone_' + merchantId + '.xlsx",{headers:false}) FROM ?',[correctArray]);
@@ -355,6 +380,17 @@ function exportCSV(currentInstances,
                 //alasql("SELECT * INTO CSV('WorkDone_" + merchantId + ".csv') FROM ?", [correctArray]);
                 alasql('SELECT * INTO XLSX("WorkDone_' + merchantId + '.xlsx",{headers:false}) FROM ?',[correctArray]);
             }
+
+            }else{
+                $.notify({
+                    // options
+                    message: 'No Record procced for workdone'
+                }, {
+                    // settings
+                    type: 'danger'
+                });
+            }
+            
         }, 27);
     }
 

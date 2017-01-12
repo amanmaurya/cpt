@@ -2,6 +2,8 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
     //var container = document.querySelector('[id="'+category.replace(/[^a-z0-9]/gi, '_')+'"]');
     //$(".se-pre-con").fadeIn("slow");
     // console.log('hots is',hots);
+// console.log(imagepath)
+height=400
     var maxsize1=1270;
     if (!containerflag) {
        
@@ -10,18 +12,24 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
        maxsize1=620;
       
         var container = document.querySelector('[id="' + category.replace(/[^a-z0-9]/gi, '_') + '"]');
-        for (var i = 0; i < data.length; i++) {
-        }
+        
 
     }
-
+       var maxPossibleRows = data.length;
+    // console.log(csvContainer)
+    if(csvContainer!=''&csvContainer!=undefined){
+      container=csvContainer
+      maxsize1=620;
+      height=maxPossibleRows * 25
+    }
+    // console.log(maxsize1)
     var imageColumn=0;
      imageColumn = headers.indexOf('image');
     if(imageColumn==-1){
         imageColumn = headers.indexOf('Image Name');  
     }
     // console.log("validators jai jai jai",validators);
-    var maxPossibleRows = data.length;
+ 
     var hot = new Handsontable(container, {
         data: data,
         columns: validators,
@@ -32,7 +40,7 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
         minSpareRows: 0,
         minSpareCols: 0,
         maxRows:maxPossibleRows,
-        height: 400,
+        height: height,
         width: maxsize1,
         colHeaders: tempHeaders,
         rowHeaders: true,
@@ -42,11 +50,16 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
         rowHeights: 23,
         contextMenu: true,
         //nativeScrollbars: true,
-        hiddenColumns: {
-        columns: [0],
-        indicators: true
-    },
-       
+        // hiddenColumns: {},
+        // columns: [0],
+        indicators: true,
+        search: true,
+        filters: true,
+        dropdownMenu: ['filter_by_condition', 'filter_action_bar'],
+        // copyable:false,
+
+        sortIndicator: true,
+          
     afterInit: function() {
       $("#wait").css("display", "block");
       },
@@ -58,7 +71,7 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
       },
 
         afterOnCellMouseDown: function(e, coords, td) {
-
+          // console.log(coords)
             if (coords.col == imageColumn) {
               
                 var imagePath1 = td.textContent;
@@ -99,21 +112,21 @@ function sheet(data, headers, validators, category, tempHeaders, hots, imagepath
         },
         beforeKeyDown: function(e) {
 
-            if (e.keyCode < 37 || e.keyCode > 40)
-                return;
-            var edit = hot.getActiveEditor();
-            if (!edit || !edit._opened) return;
-            if (e.keyCode == 37 && edit.TEXTAREA.selectionStart > 0)
-                return;
-            if (e.keyCode == 39 && edit.TEXTAREA.selectionEnd < edit.TEXTAREA.value.length)
-                return;
-            var selection = hot.getSelected();
-            if (selection && selection.length > 1) {
-                var row = selection[0];
-                var col = selection[1];
-                hot.selectCell(row, col);
+            // if (e.keyCode < 37 || e.keyCode > 40)
+            //     return;
+            // var edit = hot.getActiveEditor();
+            // if (!edit || !edit._opened) return;
+            // if (e.keyCode == 37 && edit.TEXTAREA.selectionStart > 0)
+            //     return;
+            // if (e.keyCode == 39 && edit.TEXTAREA.selectionEnd < edit.TEXTAREA.value.length)
+            //     return;
+            // var selection = hot.getSelected();
+            // if (selection && selection.length > 1) {
+            //     var row = selection[0];
+            //     var col = selection[1];
+            //     hot.selectCell(row, col);
                
-            }
+            // }
         }
 
       

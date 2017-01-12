@@ -421,8 +421,8 @@ function getattr(){
                 	.attr("value",data[i].ID)
                 	.text(data[i].Name));
 			}
-			if(localStorage['attributelable']!=undefined&&localStorage['attributelable']!='')
-		selectatt(localStorage['attributelable'])
+		// 	if(localStorage['attributelable']!=undefined&&localStorage['attributelable']!='')
+		// selectatt(localStorage['attributelable'])
 		},
 		dataType : 'JSON',
 	});
@@ -787,13 +787,13 @@ function delAtt(){
 					if(data[1][0].del>0){
 						// alert_modal("Attribute Deleted Successfully");
 					// window.location.reload();
-					localStorage['attributelable']=''
+					// localStorage['attributelable']=''
 					$.notify({
                         message: 'Attribute Deleted Successfully'
                     }, {
                         type: 'success'
                     });
-                    localStorage['attributelable']=''
+                    // localStorage['attributelable']=''
 				setTimeout(function() {
                     window.location.reload();
                 }, 1000);
@@ -822,7 +822,7 @@ function delAtt(){
 //function to select from att list;;;;;;
 	function selectatt(value){
 	//alert_modal(value);S
-	localStorage['attributelable']=value
+	// localStorage['attributelable']=value
 	addflag=0;
 	$('.divattcl').removeClass('activetab');
 	$('#div'+value).addClass('activetab');

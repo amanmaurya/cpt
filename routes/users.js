@@ -90,7 +90,7 @@ router.post('/upload_template',
     }),
     function (req, res, next) {
         //console.log("sassdsd",req.body.image_path);
-        console.log(req.body)
+        // console.log(req.body)
         if(req.body.image_path == undefined) {
             req.session.imagepath = '';
         } else {
@@ -123,7 +123,7 @@ router.post('/upload_template',
 
 router.get('/map_columns', function (req, res, next) {
     var selectedTemplate = req.session.selectedTemplate;
-    console.log('selectedTemplate is', req.session.selectedTemplate)
+    // console.log('selectedTemplate is', req.session.selectedTemplate)
     var excelHeaders = req.session.headers;
 
     var email = req.session.email;
@@ -174,7 +174,7 @@ router.get('/map_columns', function (req, res, next) {
 router.post('/map_columns', function (req, res, next) {
     var originalMapping = util.removeKeysFromObjectWhereValueIs(req.body, '--select');
     var mapping = util.swapKeyValueInObject(originalMapping);
-    console.log("orignal mapping-----", originalMapping, mapping);
+    // console.log("orignal mapping-----", originalMapping, mapping);
     req.session.excelTemplateColumnMapping = originalMapping;
     req.session.templateExcelColumnMapping = mapping;
     req.session.indexOfCategoryColumn = mapping['Category Id'];
@@ -264,9 +264,31 @@ router.get('/map_attribute', function (req, res) {
         return mappedExcelHeaders.indexOf(x) == -1;
     });
     var attributes = _attributes.removeDuplicates();
-    if(attributes.length != 0) {
+    //      if(attributes.length != 0) {
+    //     res.render('users/map_attr', {
+    //         headers: attributes,
+    //         adminUser: auth.isAdmin(req),
+    //         name: req.session.email,
+    //         fname: req.session.name,
+    //         QCUser: auth.isQCUser(req)
+    //     });
+    // } else {
+    //     req.session.attributes = attributes;
+    //     res.redirect('/users/map_false_values');
+    // }
+       mysql({
+        sql: 'call usp_getmerchantAttribut(?)',
+        values: [req.session.merchantId]
+    }, function (e, rv) {
+        if(e) {
+            console.log(e);
+        } else {
+            // console.log(attributes,Object.keys(rv[0][0]),rv[0])
+            if(attributes.length != 0) {
         res.render('users/map_attr', {
             headers: attributes,
+            merchant:rv[0],
+            merchanthead:Object.keys(rv[0][0]),
             adminUser: auth.isAdmin(req),
             name: req.session.email,
             fname: req.session.name,
@@ -276,10 +298,16 @@ router.get('/map_attribute', function (req, res) {
         req.session.attributes = attributes;
         res.redirect('/users/map_false_values');
     }
+            
+        }
+    });
+    
 });
 
 router.post('/map_attrs', function (req, res) {
+    // console.log(req.body)
     var attributes = util.removeKeysFromObjectWhereValueIs(req.body, '');
+    // console.log(attributes)
     var attrKeys = Object.keys(attributes);
     for(var key in attributes) {
         var temp = key + 'Input';
@@ -288,7 +316,11 @@ router.post('/map_attrs', function (req, res) {
         }
     }
     req.session.attributes = attributes;
-    //console.log("jogendra singh djsssssssssssssssss",attributes);
+     aa = util.removeKeysFromObjectWhereValueIs_custome(attributes)
+     // console.log('aa',aa)
+     req.session.attributes =aa[1]
+      req.session.merchant_attributes =aa[0]
+    // console.log("jogendra singh djsssssssssssssssss",attributes);
     res.redirect('/users/map_false_values');
 });
 
@@ -572,6 +604,7 @@ router.get('/data_sheet', function (req, res, next) {
     var validationData = req.session.validationDataByL2;
     var selectedTemplate = req.session.selectedTemplate;
     var attributes = req.session.attributes;
+    var merchaattrib=req.session.merchant_attributes;
     // console.log('headers', sheetHeaders)
     // console.log('sadsad', sheetData)
     mysql({
@@ -615,6 +648,8 @@ router.get('/data_sheet', function (req, res, next) {
                                         categoryCodes[x.categoryName] = x.categoryCode;
                                     })
                                     var attributeKeys = Object.keys(attributes);
+                                    var merchaattributeKeys = Object.keys(merchaattrib);
+                                    // console.log(attributeKeys,merchaattributeKeys)
                                     mysql({
                                             sql: 'call usp_getattributebytemplatename_rs(?)',
                                             values: [selectedTemplate]
@@ -655,10 +690,11 @@ router.get('/data_sheet', function (req, res, next) {
                                                         // console.log("datasg@@@@" + sheetHeaders.concat(attributeKeys));
                                                         res.render('users/data_sheet', {
                                                             sheetData: sheetData,
-                                                            sheetHeaders: sheetHeaders.concat(attributeKeys),
+                                                            sheetHeaders: sheetHeaders.concat(attributeKeys).concat(merchaattributeKeys),
                                                             validationData: validationData,
                                                             notNulls: notNulls,
                                                             attributes: attributes,
+                                                            merchant_attributes:merchaattrib,
                                                             categoryCodes: categoryCodes,
                                                             attributesFromDatabase: attrsFromDb,
                                                             flnam: req.session.flnm,
@@ -883,6 +919,12 @@ function generateFinalData(falseValueMapping,
         .filter(function (x, i) {
             return x.substring(x.length - 5, x.length) != 'Input';
         });
+console.log('attributeKeys',attributeKeys)
+    var merchantatt= Object.keys(req.session.merchant_attributes)
+        .filter(function (x, i) {
+            return x.substring(x.length - 5, x.length) != 'Input';
+        });
+      // console.log('merchantatt',merchantatt)
     var excelHeaders = req.session.headers;
     var templateColumns = req.session.templateHeaders;
     var excelTemplateCategoryMapping = req.session.excelTemplateCategoryMapping;
@@ -896,11 +938,13 @@ function generateFinalData(falseValueMapping,
     //console.log(falseValueMapping,falseValueKeys);
     var merchantId = req.session.merchantId;
     data.forEach(function (row, dataIndex) {
+
         if(attributeKeys.length > 0) {
-            var dataRow = new Array(templateColumns.length + attributeKeys.length);
+            var dataRow = new Array(templateColumns.length + attributeKeys.length+merchantatt.length);
         } else {
             var dataRow = new Array(templateColumns.length);
         }
+        // console.log('length',templateColumns.length + attributeKeys.length+merchantatt.length,dataRow.length)
         var categoryId = row[categoryIdColumnNumber];
         var _categoryId = excelTemplateCategoryMapping[categoryId];
         var colorIndex;
@@ -928,6 +972,15 @@ function generateFinalData(falseValueMapping,
                 dataRow[len + i] = row[excelHeaders.indexOf(x)];
             });
         }
+
+        if(merchantatt.length > 0) {
+            var len = templateColumns.length+attributeKeys.length;
+            merchantatt.forEach(function (x, i) {
+                // console.log(x, i,req.session.merchant_attributes,req.session.merchant_attributes[x])
+                dataRow[len + i] = req.session.merchant_attributes[x];
+            });
+        }
+        // console.log(dataRow)
         categoryId = excelTemplateCategoryMapping[categoryId];
         if(l2[categoryId]) {
             dataSheetData[l2[categoryId]] || (dataSheetData[l2[categoryId]] = []);

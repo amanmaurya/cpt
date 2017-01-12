@@ -1,24 +1,24 @@
-function showImage(imagePath) {
-    $.ajax({
-        data: {
-            'path': '/' + imagePath
-        },
-        url: '/users/getFiles',
-        method: 'GET',
-        success: function(data) {
+// function showImage(imagePath) {
+//     $.ajax({
+//         data: {
+//             'path': '/' + imagePath
+//         },
+//         url: '/users/getFiles',
+//         method: 'GET',
+//         success: function(data) {
 
-            $('#imagediv').html('');
-            $('#imagediv').append(data);
-            //$("#modal-image").attr("src", data)
-            $('#image-modal').modal('show');
+//             $('#imagediv').html('');
+//             $('#imagediv').append(data);
+//             //$("#modal-image").attr("src", data)
+//             $('#image-modal').modal('show');
 
 
-        }
-    });
-};
+//         }
+//     });
+// };
 
 function showImage(imagePath, imagepath1) {
-    //console.log(imagePath);
+    console.log(imagePath, imagepath1);
     //TODO: change the imagePath in production
     allimage = [];
     $("#slideshow_image").attr('src', '');
@@ -54,6 +54,7 @@ function showImage(imagePath, imagepath1) {
             }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
+
             $.notify({
                     // options
                     message: 'Path not found'

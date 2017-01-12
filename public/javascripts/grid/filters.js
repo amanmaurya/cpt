@@ -1,14 +1,18 @@
 function filters(headers, validators, sheet, hots, tempHeaders) {
   //console.log(hots)
   var filterColumns = [];
-  var currentCategory = document.getElementsByClassName('active')[1].textContent;
+  var currentCategory = document.getElementsByClassName('active')[1].textContent.trim();
   var hot = hots[currentCategory];
-  //console.log(hot)
+  // console.log(currentCategory)
   var data = hot.getData();
+  // console.log(headers)
   headers.forEach(function(x, i) {
     var columnName = x;
+    // console.log(x, i)
     x = document.getElementById(x);
+      // console.log(x)
     var value = x.value;
+
     if (value.length != 0 || !!value) {
       filterColumns.push({
         columnId: columnName,
