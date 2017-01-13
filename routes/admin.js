@@ -1060,7 +1060,8 @@ router.post('/upload_resbrand', busboy(),
 
 router.post('/deleteUser', function(req, res, next) {
     //console.log(req.body);
-    if (req.body.flag == 0) {
+    if(req.body.ID!=req.session.uid){
+        if (req.body.flag == 0) {
         //  console.log('per0');
         var query = {
             sql: 'call usp_delteuser_nr(?,?)',
@@ -1089,6 +1090,11 @@ router.post('/deleteUser', function(req, res, next) {
             }
         });
     }
+
+    }else{
+        res.json('error');
+    }
+    
 
 });
 

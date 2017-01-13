@@ -117,6 +117,9 @@ function DeleteMerchant(id){
 					alert_modal('User deactivated','warning');
 					window.location.href = "/admin/user";
 					//$("#formmerchant").submit();
+				}else{
+					alert(3)
+					alert_modal('You can deactivate your self ','danger');
 				}
 			},
 			dataType: 'JSON',
@@ -144,6 +147,9 @@ function DeleteMerchantPer(id)
 					alert_modal('User deleted','warning');
 					window.location.href = "/admin/user";
 					//$("#formmerchant").submit();
+				}else{
+					// alert(3)
+					alert_modal('You can deactivate your self ','danger');
 				}
 			},
 			dataType: 'JSON',
