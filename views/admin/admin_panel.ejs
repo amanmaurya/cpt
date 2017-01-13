@@ -418,6 +418,7 @@
                 $('#cat').removeClass('hide');
                 // catgroup();
                 $('#codd').addClass('hide')
+                $('#codd-flag').removeClass('hide')
             }
             div_show1();
         }
@@ -1327,7 +1328,7 @@ event.childNodes[4].style.display='none';*/
                                 <input type="text" class="form-control" id="vertid" name="vertid" placeholder="Enter Vertical ID" style="margin-top:5px;width:342px" maxlength="10" pattern="[0-9]+([,\.][0-9]+)?" title="Please enter valid numaric value">
                             </div>
                         </div>
-                        <div class="col-lg-12" id="codd-flag">
+                        <div class="col-lg-12 hide" id="codd-flag">
                             <div class="col-lg-9 ll">
                                 <label style="line-height:42px;">Will this category have sub Category?:</label>
                             </div>
