@@ -111,7 +111,7 @@
                             
 
                         </div>
-                 <div id="divMainHeader" class="col-lg-12" style="    /*margin-top: 50px*/;     margin-top: 50px;clear: both;height: 0px;">
+                <!--  <div id="divMainHeader" class="col-lg-12" style="    /*margin-top: 50px*/;     margin-top: 50px;clear: both;height: 0px;">
                             <% var categories =  Object.keys(sheetData); %>
                                 <div class="tab-content" style="margin-left: -24px">
                                     <div id="filters" style="    overflow-y: hidden;">
@@ -129,11 +129,21 @@
                                         <div role="tabpanel" class="tab-pane" id="<%=categories[i].replace(/[^a-z0-9]/gi, '_')%>">
 
                                         </div>
-                                        <% } %> -->
+                                        <% } %> ->
                                 </div>
-                        </div>       
-                <div class="col-xs-6" style="    margin-top: 48px;">
-                <div class="col-lg-1 activeetab tab" id="proc" style="    border: 1px solid #e7e7e7;margin-left: 426px;/*margin-top: -38px*/;width: 147px;">Processed File</div>
+                        </div>  -->      
+                <div class="col-xs-6" style="    /*margin-top: 48px*/;">
+                <div class="col-lg-1 activeetab tab" id="proc" style="    border: 1px solid #e7e7e7;float: right;/*margin-left: 426px*/;/*margin-top: -38px*/;width: 147px;">Processed File</div>
+                <div id="filters" class="col-md-12" style="    overflow-y: hidden;">
+                                        <% var headers = csvHeader;  %>
+                                            <table>
+                                                <tr>
+                                                    <%  for (var p = 0; p < headers.length; p++) { %>
+                                                        <td ><div style="width: 110px !important;">&nbsp;</div></td>
+                                                        <% } %>
+                                                </tr>
+                                            </table>
+                                    </div>
                     <div class="" id="processedfilediv" style="background-color:white;margin-left: -17px;/*margin-top: -45px*/;">
                         
 
@@ -151,10 +161,20 @@
                     </div>
 
                 </div>
-                <div class="col-xs-6" style="    margin-top: 48px;">
+                <div class="col-xs-6" style="    /*margin-top: 48px*/;">
                 <div class="col-lg-1 activeetab tab" id="exc" style="border:1px solid #e7e7e7;    /*margin-top: -40px;*/width: 120px;float: right;">
                                 Excel File
                             </div>
+                    <div id="filters1" class="col-md-12" style="    overflow-y: hidden;">
+                                        <% var headers = csvHeader;  %>
+                                            <table>
+                                                <tr>
+                                                    <%  for (var p = 0; p < headers.length; p++) { %>
+                                                        <td ><div style="width: 110px !important;">&nbsp;</div></td>
+                                                        <% } %>
+                                                </tr>
+                                            </table>
+                                    </div>        
                     <div class="col-lg-12" id="excelfilediv" style="   margin-left: -24px;">
                         <div class="col-lg-12" style="/*margin-top:10px*/;float:left">
 
@@ -173,55 +193,7 @@
                 </div>
             </div>
         </div>
-        <!--  <div class="col-lg-12 ">
-            <div class="col-lg-12" style="padding-left:0px;padding-right:0px;border-bottom:1px solid #e7e7e7;margin-top:3px;">
-
-                <div class="col-lg-10">
-                </div>
-
-            </div>
-            <div class="col-lg-6" id="processedfilediv" style="background-color:white;margin-left: -17px;">
-                <div class="col-lg-12" style="margin-top:10px;float:left">
-
-                    <button id="qc-export" class="exbutton" style="float:left">Export</button>
-                    <div class="col-lg-1 activeetab tab" id="proc" style="border:1px solid #e7e7e7;margin-left: 419px; margin-top: -35px;">
-                        Processed File
-                    </div>
-
-                </div>
-
-                <div id="divMainHeader" class="col-lg-12" style="    margin-top: 50px;">
-                    <% var categories =  Object.keys(sheetData);  console.log("catagry name",categories.length,"",categories);%>
-                        <div class="tab-content" style="margin-left: -24px">
-                            <div id="filters" style="width:630px;">
-                                <% var headers = sheetHeaders; console.log("catagry name",sheetHeaders) %>
-                                    <table>
-                                        <tr>
-                                            <%  for (var p = 0; p < headers.length; p++) { %>
-                                                <td><input id="<%=p%>" class="textStatus1" type="search" placeHolder="<%=headers[p]%>"></td>
-                                                <% } %>
-                                        </tr>
-                                    </table>
-                            </div>
-                            <div role="tabpanel " class="tab-pane active" id="<%=categories[0].replace(/[^a-z0-9]/gi, '_')%>"></div>
-                            <% for (var i = 1; i < categories.length; i++) { %>
-                                <div role="tabpanel" class="tab-pane" id="<%=categories[i].replace(/[^a-z0-9]/gi, '_')%>">
-
-                                </div>
-                                <% } %>
-                        </div>
-                </div>
-                <!--shgsgsdhhend-->
-
-      <!--   <div id="qc-compare" class="col-lg-12 " style="    height: 400px;margin-top: 64px;    ">
-            <div class="col-md-6" style="paddin-right:0px;">
-                <div class="col-md-6 hide" id="processedSheet" style="border:2px solid #e7e7e7;padding-left:0px;padding-right:0px;width:200%"></div>
-            </div>
-        </div> -->
-
-       
         
-        <!-- </div>  -->
 
 
         <div class="modal fade" id="image-modal">
@@ -522,8 +494,16 @@
                 }
             });
 
-            $("div").scroll(function () {
-                $(".wtHolder").scrollLeft($("#filters").scrollLeft());
+            $("#filters").scroll(function () {
+                // console.log($('#processedSheet').find(".wtHolder"))
+
+                 $('#processedSheet').find(".wtHolder").scrollLeft($("#filters").scrollLeft());
+                // .ht_clone_left .wtHolder
+            });
+            $("#filters1").scroll(function () {
+                // console.log(this)
+
+                $('#excelSheet').find(".wtHolder").scrollLeft($("#filters1").scrollLeft());
                 // .ht_clone_left .wtHolder
             });
             // console.log('csvseaderfinal',csvseaderfinal);

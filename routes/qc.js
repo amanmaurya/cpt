@@ -91,7 +91,7 @@ router.post('/upload', busboy(), form({
         if(err) {
             console.log("csv", err);
             return res.status(200).json({
-                message: 'Provided csv file is not loadable please check if its correct'
+                message: 'Provided Excel file is not loadable please check if its correct'
 
             });
 
@@ -132,8 +132,8 @@ router.post('/upload', busboy(), form({
         var indexCategoryID = category1;
 
         var query = {
-            sql: 'call usp_getemplateByCat_rs(?)',
-            values: [category1]
+            sql: 'call usp_getemplateByCat_rs(?,?)',
+            values: [category1,req.session.retaile_id]
         };
         mysql(query, function (err, r) {
             // console.log("2");
@@ -215,8 +215,8 @@ function map_clumn(req, res) {
     var selectedTemplate = req.session.selectedTemplate;
     var excelHeaders = req.session.headers;
     var query = {
-        sql: 'call usp_getattribute_rs(?)',
-        values: [selectedTemplate]
+        sql: 'call usp_getattribute_rs(?,?)',
+        values: [selectedTemplate,req.session.retaile_id]
     };
     mysql(query, function (err, r) {
         if(err) {
@@ -250,8 +250,8 @@ function map_clumn(req, res) {
             //console.log('mapping',mapping)
             //console.log(req.session.indexOfCategoryColumn, req.session.excelTemplateColumnMapping, req.session.templateExcelColumnMapping)
             mysql({
-                sql: 'call usp_getverticalID(?)',
-                values: [req.session.selectedTemplate]
+                sql: 'call usp_getverticalID(?,?)',
+                values: [req.session.selectedTemplate,req.session.retaile_id]
             }, function (e, rv) {
                 if(e) {
                     console.log(e);
@@ -281,8 +281,8 @@ function map_categories(req, res) {
     var selectedTemplate = req.session.selectedTemplate;
     // console.log("categoryIdColumn",categoryIdColumn);
     mysql({
-            sql: 'call usp_getcategory_rs(?)',
-            values: [selectedTemplate]
+            sql: 'call usp_getcategory_rs(?,?)',
+            values: [selectedTemplate,req.session.retaile_id]
         },
         function (err, r1) {
             if(err) {
@@ -348,7 +348,7 @@ router.get('/map_false_values', function (req, res, next) {
     getAllListOfValues({
         categories: categories,
         template: selectedTemplate
-    }, function (err, r) {
+    },req.session.retaile_id, function (err, r) {
         if(err) {
             console.log(err);
             res.render('something_went_wrong', {
@@ -472,23 +472,23 @@ router.get('/map_false_values', function (req, res, next) {
 router.post('/map_false_values', function (req, res, next) {
     var falseValueMapping = req.body;
     var categories = req.session.finalCategories;
-    mysql('select Value from t_columnvalues', function (e, _colorValues) {
+    mysql('select Value from t_columnvalues where rid='+req.session.retaile_id, function (e, _colorValues) {
         if(e) {
             console.log(e);
         } else {
-            mysql('select MappedValue from t_columnvalues', function (e, _colorFilterValues) {
+            mysql('select MappedValue from t_columnvalues where rid='+req.session.retaile_id, function (e, _colorFilterValues) {
                 if(e) {
                     console.log(e);
                 } else {
-                    mysql('call usp_getdispatchreturntime_rs', function (e, r) {
+                    mysql('call usp_getdispatchreturntime_rs('+req.session.retaile_id+')', function (e, r) {
                         if(e) {
                             console.log(e);
                         } else {
                             var timeByCategory = getReturnTimeAndReturnPolicy(r[0], categories);
                             var merchantId = req.session.merchantId;
                             mysql({
-                                sql: 'call usp_getdispatchbymerchant_rs(?)',
-                                values: [merchantId]
+                                sql: 'call usp_getdispatchbymerchant_rs(?,?)',
+                                values: [merchantId,req.session.retaile_id]
                             }, function (e, r) {
                                 if(e) {
                                     console.log(e)
@@ -497,8 +497,8 @@ router.post('/map_false_values', function (req, res, next) {
                                     var categories = req.session.finalCategories;
                                     var l = req.session.categoryL2Map;
                                     mysql({
-                                        sql: 'call usp_getDefaultExpressionByTemplate_rs(?)',
-                                        values: [selectedTemplate]
+                                        sql: 'call usp_getDefaultExpressionByTemplate_rs(?,?)',
+                                        values: [selectedTemplate,req.session.retaile_id]
                                     }, function (e, defaultexpr) {
                                         if(e) {
                                             console.log(e);
@@ -538,8 +538,8 @@ router.get('/compare', function (req, res, next) {
     var selectedTemplate = req.session.selectedTemplate;
     var attributes = req.session.attributes;
     mysql({
-            sql: 'call usp_getattributesbyrule_rs(?,?)',
-            values: [selectedTemplate, 'NOT NULL']
+            sql: 'call usp_getattributesbyrule_rs(?,?,?)',
+            values: [selectedTemplate, 'NOT NULL',req.session.retaile_id]
         },
         function (e, r) {
             if(e) {
@@ -549,8 +549,8 @@ router.get('/compare', function (req, res, next) {
                 var l = req.session.categoryL2Map;
                 var notNulls = getNotNulls(r[0], categories, l);
                 mysql({
-                    sql: 'call usp_getAttributeByExpression(?)',
-                    values: [selectedTemplate]
+                    sql: 'call usp_getAttributeByExpression(?,?)',
+                    values: [selectedTemplate,req.session.retaile_id]
                 }, function (e, expr) {
                     if(e) {
                         console.log(err);
@@ -558,8 +558,8 @@ router.get('/compare', function (req, res, next) {
                         var expression = getExpression(expr[0], categories, l);
                         //console.log(expression);
                         mysql({
-                                sql: 'call usp_getcategorycodebytemplatename_rs(?)',
-                                values: [selectedTemplate]
+                                sql: 'call usp_getcategorycodebytemplatename_rs(?,?)',
+                                values: [selectedTemplate,req.session.retaile_id]
                             },
                             function (err, categoryCode) {
                                 if(err) {
@@ -579,8 +579,8 @@ router.get('/compare', function (req, res, next) {
                                     })
                                     var attributeKeys = Object.keys(attributes);
                                     mysql({
-                                            sql: 'call usp_getattributebytemplatename_rs(?)',
-                                            values: [selectedTemplate]
+                                            sql: 'call usp_getattributebytemplatename_rs(?,?)',
+                                            values: [selectedTemplate,req.session.retaile_id]
                                         },
                                         function (_err, _result) {
                                             if(_err) {
@@ -596,8 +596,8 @@ router.get('/compare', function (req, res, next) {
                                             } else {
                                                 var merchid = req.session.merchantId;
                                                 mysql({
-                                                    sql: 'call usp_gerbrandbymerchant_rs(?)',
-                                                    values: [merchid]
+                                                    sql: 'call usp_gerbrandbymerchant_rs(?,?)',
+                                                    values: [merchid,req.session.retaile_id]
                                                 }, function (e, brand) {
                                                     if(e) {
                                                         console.log(e);
@@ -734,8 +734,8 @@ function getNotNulls(x, categories, l) {
 router.post('/add_log', function (req, res, next) {
     //console.log(req.session.selectedTemplate);
     var query = {
-        sql: 'call usp_addlog_nr(?,?,?,?,?,?)',
-        values: [req.body.userid, req.body.flname, req.body.totaldata, req.body.error, req.body.correct, req.session.selectedTemplate]
+        sql: 'call usp_addlog_nr(?,?,?,?,?,?,?)',
+        values: [req.body.userid, req.body.flname, req.body.totaldata, req.body.error, req.body.correct, req.session.selectedTemplate,req.session.retaile_id]
     }
     mysql(query, function (err, result) {
         if(err) {
@@ -760,7 +760,7 @@ function getUniqueCategories(data, columnNumber) {
     return uniqueCategories;
 }
 
-function getAllListOfValues(obj, cb) {
+function getAllListOfValues(obj,retaile_id, cb) {
 
     var categories = obj.categories;
     var template = obj.template;
@@ -769,8 +769,8 @@ function getAllListOfValues(obj, cb) {
     var listOfValues = {};
     categories.forEach(function (category, index) {
         mysql({
-            sql: 'call usp_getlov_rs(?, ?)',
-            values: [template, category]
+            sql: 'call usp_getlov_rs(?, ?,?)',
+            values: [template, category,retaile_id]
         }, function (err, r) {
             if(errored) return;
             if(err) {

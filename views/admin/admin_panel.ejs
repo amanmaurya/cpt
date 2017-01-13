@@ -417,7 +417,7 @@
                 $('#catgroup').removeClass('hide');
                 $('#cat').removeClass('hide');
                 // catgroup();
-
+                $('#codd').addClass('hide')
             }
             div_show1();
         }
@@ -518,7 +518,7 @@
             //alert('aa');
             var i = 1;
             $(".asd").each(function (index) {
-                //console.log(index + ": " + $(this).val(i++));
+                console.log(index + ": " + $(this).val(i++));
             });
         }
 
@@ -822,6 +822,14 @@
             }
 
 
+        }
+        function cod_flag(){
+            if($('#cod-flag-select').val()==0){
+                $('#codd').removeClass('hide')
+            }else{
+                $('#codd').addClass('hide')
+                $('#code').val('')
+            }
         }
         var eve = 0;
 
@@ -1319,12 +1327,24 @@ event.childNodes[4].style.display='none';*/
                                 <input type="text" class="form-control" id="vertid" name="vertid" placeholder="Enter Vertical ID" style="margin-top:5px;width:342px" maxlength="10" pattern="[0-9]+([,\.][0-9]+)?" title="Please enter valid numaric value">
                             </div>
                         </div>
+                        <div class="col-lg-12" id="codd-flag">
+                            <div class="col-lg-9 ll">
+                                <label style="line-height:42px;">Will this category have sub Category?:</label>
+                            </div>
+                            <div class="col-lg-3">
+                                <select class=" form-control" style="width: 103px;" id="cod-flag-select" onchange="cod_flag()">
+                                    <option selected value="1">Yes</option>
+                                    <option  value="0">No</option>
+                                </select>
+                               
+                            </div>
+                        </div>
                         <div class="col-lg-12" id="codd">
                             <div class="col-lg-3 ll">
                                 <label style="line-height:42px;">Code:</label>
                             </div>
                             <div class="col-lg-9">
-                                <input type="text" class=" form-cashok@gmail.comontrol" id="code" name="code" placeholder="Enter Code" style="margin-top:5px;width:342px" maxlength="20">
+                                <input type="text" class=" form-control" id="code" name="code" placeholder="Enter Code" style="margin-top:5px;width:342px" maxlength="20">
                             </div>
                         </div>
                         <div class="col-lg-12 hide" id="rtime">

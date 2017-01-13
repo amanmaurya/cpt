@@ -33,10 +33,14 @@ router.get('/', function(req, res, next) {
     } else {
         var msg = -1;
     }
-    var query = "call usp_gettreestructuretemplate_rs()";
+    // var query = "call usp_gettreestructuretemplate_rs(?)";
+     var query = {
+        sql: 'call usp_gettreestructuretemplate_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
-            console.log("err");
+            console.log(err);
         } else {
 
             res.render('admin/admin_panel', {
@@ -84,8 +88,8 @@ router.post('/addtempandcat', function(req, res, next) {
         vertid = req.body.vertid;
     }
     var query = {
-        sql: 'call usp_addtempandcat_nr(?,?,?,?,?,?,?,?,?)',
-        values: [req.body.flg, req.body.id1, req.body.name, req.body.desc, code1, rtime, rpid, ctgroup, vertid]
+        sql: 'call usp_addtempandcat_nr(?,?,?,?,?,?,?,?,?,?)',
+        values: [req.body.flg, req.body.id1, req.body.name, req.body.desc, code1, rtime, rpid, ctgroup, vertid,req.session.retaile_id]
     }
     console.log(query)
     mysql(query, function(err, result) {
@@ -104,7 +108,11 @@ router.post('/addtempandcat', function(req, res, next) {
 });
 
 router.post('/getgroup', function(req, res, next) {
-    var query = "call usp_getcategorygropu_rs()";
+    // var query = "call usp_getcategorygropu_rs(?)";
+    var query = {
+        sql: 'call usp_getcategorygropu_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -117,8 +125,8 @@ router.post('/getgroup', function(req, res, next) {
 router.post('/getmerchant', function(req, res, next) {
    // console.log("jai ho",req.body);
     var query ={
-     sql:"call getMerchantdata(?,?,?)",
-     values: [req.body.start,req.body.length,req.body['search[value]']]
+     sql:"call getMerchantdata(?,?,?,?)",
+     values: [req.body.start,req.body.length,req.body['search[value]'],req.session.retaile_id]
  }
  console.log(query)
     mysql(query, function(err, result) {
@@ -138,8 +146,8 @@ router.post('/getmerchant', function(req, res, next) {
 
 router.post('/edittempcatatt', function(req, res, next) {
     var query = {
-        sql: 'call usp_geteditvalue_rs(?,?,?)',
-        values: [req.body.id1, req.body.flg, req.body.patid]
+        sql: 'call usp_geteditvalue_rs(?,?,?,?)',
+        values: [req.body.id1, req.body.flg, req.body.patid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -164,7 +172,7 @@ router.get('/merchant', function(req, res, next) {
     } else {
         msg = 0;
     }
-    var query = "SELECT * FROM t_merchantAttrMapping";
+    var query = "SELECT * FROM t_merchantAttrMapping where rid="+req.session.retaile_id;
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -187,7 +195,7 @@ router.get('/merchant', function(req, res, next) {
 
 
 router.post('/checkduplicateattr', function(req, res, next) {
-    var query = "SELECT count(*) as flag FROM cpt.t_merchantAttrMapping where Name='"+req.body.checkduplicateattr+"';";
+    var query = "SELECT count(*) as flag FROM t_merchantAttrMapping where Name='"+req.body.checkduplicateattr+"' and rid="+req.session.retaile_id+" ;";
 
     mysql(query, function(err, result) {
         if (err) {
@@ -200,8 +208,8 @@ router.post('/checkduplicateattr', function(req, res, next) {
 });
 
 router.post('/checkduplicateattronadit', function(req, res, next) {
-    var query = "SELECT count(*) as flag FROM cpt.t_merchantAttrMapping where Name='"+req.body.checkduplicateattr+"' and attrId!="+req.body.attrid+";";
-
+    var query = "SELECT count(*) as flag FROM t_merchantAttrMapping where Name='"+req.body.checkduplicateattr+"' and attrId!="+req.body.attrid+" and rid="+req.session.retaile_id+" ;";
+console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -237,8 +245,8 @@ router.post('/editcatandtemp', function(req, res, next) {
         ctgroup = req.body.ccatgroup;
     }
     var query = {
-        sql: 'call usp_edittempandcat_nr(?,?,?,?,?,?,?,?,?)',
-        values: [req.body.cid, req.body.cflg, req.body.cname, req.body.cdesc, code, rtime, rpid, ctgroup, req.body.cvertid]
+        sql: 'call usp_edittempandcat_nr(?,?,?,?,?,?,?,?,?,?)',
+        values: [req.body.cid, req.body.cflg, req.body.cname, req.body.cdesc, code, rtime, rpid, ctgroup, req.body.cvertid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -252,8 +260,8 @@ router.post('/editcatandtemp', function(req, res, next) {
 
 router.post('/editattribute', function(req, res, next) {
     var query = {
-        sql: 'call usp_editattribute_nr(?,?,?,?)',
-        values: [req.body.aid, req.body.apid, req.body.astate, req.body.valid]
+        sql: 'call usp_editattribute_nr(?,?,?,?,?)',
+        values: [req.body.aid, req.body.apid, req.body.astate, req.body.valid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
       //  console.log('usp_editattribute_nr is ',result)
@@ -284,8 +292,8 @@ router.post('/addgroup', function(req, res, next) {
         checklist = '';
     }
     var query = {
-        sql: 'call usp_addgroup_nr(?,?,?)',
-        values: [req.body.groupname, req.body.txtid, checklist]
+        sql: 'call usp_addgroup_nr(?,?,?,?)',
+        values: [req.body.groupname, req.body.txtid, checklist,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -310,11 +318,11 @@ router.post('/addMerchant', function(req, res, next) {
           allattrdata=allattrdata +','+ req.body[attrval];
           }
     }
-   console.log("jai ho");
+   // console.log("jai ho");
 
     var query = {
-        sql: 'call usp_addmerchant_nr(?,?,?,?,?)',
-        values: [req.body.merchantid, req.body.merchanecode, req.body.merchantdispatchtime,allattrdata,Object.keys(req.body).length-4]
+        sql: 'call usp_addmerchant_nr(?,?,?,?,?,?)',
+        values: [req.body.merchantid, req.body.merchanecode, req.body.merchantdispatchtime,allattrdata,Object.keys(req.body).length-4,req.session.retaile_id]
     }
       // console.log("jai ho",query);
     mysql(query, function(err, result) {
@@ -332,8 +340,8 @@ router.post('/addMerchant', function(req, res, next) {
 router.post('/addattrMerchant', function(req, res, next) {
     //console.log("sssa body",req.body);
     var query = {
-        sql: 'call inr_attributeformerchant(?,?,?)',
-        values: [req.body.merchantid1, req.body.attername, req.body.attrvalue]
+        sql: 'call inr_attributeformerchant(?,?,?,?)',
+        values: [req.body.merchantid1, req.body.attername, req.body.attrvalue,req.session.retaile_id]
     }
     console.log(query)
     mysql(query, function(err, result) {
@@ -350,8 +358,8 @@ router.post('/addattrMerchant', function(req, res, next) {
 router.post('/editattrMerchant', function(req, res, next) {
  //   console.log("sssa body",req.body);
     var query = {
-        sql: 'call inr_attributeformerchant(?,?,?)',
-        values: [req.body.merchantid1, req.body.attername, req.body.attrvalue]
+        sql: 'call inr_attributeformerchant(?,?,?,?)',
+        values: [req.body.merchantid1, req.body.attername, req.body.attrvalue,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
 
@@ -366,7 +374,7 @@ router.post('/editattrMerchant', function(req, res, next) {
 
 
 router.post('/get_template', function(req, res, next) {
-    var query = "SELECT * FROM t_template order by Name";
+    var query = "SELECT * FROM t_template where rid="+req.session.retaile_id+" order by Name ";
 
     mysql(query, function(err, result) {
         if (err) {
@@ -380,8 +388,8 @@ router.post('/get_template', function(req, res, next) {
 router.post('/get_categoty', function(req, res, next) {
 
     var query = {
-        sql: "call get_categotybytemplate(?)",
-        values: [req.body.data]
+        sql: "call get_categotybytemplate(?,?)",
+        values: [req.body.data,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
 
@@ -395,8 +403,8 @@ router.post('/get_categoty', function(req, res, next) {
 
 router.post('/get_categotybygroup', function(req, res, next) {
     var query = {
-        sql: "call usp_getcategorybygroup_rs(?,?)",
-        values: [req.body.data, req.body.gid]
+        sql: "call usp_getcategorybygroup_rs(?,?,?)",
+        values: [req.body.data, req.body.gid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
 
@@ -429,8 +437,8 @@ router.post('/save_attribute', function(req, res, next) {
         checklist = '';
     }
     var query = {
-        sql: "call usp_addattribute_nr(?,?,?,?,?,?,?,?,?,?,?)",
-        values: [checklist, req.body.txtattribute, req.body.ddlvalidation, req.body.ddlifAttribute, req.body.valuesetgroup, req.body.txtdesc, req.body.txtdatatype, req.body.txtlength, req.body.txtprecison, req.body.scale, req.body.exprcollection]
+        sql: "call usp_addattribute_nr(?,?,?,?,?,?,?,?,?,?,?,?)",
+        values: [checklist, req.body.txtattribute, req.body.ddlvalidation, req.body.ddlifAttribute, req.body.valuesetgroup, req.body.txtdesc, req.body.txtdatatype, req.body.txtlength, req.body.txtprecison, req.body.scale, req.body.exprcollection,req.session.retaile_id]
     }
    console.log("jai ho",query);
     mysql(query, function(err, result) {
@@ -452,8 +460,8 @@ router.post('/save_attribute', function(req, res, next) {
 router.post('/changestatusmerchant', function(req, res, next) {
 
     var query = {
-        sql: "call usp_changestatusmerchant_nr(?,?)",
-        values: [req.body.ID, req.body.Status]
+        sql: "call usp_changestatusmerchant_nr(?,?,?)",
+        values: [req.body.ID, req.body.Status,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -467,8 +475,8 @@ router.post('/changestatusmerchant', function(req, res, next) {
 router.post('/changestatusgroup', function(req, res, next) {
 
     var query = {
-        sql: "call usp_changestatusgroup_nr(?,?)",
-        values: [req.body.ID, req.body.Status]
+        sql: "call usp_changestatusgroup_nr(?,?,?)",
+        values: [req.body.ID, req.body.Status,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -482,8 +490,8 @@ router.post('/changestatusgroup', function(req, res, next) {
 router.post('/GetAllvalues', function(req, res, next) {
 
     var query = {
-        sql: 'call usp_getlovlistbyid_rs(?)',
-        values: [req.body.data]
+        sql: 'call usp_getlovlistbyid_rs(?,?)',
+        values: [req.body.data,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -502,7 +510,11 @@ router.get('/User', function(req, res, next) {
     if (msg != "undefined") {
         msg = msg;
     }
-    var query = "call usp_getUsers_rs()";
+    var query = {
+        sql: "call usp_getUsers_rs(?)",
+        values: [req.session.retaile_id]
+    }
+    // var query = "call usp_getUsers_rs(?)";
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -521,7 +533,11 @@ router.get('/User', function(req, res, next) {
 });
 
 router.get('/Group', function(req, res, next) {
-    var query = "call usp_getcategorygropu_rs()";
+    // var query = "call usp_getcategorygropu_rs()";
+    var query = {
+        sql: "call usp_getcategorygropu_rs(?)",
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -549,8 +565,8 @@ router.get('/attribute', function(req, res, next) {
         catid = 0;
     }
     var query = {
-        sql: 'call usp_gettemplateid_rs(?)',
-        values: [catid]
+        sql: 'call usp_gettemplateid_rs(?,?)',
+        values: [catid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
 
@@ -577,7 +593,11 @@ router.get('/attribute', function(req, res, next) {
 
 
 router.get('/existgetvaluset', function(req, res, next) {
-    var query = "call usp_getvaluesset_rs()";
+    // var query = "call usp_getvaluesset_rs()";
+    var query = {
+        sql: 'call usp_getvaluesset_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -588,7 +608,11 @@ router.get('/existgetvaluset', function(req, res, next) {
 })
 
 router.get('/existgetvaluset1', function(req, res, next) {
-    var query = "call usp_getvaluesset_rs()";
+    // var query = "call usp_getvaluesset_rs()";
+    var query = {
+        sql: 'call usp_getvaluesset_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -599,7 +623,11 @@ router.get('/existgetvaluset1', function(req, res, next) {
 })
 
 router.post('/getlovs', function(req, res, next) {
-    var query = "call usp_getlovs_rs()";
+    // var query = "call usp_getlovs_rs()";
+    var query = {
+        sql: 'call usp_getlovs_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -611,8 +639,8 @@ router.post('/getlovs', function(req, res, next) {
 
 router.post('/addvalueset', function(req, res, next) {
     var query = {
-        sql: 'call usp_addvalueste_nr(?,?,?,?,?)',
-        values: [req.body.valueset, req.body.desc, req.body.newvauleset, req.body.checklist,req.body.isnan]
+        sql: 'call usp_addvalueste_nr(?,?,?,?,?,?)',
+        values: [req.body.valueset, req.body.desc, req.body.newvauleset, req.body.checklist,req.body.isnan,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -631,8 +659,8 @@ router.post('/addvalueset', function(req, res, next) {
 
 router.post('/getlovlistbyid', function(req, res, next) {
     var query = {
-        sql: 'call usp_getlovbyid_rs(?)',
-        values: [req.body.id]
+        sql: 'call usp_getlovbyid_rs(?,?)',
+        values: [req.body.id,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -645,8 +673,8 @@ router.post('/getlovlistbyid', function(req, res, next) {
 
 router.post('/editvalueset', function(req, res, next) {
     var query = {
-        sql: 'call usp_editvaluset_nr(?,?,?,?,?,?)',
-        values: [req.body.valueset, req.body.desc, req.body.newvauleset, req.body.checklist, req.body.valueset1,req.body.isnan1]
+        sql: 'call usp_editvaluset_nr(?,?,?,?,?,?,?)',
+        values: [req.body.valueset, req.body.desc, req.body.newvauleset, req.body.checklist, req.body.valueset1,req.body.isnan1,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -671,7 +699,11 @@ router.post('/adduser', function(req, res, next) {
 });
 
 router.post('/get_attribut', function(req, res, next) {
-    var query = "call usp_getattr_rs()";
+    // var query = "call usp_getattr_rs()";
+     var query = {
+        sql: 'call usp_getattr_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
@@ -683,8 +715,8 @@ router.post('/get_attribut', function(req, res, next) {
 
 router.post('/get_attrinfo', function(req, res, next) {
     var query = {
-        sql: 'call usp_getattrinfo_rs(?)',
-        values: [req.body.id]
+        sql: 'call usp_getattrinfo_rs(?,?)',
+        values: [req.body.id,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -696,8 +728,8 @@ router.post('/get_attrinfo', function(req, res, next) {
 });
 router.post('/delmerchantattr', function(req, res, next) {
     var query = {
-        sql: 'call usp_del_merchanr_attr(?)',
-        values: [req.body.id]
+        sql: 'call usp_del_merchanr_attr(?,?)',
+        values: [req.body.id,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -710,27 +742,36 @@ router.post('/delmerchantattr', function(req, res, next) {
 router.get('/editattribute', function(req, res, next) {
     var query = require('url').parse(req.url, true).query;
     var id = query.id;
-    var query = "call usp_getvaluesset_rs()";
+    // var query = "call usp_getvaluesset_rs()";
+    var query = {
+        sql: 'call usp_getvaluesset_rs(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, valset) {
         if (err) {
             console.log(err);
         } else {
-            var query = "call usp_gettemplate_rs()";
+            var query = {
+                    sql: 'call usp_gettemplate_rs(?)',
+                    values: [req.session.retaile_id]
+                }
+            // var query = "call usp_gettemplate_rs()";
             mysql(query, function(err, templates) {
                 if (err) {
                     console.log(err);
                 } else {
                     var query = {
-                        sql: 'call usp_getcategorybyattrid_rs(?)',
-                        values: [id]
+                        sql: 'call usp_getcategorybyattrid_rs(?,?)',
+                        values: [id,req.session.retaile_id]
                     }
+                    console.log(query)
                     mysql(query, function(err, categories) {
                         if (err) {
                             console.log(err);
                         } else {
-                         //   console.log("categories---",categories[0]);
-                         //   console.log("vset---------",valset[0]);
-                         //  console.log("attrdatatype=-----",categories[1])
+                           console.log("categories---",categories[0]);
+                           console.log("vset---------",valset[0]);
+                          // console.log("attrdatatype=-----",categories[1])
                             res.render('admin/editattribute', {
                                 vset: valset[0],
                                 templ: templates[0],
@@ -750,8 +791,8 @@ router.get('/editattribute', function(req, res, next) {
 router.post('/editandinsert_attribute', function(req, res, next) {
     //console.log(req.body);
     var query = {
-        sql: 'call usp_insertandupdateattribute_nr(?,?,?,?,?,?)',
-        values: [req.body.catid, req.body.attrid, req.body.valset, req.body.isattr, req.body.flag, req.body.validflag]
+        sql: 'call usp_insertandupdateattribute_nr(?,?,?,?,?,?,?)',
+        values: [req.body.catid, req.body.attrid, req.body.valset, req.body.isattr, req.body.flag, req.body.validflag,req.session.retaile_id]
     }
     console.log(query)
     mysql(query, function(err, result) {
@@ -768,8 +809,8 @@ router.post('/editandinsert_attribute', function(req, res, next) {
 router.post('/del_attribute', function(req, res, next) {
    // console.log(req.body);
     var query = {
-        sql: 'call usp_delattribute_nr(?)',
-        values: [ req.body.attrid]
+        sql: 'call usp_delattribute_nr(?,?)',
+        values: [ req.body.attrid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -783,7 +824,11 @@ router.post('/del_attribute', function(req, res, next) {
 });
 
 router.get('/log_Summary', function(req, res) {
-    var query = 'call usp_getAuditLog_rs()';
+    // var query = 'call usp_getAuditLog_rs()';
+    var query = {
+        sql: 'call usp_getAuditLog_rs(?)',
+        values: [ req.session.retaile_id]
+    }
     mysql(query, function(err, rows) {
         if (err) console.log(err);
         else {
@@ -797,8 +842,8 @@ router.get('/log_Summary', function(req, res) {
 
 router.post('/log_Detail', function(req, res) {
     var query = {
-        sql: 'call usp_getAuditLogDetail_rs(?,?)',
-        values: [req.body.uid, req.body.ltime]
+        sql: 'call usp_getAuditLogDetail_rs(?,?,?)',
+        values: [req.body.uid, req.body.ltime,req.session.retaile_id]
     }
     mysql(query, function(err, rows) {
         if (err) console.log(err);
@@ -812,7 +857,7 @@ router.post('/log_Detail', function(req, res) {
 router.post('/update_attribute', function(req, res, next) {
    //  console.log(req.body);
     var query = {
-        sql: 'call usp_updateattribute_nr(?, ?, ?,?,?, ?, ?,?)',
+        sql: 'call usp_updateattribute_nr(?, ?, ?,?,?, ?, ?,?,?)',
         values: [req.body.attrid,
             req.body.edittxtdesc,
             req.body.txtdatatype,
@@ -820,7 +865,7 @@ router.post('/update_attribute', function(req, res, next) {
             req.body.txtprecison,
             req.body.scale,
             req.body.editattr,
-            req.body.valuesetgroup
+            req.body.valuesetgroup,req.session.retaile_id
         ]
     }
     mysql(query, function(err, result) {
@@ -838,8 +883,8 @@ router.post('/update_attribute', function(req, res, next) {
 
 router.post('/getattrdetails', function(req, res, next) {
     var query = {
-        sql: 'call usp_attributedetails_rs(?,?)',
-        values: [req.body.id, req.body.pid]
+        sql: 'call usp_attributedetails_rs(?,?,?)',
+        values: [req.body.id, req.body.pid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -852,8 +897,8 @@ router.post('/getattrdetails', function(req, res, next) {
 
 router.post('/getdropdownvaluesbyddname', function(req, res, next) {
     var query = {
-        sql: 'call usp_getdropdownvalues_rs(?)',
-        values: [req.body.data]
+        sql: 'call usp_getdropdownvalues_rs(?,?)',
+        values: [req.body.data,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -883,14 +928,18 @@ router.get('/getCategoryAndTemplateByAttribute', function(req, res, next) {
     var attrid = query.attrid;
     var catid = query.catid;
     var query = {
-        sql: 'call usp_getcatandtempbyattr_rs(?,?)',
-        values: [catid, attrid]
+        sql: 'call usp_getcatandtempbyattr_rs(?,?,?)',
+        values: [catid, attrid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
         } else {
-            var query = "call usp_getvaluesset_rs()";
+            // var query = "call usp_getvaluesset_rs()";
+            var query = {
+                sql: 'call usp_getvaluesset_rs(?)',
+                values: [req.session.retaile_id]
+            }
             mysql(query, function(err, valset) {
                 if (err) {
                     console.log(err);
@@ -912,8 +961,8 @@ router.get('/deleteTemplateandCategoryandAttribute', function(req, res, next) {
     var pid = query.pid;
     var flag = query.flag;
     var query = {
-        sql: 'call usp_deleteTemplateAndCategoryAndAttribute(?,?,?)',
-        values: [id, pid, flag]
+        sql: 'call usp_deleteTemplateAndCategoryAndAttribute(?,?,?,?)',
+        values: [id, pid, flag,req.session.retaile_id]
     }
     console.log(query)
     mysql(query, function(err, result) {
@@ -930,8 +979,8 @@ router.get('/deleteTemplateandCategoryandAttribute', function(req, res, next) {
 
 router.post('/getExpression', function(req, res, next) {
     var query = {
-        sql: 'call usp_getExpression_rs(?,?)',
-        values: [req.body.catid, req.body.attrid]
+        sql: 'call usp_getExpression_rs(?,?,?)',
+        values: [req.body.catid, req.body.attrid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -945,8 +994,8 @@ router.post('/getExpression', function(req, res, next) {
 router.post('/submitExpression', function(req, res, next) {
 
     var query = {
-        sql: 'call usp_editExpression_nr(?,?,?)',
-        values: [req.body.catid, req.body.attrid, req.body.expres]
+        sql: 'call usp_editExpression_nr(?,?,?,?)',
+        values: [req.body.catid, req.body.attrid, req.body.expres,req.session.retaile_id]
     }
 
     mysql(query, function(err, result) {
@@ -961,8 +1010,8 @@ router.post('/submitExpression', function(req, res, next) {
 router.post('/submitExpressionall', function(req, res, next) {
 //console.log('req.body',req.body)
     var query = {
-        sql: 'call usp_editExpressionall_nr(?,?,?)',
-        values: [req.body.catid, req.body.attrid, req.body.expres]
+        sql: 'call usp_editExpressionall_nr(?,?,?,?)',
+        values: [req.body.catid, req.body.attrid, req.body.expres,req.session.retaile_id]
     }
 
     mysql(query, function(err, result) {
@@ -975,7 +1024,11 @@ router.post('/submitExpressionall', function(req, res, next) {
 });
 
 router.get('/res_brand', function(req, res) {
-    var query = 'call usp_getresbrnad()';
+    // var query = 'call usp_getresbrnad()';
+    var query = {
+        sql: 'call usp_getresbrnad(?)',
+        values: [req.session.retaile_id]
+    }
     mysql(query, function(err, rows) {
         if (err) console.log(err);
         else {
@@ -1010,8 +1063,8 @@ router.post('/deleteUser', function(req, res, next) {
     if (req.body.flag == 0) {
         //  console.log('per0');
         var query = {
-            sql: 'call usp_delteuser_nr(?)',
-            values: [req.body.ID]
+            sql: 'call usp_delteuser_nr(?,?)',
+            values: [req.body.ID,req.session.retaile_id]
         }
 
         mysql(query, function(err, result) {
@@ -1024,8 +1077,8 @@ router.post('/deleteUser', function(req, res, next) {
     } else {
         //console.log('per0');
         var query = {
-            sql: 'call usp_delteuserPer_nr(?)',
-            values: [req.body.ID]
+            sql: 'call usp_delteuserPer_nr(?,?)',
+            values: [req.body.ID,req.session.retaile_id]
         }
 
         mysql(query, function(err, result) {
@@ -1042,8 +1095,8 @@ router.post('/deleteUser', function(req, res, next) {
 router.post('/getcatattribute', function(req, res, next) {
     //console.log(req.body.catID);
     var query = {
-        sql: 'call gettemplattribute(?)',
-        values: [req.body.catID]
+        sql: 'call gettemplattribute(?,?)',
+        values: [req.body.catID,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -1058,8 +1111,8 @@ router.post('/getcatattribute', function(req, res, next) {
 router.post('/treeforajex', function(req, res, next) {
     //console.log(req.body.catID);
     var query = {
-        sql: 'call usp_gettreenodedata_rs(?)',
-        values: [req.body.id1]
+        sql: 'call usp_gettreenodedata_rs(?,?)',
+        values: [req.body.id1,req.session.retaile_id]
     }
     console.log(query)
     mysql(query, function(err, result) {
@@ -1075,8 +1128,8 @@ router.post('/treeforajex', function(req, res, next) {
 router.post('/renderattr', function(req, res, next) {
     //console.log(req.body.catID);
     var query = {
-        sql: 'call usp_getattrtreenodedata_rs(?)',
-        values: [req.body.id1]
+        sql: 'call usp_getattrtreenodedata_rs(?,?)',
+        values: [req.body.id1,req.session.retaile_id]
     }
    //console.log(query)
     mysql(query, function(err, result) {
@@ -1092,8 +1145,8 @@ router.post('/renderattr', function(req, res, next) {
 router.post('/updatesequence', function(req, res, next) {
     //console.log(req.body);
     var query = {
-        sql: 'call usp_updmapcategoryseq_nr(?,?,?)',
-        values: [req.body.upseqid1, req.body.upseqflg, req.body.templup]
+        sql: 'call usp_updmapcategoryseq_nr(?,?,?,?)',
+        values: [req.body.upseqid1, req.body.upseqflg, req.body.templup,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -1140,9 +1193,13 @@ router.get('/addmultipleattr', function(req, res, next) {
     var id = query.catid;
   //  console.log("query from fromtend----",query);
  /* var id = 555;*/
-    var query1 = "call usp_getvaluesset_rs()";
+    // var query1 = "call usp_getvaluesset_rs()";
+    var query1 = {
+        sql: 'call usp_getvaluesset_rs(?)',
+        values: [req.session.retaile_id]
+    }
 
-    var qr="select categoryName from t_category where Id="+id;
+    var qr="select categoryName from t_category where Id="+id+" and rid="+req.session.retaile_id;
 
     mysql(qr,function(err,catname){
     if(err){
@@ -1154,7 +1211,11 @@ router.get('/addmultipleattr', function(req, res, next) {
         if (err) {
             console.log(err);
         } else {
-            var query1 = "call usp_getattr_rs()";
+            // var query1 = "call usp_getattr_rs()";
+            var query1 = {
+                sql: 'call usp_getattr_rs(?)',
+                values: [req.session.retaile_id]
+            }
                    
                     mysql(query1, function(err, attributes) {
                         if (err) {
@@ -1163,8 +1224,8 @@ router.get('/addmultipleattr', function(req, res, next) {
                         else
                          {
                             var query = {
-                                sql: 'call usp_getmapcatattribute_rs(?)',
-                                values: [id]
+                                sql: 'call usp_getmapcatattribute_rs(?,?)',
+                                values: [id,req.session.retaile_id]
                             }
                          //   console.log("query-----",query);
                                 mysql(query, function(err, attrmapcat) {
@@ -1203,8 +1264,8 @@ router.post('/addeditrestrictedbrand', function(req, res, next) {
  //   console.log("data-----",req.body);
 
     var query = {
-        sql: 'call usp_addeditrestrictedbrand(?,?,?)',
-        values: [req.body.brandid,req.body.brandname,req.body.merchantcode]
+        sql: 'call usp_addeditrestrictedbrand(?,?,?,?)',
+        values: [req.body.brandid,req.body.brandname,req.body.merchantcode,req.session.retaile_id]
     }
  //   console.log('query for restricted res_brand---',query);
     mysql(query, function(err, result) {
@@ -1222,8 +1283,8 @@ router.post('/addeditrestrictedbrand', function(req, res, next) {
 router.post('/deleterestrictedbrand', function(req, res, next) {
     //console.log(req.body.catID);
     var query = {
-        sql: 'call usp_deleterestrictedbrand(?)',
-        values: [req.body.id]
+        sql: 'call usp_deleterestrictedbrand(?,?)',
+        values: [req.body.id,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {
@@ -1239,8 +1300,8 @@ router.post('/deleterestrictedbrand', function(req, res, next) {
 
 router.post('/deletelov', function(req, res, next) {
     var query = {
-        sql: 'call usp_delete_lov(?)',
-        values: [req.body.lovid]
+        sql: 'call usp_delete_lov(?,?)',
+        values: [req.body.lovid,req.session.retaile_id]
     }
     mysql(query, function(err, result) {
         if (err) {

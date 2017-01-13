@@ -101,10 +101,15 @@ function init1(container, data, tempHeaders, flag, imageFolderColumn, imagepath)
     setTimeout(function () {
         // console.log('hots ub==in time',hots);
         hot1.validateCells(function () {});
-
+        // container.style.width = 400 + 'px';
+      // container.style.height = 400 + 'px'
+      // hot1.render()
         $('.se-pre-con').hide();
     }, 35);
-
+ // example.style.width = 400 + 'px';
+ //      example.style.height = 400 + 'px';
+ //    }
+ //    hot1.render()
     if(flag == 'csv') {
         exportable = hot;
         var gridId = '#processedSheet';

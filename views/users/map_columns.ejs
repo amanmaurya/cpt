@@ -128,7 +128,7 @@ $(document).ready(function() {
       var email = '<%=name%>';
       var merchantCode= '<%=merchantcode%>';
      <% for (var e = 0; e < excelHeaders.length; e++) { %>
-  mermap=mermap+"'"+email+"','"+selectedtemplate+"','"+merchantCode+"','"+"<%=excelHeaders[e]%>"+"','"+templateColumns[count]+"'),(";
+  mermap=mermap+"'"+email+"','"+selectedtemplate+"','"+merchantCode+"','"+"<%=excelHeaders[e]%>"+"','"+templateColumns[count]+"','"+"<%=retaile_id%>"+"'),(";
   count++;
       <%}%>
 
