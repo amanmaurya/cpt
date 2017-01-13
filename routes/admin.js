@@ -931,6 +931,7 @@ router.get('/getCategoryAndTemplateByAttribute', function(req, res, next) {
         sql: 'call usp_getcatandtempbyattr_rs(?,?,?)',
         values: [catid, attrid,req.session.retaile_id]
     }
+    console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);
