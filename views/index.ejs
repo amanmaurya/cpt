@@ -366,7 +366,9 @@ form:after {
 }
 </style>
 <script>
+$(document).ready(function () {
   var flag=<%=flag %>
+
 if(flag==1){
   // alert(flag)
   setTimeout(function() {$('#myModalalert').modal({ backdrop: 'static', keyboard: false })
@@ -374,9 +376,10 @@ if(flag==1){
           $('#resetform').submit()
           $( "#target" ).submit();
         })
-      }, 100);
+      }, 10);
     
 }
+});
 </script>
 <meta charset="utf-8">
 

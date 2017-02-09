@@ -24,6 +24,7 @@ router.get('/', function(req, res, next) {
     flag=0;
     else
     flag=query.flag;
+  // console.log()
     res.render('index', {error: error,flag:flag});
   }
 });
