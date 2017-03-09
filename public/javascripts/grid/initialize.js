@@ -26,7 +26,7 @@ height=400
     var imageColumn=0;
      imageColumn = headers.indexOf('image');
     if(imageColumn==-1){
-        imageColumn = headers.indexOf('Image Name');  
+        imageColumn = headers.indexOf('Image Path');  
     }
     // console.log("validators jai jai jai",validators);
  
@@ -72,6 +72,7 @@ height=400
 
         afterOnCellMouseDown: function(e, coords, td) {
           // console.log(coords)
+          // console.log('imageColumn',imageColumn)
             if (coords.col == imageColumn) {
               
                 var imagePath1 = td.textContent;
