@@ -366,6 +366,8 @@ form:after {
 }
 </style>
 <script>
+
+$( document ).ready(function() {
   var flag=<%=flag %>
 if(flag==1){
   // alert(flag)
@@ -374,9 +376,17 @@ if(flag==1){
           $('#resetform').submit()
           $( "#target" ).submit();
         })
-      }, 100);
+      }, 1000);
     
 }
+
+    function resetForm(){
+alert(1)
+ $('#resetform').submit()
+          $( "#target" ).submit();
+
+}
+});
 </script>
 <meta charset="utf-8">
 
@@ -397,6 +407,7 @@ if(flag==1){
       <label class="control-label" for="inputError1">Please re enter credential to login</label>
     </div>
     <% } %>
+
 
        <center><img src="file:///home/pssldel10202/project/paytm/public/images/paytmlogo.png" height:"60" width:"60"></center>
       <h3>Catalog Automation</h3>

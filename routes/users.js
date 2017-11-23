@@ -277,6 +277,7 @@ router.get('/map_attribute', function (req, res) {
     //     req.session.attributes = attributes;
     //     res.redirect('/users/map_false_values');
     // }
+    
        mysql({
         sql: 'call usp_getmerchantAttribut(?,?)',
         values: [req.session.merchantId,req.session.retaile_id]
@@ -284,12 +285,18 @@ router.get('/map_attribute', function (req, res) {
         if(e) {
             console.log(e);
         } else {
-            // console.log(attributes,Object.keys(rv[0][0]),rv[0])
+            console.log('---@@@@@',rv,rv[0].length)
             if(attributes.length != 0) {
+                if(rv[0].length==0 ){
+                    var keys=[]
+                }else{
+                   var keys=Object.keys(rv[0][0]) 
+                }
+                
         res.render('users/map_attr', {
             headers: attributes,
             merchant:rv[0],
-            merchanthead:Object.keys(rv[0][0]),
+            merchanthead:keys,
             adminUser: auth.isAdmin(req),
             name: req.session.email,
             fname: req.session.name,
