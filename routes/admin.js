@@ -244,10 +244,16 @@ router.post('/editcatandtemp', function(req, res, next) {
     } else {
         ctgroup = req.body.ccatgroup;
     }
+    if (req.body.cvertid == '') {
+        cvertid = 0;
+    } else {
+        cvertid = req.body.cvertid;
+    }
     var query = {
         sql: 'call usp_edittempandcat_nr(?,?,?,?,?,?,?,?,?,?)',
-        values: [req.body.cid, req.body.cflg, req.body.cname, req.body.cdesc, code, rtime, rpid, ctgroup, req.body.cvertid,req.session.retaile_id]
+        values: [req.body.cid, req.body.cflg, req.body.cname, req.body.cdesc, code, rtime, rpid, ctgroup, cvertid,req.session.retaile_id]
     }
+    console.log(query)
     mysql(query, function(err, result) {
         if (err) {
             console.log(err);

@@ -215,7 +215,7 @@
             // alert(1)
             // console.log(data);
 
-            var rend = "<ul class=' ' style='background-color:white;'><li class='' id='tempopen' jsp1='-1' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'>Template <input type='button' class='btn-primary' id='0&-1&-1'  style='font-size:12px;margin: 5px 0px 0px 5px;margin-top:-5px !important;background-color: #27B7EA;border:1px solid lightgrey;border-radius:5px;    width: 100px;height: 20px;' value='Add'  onclick='add(this.id);'> " +
+            var rend = "<ul class=' ' style='background-color:white;'><li class='' id='tempopen' jsp1='-1' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'>Client <input type='button' class='btn-primary' id='0&-1&-1'  style='font-size:12px;margin: 5px 0px 0px 5px;margin-top:-5px !important;background-color: #27B7EA;border:1px solid lightgrey;border-radius:5px;    width: 100px;height: 20px;' value='Add'  onclick='add(this.id);'> " +
                 _renderTree(tree) + "</li></ul>";
 
             function _renderTree(tree) {
@@ -299,7 +299,7 @@
             prepareList();
 
             <%} else{%>
-            var rend = "<ul class=' ' style='background-color:white;'><li class='' id='tempopen' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'>Template <input type='button' class='btn-primary' id='0&-1&-1'  style='font-size:12px;margin: 5px 0px 0px 5px;margin-top:-5px !important;background-color: #27B7EA;border:1px solid lightgrey;border-radius:5px;    width: 100px;height: 20px;' value='Add'  onclick='add(this.id);'></li></ul>";
+            var rend = "<ul class=' ' style='background-color:white;'><li class='' id='tempopen' style='background-color:white;font-family:myfirstfont;font-size:15px;padding-top:5px;padding-bottom:3px;'>Client <input type='button' class='btn-primary' id='0&-1&-1'  style='font-size:12px;margin: 5px 0px 0px 5px;margin-top:-5px !important;background-color: #27B7EA;border:1px solid lightgrey;border-radius:5px;    width: 100px;height: 20px;' value='Add'  onclick='add(this.id);'></li></ul>";
             $('#tree').append(rend);
             <%}%>
         }
@@ -389,7 +389,7 @@
             $('#flg').val(flag);
             if (flag == '-1') {
                 categoryflag = 0;
-                $('#heading').html("Add Template");
+                $('#heading').html("Add Client");
                 $('#code').addClass('hide');
                 $('#codd').addClass('hide');
                 $('#desc').removeClass('hide');
@@ -776,7 +776,7 @@
             });
             if (flag == '0') {
                 //console.log("Template");
-                $('#heading1').html("Edit Template");
+                $('#heading1').html("Edit Client");
                 $('#ccode').addClass('hide');
                 $('#ccodd').addClass('hide');
                 $('#cdesc').removeClass('hide');
@@ -1356,6 +1356,39 @@ event.childNodes[4].style.display='none';*/
                                 <input type="text" class=" form-control" id="returntime" value="0" name="returntime" placeholder="Enter Return Time" style="margin-top:5px;width:342px" maxlength="10">
                             </div>
                         </div>
+                        <div class="col-lg-12 " id="att1">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Attr1:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class=" form-control" id=""  name="" placeholder="Enter Attribute 1" style="margin-top:5px;width:342px" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-lg-12 " id="att1">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Attr2:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class=" form-control" id=""  name="" placeholder="Enter Attribute 2" style="margin-top:5px;width:342px" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-lg-12 " id="att1">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Attr3:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class=" form-control" id=""  name="" placeholder="Enter Attribute 3" style="margin-top:5px;width:342px" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="col-lg-12 " id="att1">
+                            <div class="col-lg-3 ll">
+                                <label style="line-height:42px;">Attr4:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="text" class=" form-control" id=""  name="" placeholder="Enter Attribute 4" style="margin-top:5px;width:342px" maxlength="10">
+                            </div>
+                        </div>
+
                         <!--<div class="col-lg-12" id="rpolicy">
                     <div class="col-lg-3 ll">
                     <label style="line-height:42px;">Policy Id:</label>
@@ -1541,7 +1574,7 @@ event.childNodes[4].style.display='none';*/
                         <input type="text" class="hide" id="templup" name="templup">
                         <div class="col-lg-12">
                             <div class="col-lg-3 ll">
-                                <label style="line-height:42px;">Template:</label>
+                                <label style="line-height:42px;">Client:</label>
                             </div>
                             <div class="col-lg-9">
                                 <label id='tempup' style="line-height: 42px;font-weight:normal"></label>
